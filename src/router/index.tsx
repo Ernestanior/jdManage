@@ -1,7 +1,6 @@
 import React, { FC } from "react";
-import { Redirect, Router, Switch, Route } from "react-router-dom";
+import { HashRouter, Routes, Navigate, Route } from "react-router-dom";
 import useAccountInfo from "@/store/account";
-import historyService from "@/store/history"
 import Login from "@/pages/login";
 import Home from "@/pages/home";
 import LayoutPlx from "../common/layout";
@@ -18,16 +17,14 @@ const ProjectRouter:FC = () => {
         return <Login />;
     }
 
-    return <Router history={historyService}>
+    return <HashRouter>
         <LayoutPlx>
-            <Switch>
-                <Route path="/home">
-                    <Home />
-                </Route>
-                <Redirect to="/home" />
-            </Switch>
+            <Routes>
+                <Route path="/home" element={<Home />} />
+                <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
         </LayoutPlx>
-    </Router>
+    </HashRouter>
 }
 
 export default ProjectRouter
