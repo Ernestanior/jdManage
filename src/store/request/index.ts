@@ -1,5 +1,5 @@
 import RequestPlx from "@/common/tools/request";
-import { getToken } from "@/store/request/token";
+import { getUser } from "@/store/request/token";
 import { AxiosRequestConfig } from "axios";
 import { notification } from "antd";
 import accountService from "../account/service";
@@ -21,10 +21,11 @@ requestPlx.middleware_before.use(async (config, next) => {
 
 // header add token
 requestPlx.middleware_before.use(async (config, next) => {
-  const token = getToken();
-  if (token) {
-    // config.headers["token"] = token;
-    config.headers["Authorization"] = "Basic " + token;
+  const user = getUser();
+  if (user) {
+    console.log(user.token);
+    
+    config.headers["Authorization"] = "Basic " + user.token;
   }
   await next();
 });

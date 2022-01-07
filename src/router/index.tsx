@@ -4,7 +4,7 @@ import useAccountInfo from "@/store/account";
 import Login from "@/pages/login";
 import Home from "@/pages/home";
 import LayoutPlx from "../common/layout";
-import { getToken } from "@/store/request/token";
+import { getUser } from "@/store/request/token";
 
 /**
  * 项目路由组件
@@ -12,8 +12,8 @@ import { getToken } from "@/store/request/token";
  * @constructor
  */
 const ProjectRouter:FC = () => {
-    // const token = getToken()
-    // console.log(token);
+    const user = getUser()
+    console.log(user);
     const accountInfo = useAccountInfo();
     // console.log(accountInfo);
 

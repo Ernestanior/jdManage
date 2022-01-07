@@ -3,8 +3,6 @@ import accountService from "@/store/account/service";
 
 const Login = () => {
     const onFinish = (values: any) => {
-        console.log(values);
-        
         accountService.login(values.userName, values.pwd)
     };
 
