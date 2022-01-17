@@ -1,5 +1,5 @@
 import { Form, Input, Button, Checkbox } from 'antd';
-import accountService from "@/store/account/service";
+import accountService from "@/store/network/account/service";
 
 const Login = () => {
     const onFinish = (values: any) => {

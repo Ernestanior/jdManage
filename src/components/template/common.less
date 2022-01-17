@@ -1,0 +1,183 @@
+// @import "./global_config.less";
+
+// layout 的父元素
+.cdn-ly-container {
+  display: flex;
+  flex-direction: column;
+}
+
+// 居中(垂直和水平)
+.cdn-ly-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+// 垂直居中-line
+.cdn-ly-y-center-inline {
+  display: inline-flex;
+  align-items: center;
+
+  height: 100%;
+}
+
+.cdn-ly-y-center {
+  display: flex;
+  align-items: center;
+}
+
+.cdn-ly-right {
+  flex-direction: row-reverse;
+}
+
+// 鼠标变形
+.cdn-pt-hover {
+  cursor: pointer;
+  user-select: none;
+}
+
+// inline-block
+.cdn-inline-block {
+  display: inline-block;
+}
+
+// 文字居右边
+.cdn-text-right {
+  text-align: right;
+}
+
+// 文字居中
+.cdn-text-center {
+  text-align: center;
+}
+
+// 文字行高
+.cdn-text {
+  line-height: 40px;
+}
+
+// 页面
+.cdn-page {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  box-sizing: border-box;
+}
+
+.cdn-page-row {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.cdn-page-row-30 {
+  padding: 0 30px;
+}
+
+.cdn-fix-left-15 {
+  padding-left: 15px;
+}
+
+.cdn-fix-top-15 {
+  padding-top: 15px;
+}
+
+.cdn-fix-right-15 {
+  padding-right: 15px;
+}
+
+.cdn-fix-bottom-15 {
+  padding-bottom: 15px;
+}
+
+// 和文字并行的icon
+.cdn-icon-inline {
+  font-size: 1em;
+  cursor: pointer;
+  margin-left: 0.5em;
+  margin-right: 0.3rem;
+}
+
+.cdn-title {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.cdn-inline-block {
+  width: 270px;
+}
+
+.cdn-width-fill {
+  width: 100%;
+}
+
+.cdn-height-fill {
+  width: 100%;
+}
+
+.cdn-form-module-title {
+  font-weight: bold;
+  padding-bottom: 15px;
+}
+
+.cdn-template-footer {
+  padding: 15px;
+}
+
+.cdn-scroll {
+  height: 100%;
+  overflow: auto;
+}
+
+.cdn-padding-left-child {
+  padding-left: 30px;
+
+  .ant-table-tbody > tr > td[colspan="4"] {
+    border-bottom: none;
+  }
+}
+
+.monitor-page {
+  // 正常
+  .monitor-alert-lv-0 {
+    background: #4eaa9c;
+    color: #fff;
+  }
+
+  // 低
+  .monitor-alert-lv-1 {
+    background: #fff700;
+  }
+
+  // 中
+  .monitor-alert-lv-2 {
+    background: #fff700;
+  }
+
+  // 高
+  .monitor-alert-lv-3 {
+    color: #fff;
+    background: #ff0101 !important;
+    animation: blink 1s infinite ease-in-out !important;
+  }
+
+  .ant-table-tbody > .ant-table-row:hover > td {
+    background: unset;
+  }
+
+  td.ant-table-column-sort {
+    background: unset;
+  }
+
+  .ant-table-cell-fix-left,
+  .ant-table-cell-fix-right {
+    background: unset;
+  }
+}
+
+.cdn-content-padding {
+  padding-left: 20px;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background-color: unset;
+}
