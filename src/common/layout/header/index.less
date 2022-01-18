@@ -1,3 +1,26 @@
-.comp-header{
-  padding: 10px 30px;
+@mainColor: #e47b1a;
+
+.comp-header {
+  padding: 15px 30px;
+  display: flex;
+  // justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  .process-icon {
+    height: 26px;
+    overflow: hidden;
+  }
+  .pop-over {
+    font-size: 14px;
+    border: 1px solid rgb(194, 194, 194);
+    padding: 10px 15px;
+    border-radius: 20px;
+    margin-right: 40px;
+    user-select: none;
+    &:hover {
+      border: 0;
+      box-shadow: 0 0 5px 0 @mainColor;
+    }
+  }
 }
