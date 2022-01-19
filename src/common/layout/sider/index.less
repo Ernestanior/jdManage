@@ -1,0 +1,71 @@
+.MenuItem {
+  padding-left: 18px;
+  padding-top: 30px;
+  list-style-type: none;
+  text-align: center;
+  align-items: center;
+  .ItemIcon {
+    color: #888888;
+    height: 45px;
+    width: 45px;
+    line-height: 50px;
+
+  }
+  .ItemIconFocus {
+    height: 45px;
+    width: 45px;
+    color: #e97335;
+    border-radius: 50%;
+    background-image: radial-gradient(circle, #fdf0ed 70%, #f6e6cf 30%);
+    line-height: 50px;
+  }
+  .ItemTitle {
+    height: 45px;
+    color: #0f324e;
+    font-size: 23px;
+    text-align: left;
+    line-height: 41px;
+    animation-name: fadein;
+    animation-duration: 1s;
+  }
+  .ItemTitleFocus{
+    height: 45px;
+    color: #E97335;
+    font-size: 23px;
+    text-align: left;
+    line-height: 41px;
+    animation-name: fadein;
+    animation-duration: 1s;
+  }
+  .ItemTitleHide{
+      visibility: hidden;
+  }
+}
+
+.CollapseBtn{
+    left: 160px;
+    bottom: 20px;
+    width: 50px;
+    height: 50px;
+    line-height:60px;
+    align-items: center;
+    text-align: center;
+    position: absolute;
+    background-color: #F5F6FA;
+    border-radius: 50%;
+    animation-name: fadein;
+    animation-duration: 1s;
+    .CollapseBtnIcon{
+      transform: rotate(90deg);
+    }
+}
+
+
+@keyframes fadein{
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
+  }
+}
