@@ -72,7 +72,7 @@ const Sider: FC = () => {
         className="CollapseBtn"
         onClick={onCollapse}
       >
-        {collapsed ? <RightOutlined style={{fontSize:18}}/> : <LeftOutlined style={{fontSize:18}} />}
+        {collapsed ? <RightOutlined style={{fontSize:18,animationName:"fadein",animationDuration:"1.5s"}}/> : <LeftOutlined style={{fontSize:18,animationName:"fadein",animationDuration:"1.5s"}} />}
       </div>
     </AntSide>
   );
