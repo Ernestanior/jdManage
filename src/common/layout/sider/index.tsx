@@ -3,6 +3,7 @@ import { Col, Layout, Row } from "antd";
 import { NavLink } from "react-router-dom";
 import IconFont from "@/components/icon";
 import { SiderList } from "./config";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 const AntSide = Layout.Sider;
 const Sider: FC = () => {
@@ -19,8 +20,8 @@ const Sider: FC = () => {
   return (
     <AntSide
       collapsible
-      collapsedWidth={100}
-      width={250}
+      collapsedWidth={90}
+      width={200}
       collapsed={collapsed}
       theme="light"
       trigger={null}
@@ -35,9 +36,10 @@ const Sider: FC = () => {
             >
               <NavLink to={item.path}>
                 <Row>
-                  <Col span={6}>
+                  <Col span={6} offset={2}>
                     <div>
                       <IconFont
+                      style={{fontSize:20}}
                         className={
                           selected === index ? "ItemIconFocus" : "ItemIcon"
                         }
@@ -64,16 +66,13 @@ const Sider: FC = () => {
           );
         })}
       </div>
+      
       <div
-        style={collapsed ? { transform: "translateX(-140px)" } : {}}
+        style={collapsed ? { transform: "translateX(-130px)" } : {}}
         className="CollapseBtn"
         onClick={onCollapse}
       >
-        {collapsed ? (
-          <IconFont type="icon-caret-up" className="CollapseBtnIcon" />
-        ) : (
-          <IconFont type="icon-caret-down" className="CollapseBtnIcon" />
-        )}
+        {collapsed ? <RightOutlined style={{fontSize:18}}/> : <LeftOutlined style={{fontSize:18}} />}
       </div>
     </AntSide>
   );
