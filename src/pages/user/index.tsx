@@ -1,22 +1,24 @@
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import { FC, ReactElement, useMemo } from "react";
 import { Tabs } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./index.less";
 
 import Info from "./info";
 import Log from "./log";
 import ResetPwd from "./resetPwd";
 import Security from "./security";
-import { useLocation } from "react-router-dom";
 
-import "./index.less";
 const { TabPane } = Tabs;
 const Index: FC = (): ReactElement => {
   const path: any = useLocation().state;
   const { user } = path;
-  const [index, setIndex] = useState("1");
-  useEffect(() => setIndex(user.toString()), [user]);
-
+  const navigate = useNavigate();
+  const index = useMemo(() => user.toString() || "1", [user]);
+  const onChange = (key: string) => {
+    navigate("/user", { state: { user: key } });
+  };
   return (
-    <Tabs activeKey={index} type="card" onChange={(key) => setIndex(key)}>
+    <Tabs activeKey={index} type="card" onChange={onChange}>
       <TabPane tab="个人中心" key="1">
         <Info />
       </TabPane>
