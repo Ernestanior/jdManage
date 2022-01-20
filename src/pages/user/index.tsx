@@ -13,7 +13,7 @@ const Index: FC = (): ReactElement => {
   const navigate = useNavigate();
 
   const path: any = useLocation().state;
-  const { user } = path;
+  const user = (path && path.user) || 1;
   const index = useMemo(() => user.toString() || "1", [user]);
 
   return (
