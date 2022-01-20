@@ -10,15 +10,20 @@ import Security from "./security";
 
 const { TabPane } = Tabs;
 const Index: FC = (): ReactElement => {
+  const navigate = useNavigate();
+
   const path: any = useLocation().state;
   const { user } = path;
-  const navigate = useNavigate();
   const index = useMemo(() => user.toString() || "1", [user]);
-  const onChange = (key: string) => {
-    navigate("/user", { state: { user: key } });
-  };
+
   return (
-    <Tabs activeKey={index} type="card" onChange={onChange}>
+    <Tabs
+      activeKey={index}
+      type="card"
+      onChange={(activeKey) =>
+        navigate("/user", { state: { user: activeKey } })
+      }
+    >
       <TabPane tab="个人中心" key="1">
         <Info />
       </TabPane>
