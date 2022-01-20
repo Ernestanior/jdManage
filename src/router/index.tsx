@@ -8,6 +8,9 @@ import accountService from "@/store/network/account/service";
 
 import CdnSite from "@/pages/cdnSite";
 import SiteList from "@/pages/cdnSite/siteList";
+
+import User from "@/pages/user";
+
 /**
  * 项目路由组件
  * 可以在此根据用户相应的权限组装路由
@@ -27,21 +30,24 @@ const ProjectRouter: FC = () => {
       <LayoutPlx>
         <Routes>
           <Route path="/home" element={<Home />} />
-          {/* <Route path="/user/*" element={<User />}>
-                    <Route path="info" element={<Info />}></Route>
-                    <Route path="log/*" element={<Log />}>
-                        <Route path="admin-log" element={<Admin />}></Route>
-                        <Route path="customer-log" element={<Customer />}></Route>
-                        <Route path="*" element={<Navigate to="admin-log" replace />} />
-                    </Route>
-                    <Route path="reset-pwd" element={<ResetPwd />}></Route>
-                    <Route path="security/*" element={<Security />}>
-                        <Route path="login-restriction" element={<Restriction />} />
-                        <Route path="login-records" element={<Record />}></Route>
-                        <Route path="*" element={<Navigate to="login-restriction" replace />} />
-                    </Route>
-                    <Route path="*" element={<Navigate to="info" replace />} />
-                </Route> */}
+          <Route path="/user/*" element={<User />}>
+            {/* <Route path="info" element={<Info />}></Route>
+            <Route path="log/*" element={<Log />}>
+              <Route path="admin-log" element={<Admin />}></Route>
+              <Route path="customer-log" element={<Customer />}></Route>
+              <Route path="*" element={<Navigate to="admin-log" replace />} />
+            </Route>
+            <Route path="reset-pwd" element={<ResetPwd />}></Route>
+            <Route path="security/*" element={<Security />}>
+              <Route path="login-restriction" element={<Restriction />} />
+              <Route path="login-records" element={<Record />}></Route>
+              <Route
+                path="*"
+                element={<Navigate to="login-restriction" replace />}
+              />
+            </Route>
+            <Route path="*" element={<Navigate to="info" replace />} /> */}
+          </Route>
           {/* <Route path="/customer-management/*" element={<CusManage />}>
                     <Route path="registered" element={<Registered />} />
                     <Route path="sales" element={<Sales />}></Route>
