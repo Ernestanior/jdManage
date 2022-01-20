@@ -2,6 +2,7 @@ import { FC } from "react";
 import { Button } from "antd";
 import accountService from "@/store/network/account/service";
 import moment from "moment";
+import { Btn } from "@/components/button";
 import "./index.less";
 interface IProps {
   userName: string;
@@ -15,15 +16,14 @@ const Index: FC<IProps> = ({ userName, lastLoginTime }) => {
         你最后的登录时间是：
         <div>{moment(lastLoginTime).format("YYYY MMM Do ddddHH:mm")}</div>
       </div>
-      <Button
+      <Btn
         type="primary"
-        style={{ borderRadius: "15px", fontWeight: 550 }}
         onClick={() => {
           accountService.logout();
         }}
       >
         退出
-      </Button>
+      </Btn>
     </div>
   );
 };

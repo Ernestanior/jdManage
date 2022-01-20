@@ -1,0 +1,41 @@
+@mainColor: #ef8f35;
+
+.mini-table {
+  background-color: #fff;
+  box-shadow: 0 0 15px 0 rgb(226, 226, 226);
+  padding: 20px 30px;
+  width: 400px;
+  margin-bottom: 30px;
+  .mini-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(235, 235, 235);
+    padding-bottom: 12px;
+    font-size: 15px;
+    .title {
+      display: flex;
+      font-weight: 500;
+      .more {
+        color: @mainColor;
+        font-size: 11px;
+        align-self: flex-end;
+        margin-left: 15px;
+      }
+    }
+  }
+  .mini-table-body {
+    position: relative;
+    height: 250px;
+  }
+  .list-item {
+    font-size: 14px;
+    padding: 10px 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &:nth-child(2n + 1) {
+      background-color: #f9fbfe;
+    }
+  }
+}

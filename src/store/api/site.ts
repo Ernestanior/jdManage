@@ -1,14 +1,14 @@
 /*jshint -W069 */
 // tslint:disable
 import { AxiosRequestConfig } from "axios";
-import {ISearchParamsSite} from "../network/siteList/interface";
+import { ISearchParamsSite } from "../network/site/interface";
 
 /**
  * @class UserAPI
  * @description 用户管理API
  * @return 返回request的config
  */
-class SiteListAPI {
+class SiteAPI {
   /**
    * createUser
    * 生成请求参数
@@ -43,7 +43,7 @@ class SiteListAPI {
    * findUser
    * 生成请求参数
    */
-  FindSiteList = (data: ISearchParamsSite) => {
+  FindSite = (data: ISearchParamsSite) => {
     const config: AxiosRequestConfig = {
       url: "/site/list",
       method: "post",
@@ -68,56 +68,4 @@ class SiteListAPI {
   //   return config;
   // };
 }
-export default SiteListAPI;
-
-/** createUser的请求参数*/
-interface ICreateUserParams {
-  email: string; //user email
-  loginId: string; //same as email
-  name: string; //same as email
-  plainPassword: string; //user password
-  type: "admin" | "normal"; //user type "admin" / "normal"
-}
-
-/** delete的请求参数*/
-interface IDeleteParams {
-  id: number;
-}
-
-/** findUser的请求参数*/
-interface IFindUserParams {
-  keyWord: string; //user name
-  searchPage: ISearchPage;
-}
-
-export interface ISearchPage {
-  desc?: number;
-  page: number;
-  pageSize: number;
-  sort?: string;
-  keyWord: string; //user name
-  searchPage: ISearchPage;
-}
-
-export interface ISearchPage {
-  desc?: number;
-  page: number;
-  pageSize: number;
-  sort?: string;
-}
-
-/** modifyUser的请求参数*/
-interface IModifyUserParams {
-  // email: string, //user name after modify
-  // id: number, //user ID
-  // locale: string,
-  // loginId: string, //same as user name
-  // name: string,  //same as user name
-  // plainPassword: string, //password after modify
-  // timezone: string,
-  // type: string
-  email: string;
-  id: number;
-  newPwd: string;
-  oldPwd: string;
-}
+export default SiteAPI;

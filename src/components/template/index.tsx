@@ -37,7 +37,7 @@ interface ITemplateProps {
   /** 整个组件的标题 */
   title?: string;
   /** 搜索框条件 */
-  primarySearch:string;
+  primarySearch: string;
   /** 搜索组件列表，传入的每个对象将生成对应的input框 */
   searchList?: IRenderConfig[];
   /** 外部通过该函数得到template所有搜索条件，包括搜索条件汇总，searchPage参数 */
@@ -88,7 +88,7 @@ interface ITemplateProps {
   //   /** 排列方式 */
   //   sort:any;
   // };
-  data:any;
+  data: any;
   /* 传递事件 **/
   event$?: Subject<IEvent>;
 }
@@ -192,7 +192,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   const submit = useCallback(
     (key: keyof IPageParams, value: any) => {
       const nextValue = { ...params$.value };
-      if (key !== "searchPage" ) {
+      if (key !== "searchPage") {
         // 搜索第一页面
         nextValue.searchPage.page = 1;
       }
@@ -343,7 +343,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
           icon={btn.icon}
           type="primary"
           padding="5px 20px"
-          // onClick={() => btn.onClick()}
+          onClick={() => btn.onClick()}
         >
           {btn.text}
         </Btn>
@@ -354,7 +354,6 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
       return true;
     });
   }
-
 
   // 显示分页跳转
   const showQuickJumper = useMemo(() => {
@@ -384,7 +383,13 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
         </h2>
       )}
       <section className="comp-temp">
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Filter
             searchList={props.searchList}
             onSearch={(value: {}) => setSearchCondition(value)}

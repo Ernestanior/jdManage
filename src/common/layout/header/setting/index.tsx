@@ -6,7 +6,7 @@ import { useUserInfo } from "@/store/network/account";
 import Title from "./title";
 const HeaderPlx: FC = () => {
   const userInfo = useUserInfo();
-  //   console.log(userInfo);
+  // console.log(userInfo);
   if (userInfo) {
     const { userName, lastLoginTime } = userInfo;
     return (
