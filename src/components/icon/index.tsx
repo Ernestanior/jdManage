@@ -38,3 +38,7 @@ const IconFont: FC<IconFontProps> = (props) => {
 };
 
 export default IconFont;
+
+export const tipIcon = (
+  <IconFont type="icon-wenti" style={{ color: "#ef8f35" }} />
+);
