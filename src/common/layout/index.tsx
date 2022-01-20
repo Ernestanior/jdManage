@@ -9,7 +9,7 @@ const LayoutPlx: FC = ({ children }) => {
     <Layout className="height-fill">
       <HeaderPlx />
       <Layout>
-        {/* <SideBar /> */}
+        <SideBar />
         <ContentP>{children}</ContentP>
       </Layout>
     </Layout>
