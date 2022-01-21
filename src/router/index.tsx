@@ -8,6 +8,19 @@ import accountService from "@/store/network/account/service";
 
 import CdnSite from "@/pages/cdnSite";
 import SiteList from "@/pages/cdnSite/siteList";
+import SitePage from "@/pages/cdnSite/sitePage";
+import SiteConfig from "@/pages/cdnSite/sitePage/siteConfig";
+
+// import Domain from "./cdnSite/sitePage/siteConfig/dns/domain";
+
+
+
+import Cache from "@/pages/cdnSite/sitePage/cache";
+import Firewall from "@/pages/cdnSite/sitePage/firewall";
+
+import Statistics from "@/pages/cdnSite/sitePage/statistics";
+
+import PlatMana from "@/pages/cdnSite/sitePage/plat-mana";
 
 import User from "@/pages/user";
 
@@ -59,16 +72,16 @@ const ProjectRouter: FC = () => {
                     <Route path="*" element={<Navigate to="domain-management" replace />} />
                 </Route> */}
           <Route path="/cdn-site/*" element={<CdnSite />}>
-            {/* <Route path=":sitename/*" element={<SitePage />}>
-                        <Route path="firewall/*" element={<Firewall />}>
-                            <Route path="ip-whitelist" element={<IPWhite />} />
+            <Route path=":sitename/*" element={<SitePage />}>
+              <Route path="firewall/*" element={<Firewall />}>
+                {/* <Route path="ip-whitelist" element={<IPWhite />} />
                             <Route path="ip-blacklist" element={<IPBlack />} />
                             <Route path="ua-whitelist" element={<UAWhite />} />
                             <Route path="ua-blacklist" element={<UABlack />} />
-                            <Route path="*" element={<Navigate replace to="ip-whitelist" />} />`
-                        </Route>
-                        <Route path="statistics/*" element={<Statistics />}>
-                            <Route path="cdn-utilization" element={<CdnUtil />} />
+                            <Route path="*" element={<Navigate replace to="ip-whitelist" />} />` */}
+              </Route>
+              <Route path="statistics/*" element={<Statistics />}>
+                {/* <Route path="cdn-utilization" element={<CdnUtil />} />
                             <Route path="platforms/*" element={<StatPlatform />}>
                                 <Route path="availability" element={<PlatAvail />} />
                                 <Route path="response-time" element={<PlatResponse />} />
@@ -81,12 +94,12 @@ const ProjectRouter: FC = () => {
                                 <Route path="visit-source" element={<WebVisit />} />
                                 <Route path="*" element={<Navigate to="availability" replace />} />
                             </Route>
-                            <Route path="*" element={<Navigate to="web-performance" replace />} />
-                        </Route>
-                        <Route path="platform-management" element={<PlatMana />} />
-                        <Route path="cache" element={<Cache />}></Route>
-                        <Route path="site-configuration/*" element={<SiteConfig />} >
-                            <Route path="platform-setting/*" element={<PlatSet />} >
+                            <Route path="*" element={<Navigate to="web-performance" replace />} /> */}
+              </Route>
+              <Route path="platform-management" element={<PlatMana />} />
+              <Route path="cache" element={<Cache />}></Route>
+              <Route path="site-configuration/*" element={<SiteConfig />}>
+                {/* <Route path="platform-setting/*" element={<PlatSet />} >
                                 <Route path="source" element={<Source />} />
                                 <Route path="basic" element={<Basic />} />
                                 <Route path="ssl" element={<Ssl />} />
@@ -101,10 +114,13 @@ const ProjectRouter: FC = () => {
                                 <Route path="domain" element={<Domain />} />
                                 <Route path="*" element={<Navigate to="domain" replace />} />
                             </Route>
-                            <Route path="*" element={<Navigate to="dns" replace />} />
-                        </Route>
-                        <Route path="*" element={<Navigate to="site-configuration" replace />} />
-                    </Route> */}
+                            <Route path="*" element={<Navigate to="dns" replace />} /> */}
+              </Route>
+              <Route
+                path="*"
+                element={<Navigate to="site-configuration" replace />}
+              />
+            </Route>
             <Route path="*" element={<SiteList />}></Route>
           </Route>
           {/* <Route path="/information-inquiry/*" element={<InfoInquiry />}>

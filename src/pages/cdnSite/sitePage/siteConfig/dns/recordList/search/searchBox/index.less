@@ -1,0 +1,37 @@
+@mainColor: #203770;
+.search-box-bg {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  .search-box-container {
+    border: 1px solid #5881e9;
+    padding: 30px 30px 0 30px;
+    text-align: left;
+    overflow: hidden;
+    .ant-form-item-label {
+      margin-right: 20px;
+    }
+    .search-box-select-box {
+      .search-box-select-item {
+        display: inline-block;
+        width: 150px;
+        margin-right: 20px;
+      }
+    }
+    .search-box-button {
+      width: 80px;
+      background-color: @mainColor;
+      border: 0;
+    }
+  }
+  .search-tag {
+    text-align: left;
+    margin-top: 15px;
+    span {
+      background-color: #fff;
+    }
+    span:nth-child(1) {
+      margin-left: 15px;
+    }
+  }
+}

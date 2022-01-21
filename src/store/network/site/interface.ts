@@ -1,12 +1,11 @@
-
 export interface ISiteList {
-  number:number;
-  numberOfElements:number;
-  size:number;
-  totalElements:number;
-  totalPages:number;
-  sort:any;
-  content:any[];
+  number: number;
+  numberOfElements: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  sort: any;
+  content: any[];
 }
 export interface ISearchParams {
   keyword?: string;
@@ -16,16 +15,16 @@ export interface ISearchParams {
   name?: string;
   supplier?: string;
   type?: string;
-  channel?: 'reg' | 'sales'
+  channel?: "reg" | "sales";
   searchPage: {
-      desc?: number;
-      page: number;
-      pageSize: number;
-      sort?: string;
-  }
+    desc?: number;
+    page: number;
+    pageSize: number;
+    sort?: string;
+  };
 }
 export interface ISearchParamsSite extends ISearchParams {
   name?: string;
   health?: string;
-  customerUid?: string
+  customerUid?: string;
 }

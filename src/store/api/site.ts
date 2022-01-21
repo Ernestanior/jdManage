@@ -40,8 +40,7 @@ class SiteAPI {
   // };
 
   /**
-   * findUser
-   * 生成请求参数
+   * 条件查询site
    */
   FindSite = (data: ISearchParamsSite) => {
     const config: AxiosRequestConfig = {
@@ -53,6 +52,30 @@ class SiteAPI {
     return config;
   };
 
+  /**
+   * 查询所有site
+   */
+  FindSiteAll = () => {
+    const config: AxiosRequestConfig = {
+      url: "/site/all",
+      method: "get",
+    };
+    config.headers = {};
+    return config;
+  };
+
+  /**
+   * 查询所有site
+   */
+  GetSiteInfo = (uid: string) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/info",
+      method: "get",
+      params: { uid },
+    };
+    config.headers = {};
+    return config;
+  };
   /**
    * modifyUser
    * 生成请求参数

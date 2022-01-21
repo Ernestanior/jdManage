@@ -1,6 +1,5 @@
-
 import "./index.less";
-export const SiderList = [
+export const cdnSite = [
   {
     icon: "icon-a-Group2283",
     title: "控制台",
@@ -9,26 +8,26 @@ export const SiderList = [
   {
     icon: "icon-ic_tune_24px",
     title: "站点配置",
-    path: "",
+    path: "site-configuration",
   },
   {
     icon: "icon-fangwenkongzhicelve",
     title: "访问控制",
-    path: "",
+    path: "firewall",
   },
   {
     icon: "icon-a-Path6",
     title: "缓存",
-    path: "",
+    path: "cache",
   },
   {
     icon: "icon-ic_poll_24px",
     title: "数据统计",
-    path: "",
+    path: "statistics",
   },
   {
     icon: "icon-ic_view_module_24px",
     title: "平台管理",
-    path: "",
+    path: "platform-management",
   },
 ];

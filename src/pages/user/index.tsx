@@ -11,7 +11,7 @@ import WorkOrder from './workOrder';
 
 const { TabPane } = Tabs;
 const Index: FC = (): ReactElement => {
-  const navigate = useNavigate();
+  const navigator = useNavigate();
 
   const path: any = useLocation().state;
   const user = (path && path.user) || 1;
@@ -22,7 +22,7 @@ const Index: FC = (): ReactElement => {
       activeKey={index}
       type="card"
       onChange={(activeKey) =>
-        navigate("/user", { state: { user: activeKey } })
+        navigator("/user", { state: { user: activeKey } })
       }
     >
       <TabPane tab="个人中心" key="1">

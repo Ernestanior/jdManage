@@ -8,6 +8,7 @@ import { useSiteList } from "@/store/network/site";
 import CreateDrawer from "./createDrawer";
 import { useCustomerList } from "@/store/network/customer";
 import customerService from "@/store/network/customer/service";
+import { NavLink, useNavigate } from "react-router-dom";
 
 interface IData {
   number: number;
@@ -20,6 +21,7 @@ interface IData {
 }
 
 const Index: FC = (): ReactElement => {
+  const navigator = useNavigate();
   const initdata = {
     number: 1,
     numberOfElements: 1,
@@ -95,6 +97,7 @@ const Index: FC = (): ReactElement => {
         text: "查看", //修改
         event: (data: any) => {
           console.log(data);
+          navigator(`/cdn-site/${data.uid}`);
         },
       },
       {
@@ -150,6 +153,9 @@ const Index: FC = (): ReactElement => {
         title: "站点名称",
         dataIndex: "name",
         key: "name",
+        render: (name: any, item: any) => (
+          <NavLink to={`/cdn-site/${item.uid}`}>{name}</NavLink>
+        ),
       },
       {
         title: "状态",
