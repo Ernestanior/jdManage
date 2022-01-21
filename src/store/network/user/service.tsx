@@ -25,16 +25,7 @@ class User {
         }
         )
     }
-    findUserInfo() {
-        from(request(userApi.FindUserInfo()))
-        .subscribe(data => {
-            if (data) {
-                this.userInfo$.next(data)
-            }
-            console.log(data)
-        }
-        )
-    }
+
     // create(params: ICreateUserParams) {
     //     from(request(userApi.CreateUser({
     //         ...params

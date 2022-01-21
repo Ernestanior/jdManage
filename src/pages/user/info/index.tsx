@@ -4,8 +4,6 @@ import { Btn } from "@/components/button/index";
 import { Button, Form, Input, Table } from "antd";
 import "./index.less";
 import { Col, Row } from "antd";
-import { useNewUserInfo } from "@/store/network/user";
-import userService from "@/store/network/user/service";
 import request from "@/store/request";
 import { userApi } from "@/store/api";
 
@@ -52,7 +50,7 @@ const UserData = [
 ];
 export const Index: FC<UserInfoInterFace> = () => {
   
- useEffect(()=>userService.findUserInfo(),[])
+
 
 
   
