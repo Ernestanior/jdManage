@@ -1,7 +1,7 @@
-import React, { FC, ReactElement, useState } from "react";
+import { ReactElement, useState } from "react";
 import "./index.less";
 import { Btn } from "@/components/button";
-import { Pagination, Button } from "antd";
+import { Pagination } from "antd";
 import { PlusCircleOutlined, SettingFilled } from "@ant-design/icons";
 import Loading from "@/components/loading/context";
 interface IProps {

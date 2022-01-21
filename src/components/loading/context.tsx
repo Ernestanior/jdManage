@@ -13,7 +13,7 @@ const LoadContext: FC<IProps> = ({ display }) => {
     <div>
       {display ? (
         <Layout className="comp-load-context">
-          <Spin size="large" />
+          <Spin />
         </Layout>
       ) : (
         ""

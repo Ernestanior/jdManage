@@ -1,19 +1,8 @@
-import { from, Subject } from "rxjs";
 // import "./index.less";
-import { FC, useCallback, useEffect, useState } from "react";
-import {
-  Form,
-  Drawer,
-  Button,
-  notification,
-  Input,
-  Select,
-  Switch,
-  Checkbox,
-} from "antd";
+import { FC, useState } from "react";
+import { Form, Drawer, Input, Select, Switch } from "antd";
 import Tip from "@/components/tip";
 import { FormattedMessage } from "react-intl";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import IconFont, { tipIcon } from "@/components/icon";
 import { ICustomerList } from "@/store/network/customer/interface";
 import { Btn } from "@/components/button";

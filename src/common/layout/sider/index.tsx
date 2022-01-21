@@ -1,15 +1,23 @@
 import { FC, useState } from "react";
 import { Col, Layout, Row } from "antd";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import IconFont from "@/components/icon";
-import { SiderList } from "./config";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
+interface Props {
+  sideList: any[];
+}
 const AntSide = Layout.Sider;
-const Sider: FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
-  const [selected, setSelected] = useState<Number>(0);
+const Sider: FC<Props> = ({ sideList }) => {
+  const [collapsed, setCollapsed] = useState(true);
+  // const [selected, setSelected] = useState<Number>(0);
 
+  const currentPath = useLocation().pathname.split("/");
+  const navPath = currentPath[3] || "";
+  const parentPath = currentPath.slice(0, 3).join("/");
+  // console.log(currentPath);
+  // console.log(parentPath);
+  // console.log(navPath);
   return (
     <AntSide
       collapsible
@@ -20,18 +28,38 @@ const Sider: FC = () => {
       trigger={null}
     >
       <div className="edge-sider">
-        {SiderList.map((item, index) => {
+        {sideList.map((item, index) => {
+          if (!item.path) {
+            return (
+              <NavLink to={`/cdn-site`} className="edge-sider-item" key={index}>
+                <IconFont
+                  style={{ fontSize: 25 }}
+                  className={`sider-item-icon ${navPath ? "" : "icon-active"}`}
+                  type={item.icon}
+                />
+
+                {!collapsed && (
+                  <div
+                    className={`sider-item-title ${
+                      navPath ? "" : "title-active"
+                    }  `}
+                  >
+                    {item.title}
+                  </div>
+                )}
+              </NavLink>
+            );
+          }
           return (
             <NavLink
-              to={item.path}
+              to={`${parentPath}/${item.path}`}
               className="edge-sider-item"
               key={index}
-              onClick={() => setSelected(index)}
             >
               <IconFont
                 style={{ fontSize: 25 }}
                 className={`sider-item-icon ${
-                  selected === index ? "icon-active" : ""
+                  navPath === item.path ? "icon-active" : ""
                 }`}
                 type={item.icon}
               />
@@ -39,7 +67,7 @@ const Sider: FC = () => {
               {!collapsed && (
                 <div
                   className={`sider-item-title ${
-                    selected === index ? "title-active" : ""
+                    navPath === item.path ? "title-active" : ""
                   }  `}
                 >
                   {item.title}

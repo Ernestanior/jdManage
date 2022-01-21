@@ -86,12 +86,6 @@ interface IDeleteParams {
   id: number;
 }
 
-/** findUser的请求参数*/
-interface IFindUserParams {
-  keyWord: string; //user name
-  searchPage: ISearchPage;
-}
-
 export interface ISearchPage {
   desc?: number;
   page: number;
