@@ -9,6 +9,8 @@ import { ISearchPage, IUserList, ICreateUserParams } from "./interface";
  */
 class User {
     readonly userList$ = new BehaviorSubject<IUserList | null>(null);
+    readonly userInfo$ = new BehaviorSubject<any>(null);
+    
 
     findUser(keyWord: string, searchPage: ISearchPage) {
         from(request(userApi.FindUser({}, {
@@ -20,6 +22,16 @@ class User {
                 this.userList$.next(data)
             }
             console.log(data, 'user list')
+        }
+        )
+    }
+    findUserInfo() {
+        from(request(userApi.FindUserInfo()))
+        .subscribe(data => {
+            if (data) {
+                this.userInfo$.next(data)
+            }
+            console.log(data)
         }
         )
     }

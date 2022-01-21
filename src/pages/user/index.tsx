@@ -7,6 +7,7 @@ import Info from "./info";
 import Log from "./log";
 import ResetPwd from "./resetPwd";
 import Security from "./security";
+import WorkOrder from './workOrder';
 
 const { TabPane } = Tabs;
 const Index: FC = (): ReactElement => {
@@ -37,7 +38,7 @@ const Index: FC = (): ReactElement => {
         <ResetPwd />
       </TabPane>
       <TabPane tab="工单系统" key="5">
-        工单系统
+        <WorkOrder/>
       </TabPane>
       <TabPane tab="计费系统" key="6">
         计费系统
