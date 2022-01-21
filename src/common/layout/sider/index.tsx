@@ -9,70 +9,70 @@ const AntSide = Layout.Sider;
 const Sider: FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selected, setSelected] = useState<Number>(0);
-  const onCollapse = () => {
-    console.log(collapsed, "aaaa");
-    setCollapsed(!collapsed);
-  };
-  const onSelected = (index: Number) => {
-    setSelected(index);
-  };
 
   return (
     <AntSide
       collapsible
-      collapsedWidth={90}
+      collapsedWidth={81}
       width={200}
       collapsed={collapsed}
       theme="light"
       trigger={null}
     >
-      <div>
+      <div className="edge-sider">
         {SiderList.map((item, index) => {
           return (
-            <li
-              className="MenuItem"
+            <NavLink
+              to={item.path}
+              className="edge-sider-item"
               key={index}
-              onClick={() => onSelected(index)}
+              onClick={() => setSelected(index)}
             >
-              <NavLink to={item.path}>
-                <Row>
-                  <Col span={6} offset={2}>
-                    <div>
-                      <IconFont
-                      style={{fontSize:20}}
-                        className={
-                          selected === index ? "ItemIconFocus" : "ItemIcon"
-                        }
-                        type={item.icon}
-                      />
-                    </div>
-                  </Col>
-                  <Col span={12} offset={2}>
-                    <div
-                      className={
-                        collapsed
-                          ? "ItemTitleHide"
-                          : selected === index
-                          ? "ItemTitleFocus"
-                          : "ItemTitle"
-                      }
-                    >
-                      {item.title}
-                    </div>
-                  </Col>
-                </Row>
-              </NavLink>
-            </li>
+              <IconFont
+                style={{ fontSize: 25 }}
+                className={`sider-item-icon ${
+                  selected === index ? "icon-active" : ""
+                }`}
+                type={item.icon}
+              />
+
+              {!collapsed && (
+                <div
+                  className={`sider-item-title ${
+                    selected === index ? "title-active" : ""
+                  }  `}
+                >
+                  {item.title}
+                </div>
+              )}
+            </NavLink>
           );
         })}
-      </div>
-      
-      <div
-        style={collapsed ? { transform: "translateX(-130px)" } : {}}
-        className="CollapseBtn"
-        onClick={onCollapse}
-      >
-        {collapsed ? <RightOutlined style={{fontSize:18,animationName:"fadein",animationDuration:"1.5s"}}/> : <LeftOutlined style={{fontSize:18,animationName:"fadein",animationDuration:"1.5s"}} />}
+        <div
+          style={!collapsed ? { transform: "translateX(60px)" } : {}}
+          className="collapse-btn"
+          onClick={() => setCollapsed(!collapsed)}
+        >
+          {collapsed ? (
+            <RightOutlined
+              style={{
+                fontSize: 16,
+                color: "#444",
+                animationName: "fadein",
+                animationDuration: "1.5s",
+              }}
+            />
+          ) : (
+            <LeftOutlined
+              style={{
+                fontSize: 16,
+                color: "#444",
+                animationName: "fadein",
+                animationDuration: "1.5s",
+              }}
+            />
+          )}
+        </div>
       </div>
     </AntSide>
   );

@@ -1,71 +1,55 @@
-.MenuItem {
-  padding-top: 18px;
-  width: 200px;
-  list-style-type: none;
-  text-align: center;
+.edge-sider {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  .ItemIcon {
-    color: #888888;
-    height: 40px;
-    width: 40px;
-    line-height: 45px;
+  padding: 20px;
+  .edge-sider-item {
+    width: 100%;
+    display: flex;
     align-items: center;
-    text-align: center;
+    justify-content: flex-start;
+    margin-top: 20px;
+    .sider-item-icon {
+      color: #888888;
+      padding: 8px;
+    }
+    .icon-active {
+      color: #e97335;
+      border-radius: 50%;
+      background-image: radial-gradient(circle, #f6e6cf 50%, #fdf0ed 50%);
+    }
+    .sider-item-title {
+      height: 41px;
+      color: #0f324e;
+      font-size: 16px;
+      line-height: 41px;
+      margin-left: 15px;
+      animation-name: fadein;
+      animation-duration: 1s;
+    }
+    @keyframes fadein {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    .title-active {
+      color: #e97335;
+    }
   }
-  .ItemIconFocus {
-    height: 40px;
-    width: 40px;
-    color: #e97335;
+
+  .collapse-btn {
+    background-color: #f5f6fa;
+    color: pink;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    text-align: center;
-    line-height: 45px;
+    margin-top: 100px;
     border-radius: 50%;
-    background-image: radial-gradient(circle, #f6e6cf 50%, #fdf0ed 50%);
-  }
-  .ItemTitle {
-    height: 45px;
-    color: #0f324e;
-    font-size: 18px;
-    text-align: left;
-    line-height: 41px;
-    animation-name: fadein;
-    animation-duration: 1s;
-  }
-  .ItemTitleFocus {
-    height: 45px;
-    color: #e97335;
-    font-size: 18px;
-    text-align: left;
-    line-height: 41px;
-    animation-name: fadein;
-    animation-duration: 1s;
-  }
-  .ItemTitleHide {
-    visibility: hidden;
-    height: 45px;
-  }
-}
-
-.CollapseBtn {
-  left: 160px;
-  bottom: 20px;
-  width: 30px;
-  height: 30px;
-  align-items: center;
-  text-align: center;
-  position: absolute;
-  line-height: 33px;
-  background-color: #f5f6fa;
-  color: #888888;
-  border-radius: 50%;
-}
-
-@keyframes fadein {
-  from {
-    opacity: 0;
-    
-  }
-  to {
-    opacity: 1;
   }
 }

@@ -5,7 +5,7 @@ import React, { FC } from "react";
 // import useIntlDep from '@/common/intl/useIntlDep';
 
 export const IconFontP = createFromIconfontCN({
-  scriptUrl: ["//at.alicdn.com/t/font_1258000_q8l9ww6i439.js"],
+  scriptUrl: ["//at.alicdn.com/t/font_1258000_rhelkz537xi.js"],
   extraCommonProps: {
     style: {
       fontSize: 28,
