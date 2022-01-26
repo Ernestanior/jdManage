@@ -10,7 +10,7 @@ import { ISearchParamsSite, ICreateSite } from "../network/site/interface";
  */
 class SiteAPI {
   /**
-   * createUser
+   * CreateSite
    * 生成请求参数
    */
   CreateSite = (data: ICreateSite) => {
@@ -24,7 +24,7 @@ class SiteAPI {
   };
 
   /**
-   * createUser
+   * EditSite
    * 生成请求参数
    */
   EditSite = (data: any) => {
@@ -38,7 +38,7 @@ class SiteAPI {
   };
 
   /**
-   * delete
+   * DeleteSite
    * 生成请求参数
    */
   DeleteSite = (data: string[]) => {
@@ -51,7 +51,7 @@ class SiteAPI {
     return config;
   };
   /**
-   * enable
+   * EnableSite
    * 生成请求参数
    */
   EnableSite = (data: string[]) => {
@@ -64,7 +64,7 @@ class SiteAPI {
     return config;
   };
   /**
-   * delete
+   * DisableSite
    * 生成请求参数
    */
   DisableSite = (data: string[]) => {

@@ -39,24 +39,24 @@ class Site {
       }
     });
   }
-  createSite(data: ICreateSite) {
-    from(request(siteApi.CreateSite(data))).subscribe((data) => {
-      if (data) {
-        notification.success({
-          message: "Create Success",
-        });
-      }
-    });
-  }
-  deleteSite(data: string[]) {
-    from(request(siteApi.DeleteSite(data))).subscribe((data) => {
-      if (data) {
-        notification.success({
-          message: "Delete Success",
-        });
-      }
-    });
-  }
+  // createSite(data: ICreateSite) {
+  //   from(request(siteApi.CreateSite(data))).subscribe((data) => {
+  //     if (data) {
+  //       notification.success({
+  //         message: "Create Success",
+  //       });
+  //     }
+  //   });
+  // }
+  // deleteSite(data: string[]) {
+  //   from(request(siteApi.DeleteSite(data))).subscribe((data) => {
+  //     if (data) {
+  //       notification.success({
+  //         message: "Delete Success",
+  //       });
+  //     }
+  //   });
+  // }
 }
 
 const siteService = new Site();
