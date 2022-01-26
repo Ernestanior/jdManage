@@ -1,7 +1,8 @@
-import { Button, Drawer, Form, Input, Table } from "antd";
+import { Button, Col, Drawer, Form, Input, Table } from "antd";
 import React, { FC, ReactElement, useState } from "react";
 import "./index.less";
-import { DeleteFilled } from "@ant-design/icons";
+import IconFont from "@/components/icon";
+import { DeleteFilled, PlusOutlined } from "@ant-design/icons";
 interface IData {
   key: string;
   whiteIPs: string;
@@ -31,16 +32,22 @@ const Index: FC = (): ReactElement => {
       title: "白名单IP地址",
       dataIndex: "whiteIPs",
       key: "whiteIPs",
+      
     },
     {
       title: "操作",
       dataIndex: "action",
       key: "action",
       render: (_: any, record: { key: React.Key }) => (
-        <DeleteFilled
-          className="user-security-restriction-icon "
-          onClick={() => handleDelete(record.key)}
-        ></DeleteFilled>
+       
+        <div>
+          <IconFont
+            type="icon-shanchu"
+            style={{ fontSize: 17, color: "#FF8900" }}
+            onClick={() => handleDelete(record.key)}
+          ></IconFont>
+        </div>
+    
       ),
     },
   ];
@@ -49,15 +56,15 @@ const Index: FC = (): ReactElement => {
     setAdd(false);
   };
   return (
-    <div className="user-security-restriction-container">
-      <Button
-        type="primary"
-        className="user-security-btn"
-        onClick={() => setAdd(true)}
-      >
-        添加白名单
-      </Button>
-      <Table dataSource={data} columns={columns} />
+    <div className="restriction-Container">
+      <div className="restriction-AddBtn">
+        <Button type="primary" onClick={() => setAdd(true)}>
+          <PlusOutlined />
+          新增白名单
+        </Button>
+      </div>
+
+      <Table dataSource={data} columns={columns}  />
       <Drawer
         title="Add White List"
         placement="left"
@@ -70,11 +77,7 @@ const Index: FC = (): ReactElement => {
             <Input />
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 20, span: 4 }}>
-            <Button
-              htmlType="submit"
-              type="primary"
-              className="user-security-btn"
-            >
+            <Button htmlType="submit" type="primary">
               添加
             </Button>
           </Form.Item>

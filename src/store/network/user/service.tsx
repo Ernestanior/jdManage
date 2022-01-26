@@ -9,6 +9,8 @@ import { ISearchPage, IUserList, ICreateUserParams } from "./interface";
  */
 class User {
     readonly userList$ = new BehaviorSubject<IUserList | null>(null);
+    readonly userInfo$ = new BehaviorSubject<any>(null);
+    
 
     findUser(keyWord: string, searchPage: ISearchPage) {
         from(request(userApi.FindUser({}, {
@@ -23,6 +25,7 @@ class User {
         }
         )
     }
+
     // create(params: ICreateUserParams) {
     //     from(request(userApi.CreateUser({
     //         ...params

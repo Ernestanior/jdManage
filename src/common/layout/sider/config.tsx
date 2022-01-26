@@ -3,7 +3,7 @@ export const cdnSite = [
   {
     icon: "icon-a-Group2283",
     title: "控制台",
-    path: "",
+    path: "/",
   },
   {
     icon: "icon-ic_tune_24px",

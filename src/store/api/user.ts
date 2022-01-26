@@ -69,6 +69,16 @@ class UserAPI {
     config.headers = {};
     return config;
   };
+
+  FindUserInfo = () => {
+    const config: AxiosRequestConfig = {
+      url: "/account/view",
+      method: "get",
+    };
+    config.headers = {};
+    // console.log(config, 'user config')
+    return config;
+  };
 }
 export default UserAPI;
 
