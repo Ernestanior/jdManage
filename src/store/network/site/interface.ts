@@ -1,3 +1,13 @@
+export interface ICreateSite {
+  customerUid: string;
+  name: string;
+  remark?: string;
+  siteSuppliers: any;
+  sourceIps: string;
+  sourceScheme: "http" | "https";
+  webSocketEndbled: boolean;
+}
+
 export interface ISiteList {
   number: number;
   numberOfElements: number;

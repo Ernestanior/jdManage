@@ -8,11 +8,19 @@ import { supplierApi } from "@/store/api";
  */
 class Supplier {
   readonly supplierList$ = new BehaviorSubject<any | null>(null);
+  readonly siteSupplierList$ = new BehaviorSubject<any | null>(null);
 
-  findSupplier() {
-    from(request(supplierApi.FindSupplier())).subscribe((data) => {
+  findSupplier(uid: string) {
+    from(request(supplierApi.FindSupplier(uid))).subscribe((data) => {
       if (data) {
         this.supplierList$.next(data);
+      }
+    });
+  }
+  findSiteSupplier(uid: string) {
+    from(request(supplierApi.FindSiteSupplier(uid))).subscribe((data) => {
+      if (data) {
+        this.siteSupplierList$.next(data);
       }
     });
   }

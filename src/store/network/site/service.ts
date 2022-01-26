@@ -1,7 +1,8 @@
+import { notification } from "antd";
 import { BehaviorSubject, from } from "rxjs";
 import request from "@/store/request";
 import { siteApi } from "@/store/api";
-import { ISearchParamsSite, ISiteList } from "./interface";
+import { ICreateSite, ISearchParamsSite, ISiteList } from "./interface";
 
 /**
  * 用户相关功能
@@ -38,17 +39,24 @@ class Site {
       }
     });
   }
-  // create(params: ICreateUserParams) {
-  //     from(request(userApi.CreateUser({
-  //         ...params
-  //     }, {}))
-  //     ).subscribe(data => {
-  //         if (data) {
-  //             this.userList$.next(data)
-  //         }
-  //     }
-  //     )
-  // }
+  createSite(data: ICreateSite) {
+    from(request(siteApi.CreateSite(data))).subscribe((data) => {
+      if (data) {
+        notification.success({
+          message: "Create Success",
+        });
+      }
+    });
+  }
+  deleteSite(data: string[]) {
+    from(request(siteApi.DeleteSite(data))).subscribe((data) => {
+      if (data) {
+        notification.success({
+          message: "Delete Success",
+        });
+      }
+    });
+  }
 }
 
 const siteService = new Site();

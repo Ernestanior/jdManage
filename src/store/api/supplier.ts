@@ -5,11 +5,24 @@ class SupplierAPI {
    * findSupplier
    * 生成请求参数
    */
-  FindSupplier = () => {
+  FindSupplier = (customerUid: string) => {
     const config: AxiosRequestConfig = {
       url: "/supplier/list",
+      method: "get",
+      params: { type: "purchased", customerUid },
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * findSupplierBySite
+   * 生成请求参数
+   */
+  FindSiteSupplier = (uid: string) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/supplier/list",
       method: "post",
-      data: { uid: "c1846591-9205-11eb-af25-00163e02f99f" },
+      data: { uid },
     };
     config.headers = {};
     return config;

@@ -51,10 +51,11 @@ requestPlx.middleware_after.use(async (rep, next) => {
         message: rep.data.response,
         description: rep.data.message,
       });
-      accountService.logout();
-    } else {
-      rep.data = rep.data.result;
+      if (rep.data.response === "ERROR0001") {
+        accountService.logout();
+      }
     }
+    rep.data = rep.data.result;
   }
   loading.loading$.next(false);
   await next();
@@ -62,6 +63,8 @@ requestPlx.middleware_after.use(async (rep, next) => {
 
 async function request(config: AxiosRequestConfig) {
   const rep = await requestPlx.request(config);
+  // console.log(rep.data);
+
   return rep.data;
 }
 

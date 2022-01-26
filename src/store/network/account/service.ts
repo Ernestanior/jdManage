@@ -32,7 +32,7 @@ class Account {
     ).subscribe((data) => {
       if (data) {
         // token存储
-        console.log(data);
+        // console.log(data);
         saveToken(data.token);
         this.info$.next(data);
       }
