@@ -52,6 +52,7 @@ const Index: FC<userPassword> = () => {
           {resetPwdFormList.map((item, index) => {
             return (
               <Form.Item
+              key={index}
                 label={item.label}
                 name={item.name}
                 rules={[{ message: "Please input your password!" }]}
