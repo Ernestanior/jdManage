@@ -39,7 +39,7 @@ class Site {
       }
     });
   }
-<<<<<<< HEAD
+
   // create(params: ICreateUserParams) {
   //     from(request(userApi.CreateUser({
   //         ...params
@@ -48,14 +48,14 @@ class Site {
   //         if (data) {
   //             this..next(data)
   //         }
-=======
+
   // createSite(data: ICreateSite) {
   //   from(request(siteApi.CreateSite(data))).subscribe((data) => {
   //     if (data) {
   //       notification.success({
   //         message: "Create Success",
   //       });
->>>>>>> 4c9d6bb3edb409d8ed5ebdb4921c9b6e468cf1b4
+
   //     }
   //   });
   // }
