@@ -1,7 +1,10 @@
 import useBehaviorSubject from "@/hooks/useBehaviorSubject";
-import DnsService from "./service";
+import SupplierService from "./service";
 // import { IDomainList } from "./interface";
 
 export const useSupplierList = () => {
-  return useBehaviorSubject<any>(DnsService.supplierList$);
+  return useBehaviorSubject<any>(SupplierService.supplierList$);
+};
+export const useSiteSupplierList = () => {
+  return useBehaviorSubject<any>(SupplierService.siteSupplierList$);
 };

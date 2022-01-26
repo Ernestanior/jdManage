@@ -16,7 +16,6 @@ const Index: FC = (): ReactElement => {
     path && siteService.getSiteInfo(path);
   }, [path]);
   const siteInfo = useSiteInfo();
-  console.log(siteInfo);
 
   // 获取所有site
   useEffect(() => siteService.findSiteAll(), []);

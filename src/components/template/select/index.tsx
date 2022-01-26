@@ -34,7 +34,7 @@ const SelectP: FC<IProps & { value?: any }> = (props) => {
     if (props.config) {
       return props.config.idKey;
     }
-    return "id";
+    return "uid";
   }, [props]);
 
   const textKey = useMemo(() => {

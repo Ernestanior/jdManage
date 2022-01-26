@@ -1,5 +1,5 @@
 import "./index.less";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Checkbox, Col, Row } from "antd";
 
 const CheckGroup = Checkbox.Group;
@@ -9,17 +9,29 @@ interface IProps {
   //多选项集合
   optionList: string[];
   checkedOptions: (list: any) => void;
+  defaultList?: string[];
 }
 
 const CheckboxGroup: FC<IProps> = ({
   optionList,
   showCheckAll,
   checkedOptions,
+  defaultList,
 }) => {
   const [checkedList, setCheckedList] = useState<string[]>([]);
   const [indeterminate, setIndeterminate] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
 
+  useEffect(() => {
+    if (defaultList && defaultList.length) {
+      setCheckedList(defaultList);
+      setCheckAll(defaultList.length === optionList.length);
+      setIndeterminate(
+        !!defaultList.length && defaultList.length < optionList.length
+      );
+      checkedOptions(defaultList);
+    }
+  }, [defaultList]);
   const onChange = (list: any) => {
     setCheckedList(list);
     checkedOptions(list);
@@ -29,7 +41,7 @@ const CheckboxGroup: FC<IProps> = ({
 
   const onCheckAllChange = (e: any) => {
     setCheckedList(e.target.checked ? optionList : []);
-    checkedOptions(checkedList);
+    checkedOptions(e.target.checked ? optionList : []);
     setIndeterminate(false);
     setCheckAll(e.target.checked);
   };
@@ -46,18 +58,20 @@ const CheckboxGroup: FC<IProps> = ({
         </Checkbox>
       )}
       <Checkbox.Group
+        defaultValue={defaultList}
         value={checkedList}
         onChange={onChange}
         className="edge-checkbox-group"
       >
         <Row>
-          {optionList.map((item) => (
-            <Col span={8} key={item}>
-              <Checkbox value={item} style={{ marginBottom: "10px" }}>
-                {item}
-              </Checkbox>
-            </Col>
-          ))}
+          {optionList &&
+            optionList.map((item: any, index: number) => (
+              <Col span={12} key={index}>
+                <Checkbox value={item} style={{ marginBottom: "10px" }}>
+                  {JSON.parse(item).name}
+                </Checkbox>
+              </Col>
+            ))}
         </Row>
       </Checkbox.Group>
     </div>

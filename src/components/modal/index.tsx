@@ -10,9 +10,10 @@ export interface IProps {
   /** 模块内容，通过插槽以标签内容传入，组件通过prop.children接收 */
   content?: any;
   /** 是否显示modal */
-  visible:boolean;
-  onCancel:()=>void;
-  onOk:()=>void;
+  visible: boolean;
+  onCancel: () => void;
+  onOk: () => void;
+  footer?: boolean;
 }
 /** 弹窗模块 */
 export const EdgeModal: FC<IProps> = ({
@@ -21,20 +22,19 @@ export const EdgeModal: FC<IProps> = ({
   children,
   visible,
   onOk,
-  onCancel
+  onCancel,
+  footer,
 }): ReactElement => {
   return (
-    <div>
-      <Modal
-        width={modalWidth||700}
-        title={title}
-        visible={visible}
-        onOk={onOk}
-        onCancel={onCancel}
-        footer={false} 
-      >
-        {children}
-      </Modal>
-    </div>
+    <Modal
+      width={modalWidth || 700}
+      title={title}
+      visible={visible}
+      onOk={onOk}
+      onCancel={onCancel}
+      footer={footer}
+    >
+      {children}
+    </Modal>
   );
 };

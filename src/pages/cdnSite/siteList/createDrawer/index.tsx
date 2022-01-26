@@ -1,16 +1,24 @@
 // import "./index.less";
-import { FC, useState } from "react";
-import { Form, Drawer, Input, Select, Switch } from "antd";
+import { FC, useMemo, useState } from "react";
+import { Form, Drawer, Input, Select, Switch, notification } from "antd";
 import Tip from "@/components/tip";
 import { FormattedMessage } from "react-intl";
 import IconFont, { tipIcon } from "@/components/icon";
 import { ICustomerList } from "@/store/network/customer/interface";
 import { Btn } from "@/components/button";
 import CheckboxGroup from "@/components/checkboxGroup";
+import SupplierService from "@/store/network/supplier/service";
+import siteService from "@/store/network/site/service";
+import { useSupplierList } from "@/store/network/supplier";
+import Loading from "@/components/loading/context";
+import { useLoading } from "@/components/loading";
+import { from } from "rxjs";
+import request from "@/store/request";
+import { siteApi } from "@/store/api";
 interface IProps {
   title: string;
   visible: boolean;
-  customerList: ICustomerList | null;
+  cusList: any[];
   onClose: () => void;
 }
 enum Status {
@@ -18,47 +26,59 @@ enum Status {
   正常 = "正常",
 }
 
-const optionList = [
-  "GreyPanel",
-  "阿里云(全球加速)",
-  "阿里云(国内加速)",
-  "网速(国内加速)",
-  "华为云(全球加速)",
-  "腾讯云(全球加速)",
-  "华为云(国内加速)",
-  "Incapsula",
-  "测试NIGNCX",
-  "Amazon Cloudfront",
-];
-
 const formItemLayout = {
   labelCol: { span: 24 },
   wrapperCol: { span: 24 },
 };
 const { Option } = Select;
 
-const CreateDrawer: FC<IProps> = ({
-  title,
-  visible,
-  customerList,
-  onClose,
-}) => {
+const CreateDrawer: FC<IProps> = ({ title, visible, cusList, onClose }) => {
   const [checkedList, setCheckedList] = useState<string[]>([]);
 
   const onFinish = (value: any) => {
-    console.log({ ...value, ips: checkedList });
+    const submitData = {
+      ...value,
+      sourceIps: value.sourceIps.join(" "),
+      siteSuppliers: checkedList.map((item) => JSON.parse(item)),
+    };
+    // console.log(submitData);
+
+    from(request(siteApi.CreateSite(submitData))).subscribe((data) => {
+      if (data && JSON.stringify(data) !== "{}") {
+        notification.success({
+          message: "Create Success",
+        });
+        onClose();
+      }
+    });
   };
+  const supplierList = useSupplierList();
+  const optionList = useMemo(
+    () =>
+      (supplierList &&
+        supplierList.map((item: any) =>
+          JSON.stringify({
+            uid: item.customerSupplier.uid,
+            name: item.displayName,
+          })
+        )) ||
+      [],
+    [supplierList]
+  );
+  const loading = useLoading();
 
   return (
     <Drawer
-      title="新增站点"
+      title={title}
       width={520}
-      // onClose={onClose}
+      onClose={onClose}
       closable={false}
       visible={visible}
       bodyStyle={{ paddingBottom: 80 }}
       className="cdn-create-drawer"
     >
+      <Loading display={loading}></Loading>
+
       <Tip>
         123
         {/* <div className="note">
@@ -81,12 +101,16 @@ const CreateDrawer: FC<IProps> = ({
       </Tip>
       <Form
         onFinish={onFinish}
-        initialValues={{ protocol: "HTTPS", websocket: false }}
+        initialValues={{
+          webSocketEnabled: false,
+          remark: "",
+          sourceScheme: "HTTP",
+        }}
         requiredMark={false}
       >
         <Form.Item
           {...formItemLayout}
-          name="sitename"
+          name="name"
           label="站点名称"
           rules={[
             {
@@ -102,7 +126,7 @@ const CreateDrawer: FC<IProps> = ({
           <Input placeholder="请输入IP或IP网段，如123.123.123.123" />
         </Form.Item>
         <h3>源点设置</h3>
-        <Form.List name="ips">
+        <Form.List name="sourceIps" initialValue={[""]}>
           {(fields, { add, remove }) => (
             <>
               <Form.Item
@@ -128,50 +152,56 @@ const CreateDrawer: FC<IProps> = ({
                   </Btn>
                 </div>
               </Form.Item>
-              <Form.Item
-                rules={[
-                  {
-                    required: true,
-                    whitespace: true,
-                    message: "请输入",
-                  },
-                ]}
-              >
-                <Input style={{ width: "80%" }} />
-              </Form.Item>
-              {fields.map((field, index) => (
-                <Form.Item required={true} key={field.key}>
+
+              {fields.map((field, index) =>
+                index === 0 ? (
                   <Form.Item
                     {...field}
-                    validateTrigger={["onChange", "onBlur"]}
                     rules={[
                       {
                         required: true,
                         whitespace: true,
-                        message: "请输入或者删除该输入框",
+                        message: "请输入",
                       },
                     ]}
-                    noStyle
+                    key={field.key}
                   >
                     <Input style={{ width: "80%" }} />
                   </Form.Item>
-                  <IconFont
-                    onClick={() => remove(field.name)}
-                    style={{
-                      color: "#ef8f35",
-                      fontSize: "20px",
-                      marginLeft: "5px",
-                    }}
-                    type="icon-trash"
-                  />
-                </Form.Item>
-              ))}
+                ) : (
+                  <Form.Item required={true} key={field.key}>
+                    <Form.Item
+                      {...field}
+                      validateTrigger={["onChange", "onBlur"]}
+                      rules={[
+                        {
+                          required: true,
+                          whitespace: true,
+                          message: "请输入或者删除该输入框",
+                        },
+                      ]}
+                      noStyle
+                    >
+                      <Input style={{ width: "80%" }} />
+                    </Form.Item>
+                    <IconFont
+                      onClick={() => remove(field.name)}
+                      style={{
+                        color: "#ef8f35",
+                        fontSize: "20px",
+                        marginLeft: "5px",
+                      }}
+                      type="icon-trash"
+                    />
+                  </Form.Item>
+                )
+              )}
             </>
           )}
         </Form.List>
         <Form.Item
           {...formItemLayout}
-          name="protocol"
+          name="sourceScheme"
           label="回源方式"
           tooltip={{
             title: `回源方式仅支持系统默认HTTP回源端口为：80,    
@@ -184,18 +214,22 @@ const CreateDrawer: FC<IProps> = ({
             <Option value="HTTPS">HTTPS</Option>
           </Select>
         </Form.Item>
-        <Form.Item name="websocket" label="Websocket" valuePropName="checked">
+        <Form.Item
+          name="webSocketEnabled"
+          label="Websocket"
+          valuePropName="checked"
+        >
           <Switch
             checkedChildren="ON"
             unCheckedChildren="OFF"
             defaultChecked={false}
           />
         </Form.Item>
-        <Form.Item {...formItemLayout} name="customer" label="选择客户">
-          <Select>
-            {customerList &&
-              customerList.content.map((item) => (
-                <Option value={item.name} key={item.name}>
+        <Form.Item {...formItemLayout} name="customerUid" label="选择客户">
+          <Select onChange={(id) => SupplierService.findSupplier(id)}>
+            {cusList &&
+              cusList.map((item) => (
+                <Option value={item.uid} key={item.uid}>
                   {item.name}
                 </Option>
               ))}
@@ -203,10 +237,10 @@ const CreateDrawer: FC<IProps> = ({
         </Form.Item>
         <CheckboxGroup
           optionList={optionList}
-          showCheckAll={true}
+          showCheckAll={optionList && optionList.length >= 2}
           checkedOptions={(list: any) => setCheckedList(list)}
         ></CheckboxGroup>
-        <Form.Item labelCol={{ span: 24 }} name="note" label="备注">
+        <Form.Item labelCol={{ span: 24 }} name="remark" label="备注">
           <Input.TextArea />
         </Form.Item>
         <div

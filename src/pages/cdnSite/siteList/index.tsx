@@ -1,24 +1,28 @@
-import React, { FC, ReactElement, useEffect, useMemo, useState } from "react";
-// import Create from "./create";
-// import "./index.less";
+import { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import { Template } from "@/components/template";
 import useEvent from "@/common/hooks/useEvent";
 import siteService from "@/store/network/site/service";
 import { useSiteList } from "@/store/network/site";
 import CreateDrawer from "./createDrawer";
+import EditDrawer from "./editDrawer";
 import { useCustomerList } from "@/store/network/customer";
 import customerService from "@/store/network/customer/service";
 import { NavLink, useNavigate } from "react-router-dom";
+import { EdgeModal } from "@/components/modal";
+import { from } from "rxjs";
+import request from "@/store/request";
+import { siteApi } from "@/store/api";
+import { notification } from "antd";
 
-interface IData {
-  number: number;
-  size: number;
-  totalPages: number;
-  numberOfElements: number;
-  totalElements: number;
-  sort: any;
-  content: any[];
-}
+// interface IData {
+//   number: number;
+//   size: number;
+//   totalPages: number;
+//   numberOfElements: number;
+//   totalElements: number;
+//   sort: any;
+//   content: any[];
+// }
 
 const Index: FC = (): ReactElement => {
   const navigator = useNavigate();
@@ -34,81 +38,80 @@ const Index: FC = (): ReactElement => {
 
   const customerList = useCustomerList();
   useEffect(() => {
-    if (!customerList) {
+    if (!customerList || !customerList.content) {
       customerService.findCustomer({
         searchPage: { page: 1, pageSize: 99999 },
       });
     }
-  }, []);
+  }, [customerList]);
+  const cusList = useMemo(
+    () => (customerList && customerList.content) || [],
+    [customerList]
+  );
 
   const currData = useSiteList();
   // 表格数据
   const currdata = useMemo(() => {
     if (currData && currData.content) {
-      // return {...currData,
-      //   content:currData.content.map((item)=>{
-      //     return {...item,customer:item.customer.name}
-      //   })
-      // }
       return currData;
     }
   }, [currData]);
 
   // 表格内选中的数据的key集合
   const [selectedRowKeys, setSelectedKey] = useState<string[]>([]);
-  // const [currdata, setCurrData] = useState<IData>(currData||{
-  //   number: 0,
-  //   numberOfElements: 0,
-  //   size: 0,
-  //   totalElements: 0,
-  //   totalPages: 0,
-  //   sort:"",
-  //   content: [],
-  // });
+  const [editRow, setEditRow] = useState<string>("");
 
   const [createFlag, setCreateFlag] = useState(false);
-  // let token: string;
-  const [event$, sendMessage] = useEvent();
+  const [editFlag, setEditFlag] = useState(false);
+  const [deleteFlag, setDeleteFlag] = useState(false);
+  const [enableFlag, setEnableFlag] = useState(false);
+  const [disableFlag, setDisableFlag] = useState(false);
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: (selectedRowKeys: any) => {
-      setSelectedKey(selectedRowKeys);
-    },
+  const [event$, sendMessage] = useEvent();
+  const closeEvent = (
+    type: "create" | "edit" | "disable" | "delete" | "enable"
+  ) => {
+    if (type === "create") {
+      setCreateFlag(false);
+    }
+    if (type === "edit") {
+      setEditFlag(false);
+    }
+    if (type === "disable") {
+      setDisableFlag(false);
+    }
+    if (type === "enable") {
+      setEnableFlag(false);
+    }
+    if (type === "delete") {
+      setDeleteFlag(false);
+    }
+    sendMessage("reload");
   };
-  // const closeEvent = (type: "create" | "modify" | "delete" | "deleteBatch") => {
-  //   if (type === "create") {
-  //     setCreateFlag(false);
-  //   }
-  // if (type === "modify") {
-  //   setModifyFlag(false);
-  // }
-  // if (type === "delete") {
-  //   setDeleteFlag(false);
-  // }
-  // if (type === "deleteBatch") {
-  //   setDeleteBatchFlag(false);
-  // }
-  //   sendMessage("reload");
-  // };
   const TempConfig = {
     optList: [
       {
-        text: "查看", //修改
+        text: "配置",
         event: (data: any) => {
-          console.log(data);
           navigator(`/cdn-site/${data.uid}`);
+        },
+      },
+      {
+        text: "编辑",
+        event: (data: any) => {
+          setEditRow(data);
+          setEditFlag(true);
         },
       },
       {
         text: "删除",
         event: (data: any) => {
-          console.log(data);
+          setDeleteFlag(true);
+          setSelectedKey([data.uid]);
         },
       },
     ],
     onSearch: (params: any) => {
-      console.log(params);
       const { customerUid, health, status, name } = params.filters;
 
       siteService.findSite({
@@ -124,19 +127,22 @@ const Index: FC = (): ReactElement => {
       {
         text: "批量删除",
         onClick: (value: any) => {
-          console.log(value);
+          setDeleteFlag(true);
+          setSelectedKey(value);
         },
       },
       {
         text: "批量启用",
         onClick: (value: any) => {
-          console.log(value);
+          setEnableFlag(true);
+          setSelectedKey(value);
         },
       },
       {
         text: "批量禁用",
         onClick: (value: any) => {
-          console.log(value);
+          setDisableFlag(true);
+          setSelectedKey(value);
         },
       },
     ],
@@ -167,7 +173,7 @@ const Index: FC = (): ReactElement => {
         key: "customer.name",
         render: (e: any) => {
           // console.log(e);
-          return e.name;
+          return e.customer.name;
         },
       },
       {
@@ -192,20 +198,119 @@ const Index: FC = (): ReactElement => {
       <CreateDrawer
         title="新增站点"
         visible={createFlag}
-        onClose={() => setCreateFlag(false)}
-        customerList={customerList}
+        onClose={() => closeEvent("create")}
+        cusList={cusList}
+      />
+      <EditDrawer
+        title="修改站点"
+        visible={editFlag}
+        onClose={() => closeEvent("edit")}
+        editRow={editRow}
       />
       <Template
         searchList={[
-          { type: "input", text: "客戶名称", name: "customerUid" },
+          {
+            type: "select",
+            text: "客戶名称",
+            name: "customerUid",
+            data: cusList,
+          },
           { type: "input", text: "站点名称", name: "name" },
-          { type: "input", text: "启用状态", name: "status" },
-          { type: "input", text: "运行状态", name: "health" },
+          {
+            type: "select",
+            text: "启用状态",
+            name: "status",
+            data: ["enabled", "disabled"],
+          },
+          {
+            type: "select",
+            text: "运行状态",
+            name: "health",
+            data: [
+              { uid: "0", name: "正常" },
+              { uid: "-1", name: "故障" },
+            ],
+          },
         ]}
         primarySearch="name"
         event$={event$}
         {...TempConfig}
       />
+      <EdgeModal
+        visible={deleteFlag}
+        onOk={() => {
+          from(request(siteApi.DeleteSite(selectedRowKeys))).subscribe(
+            (data) => {
+              if (data.length) {
+                data.map((item: any) => {
+                  notification.error({
+                    message: "Delete Failed",
+                    description: `UID: ${item.uid} ${item.message}`,
+                  });
+                });
+              } else {
+                notification.success({
+                  message: "Delete Success",
+                });
+              }
+              closeEvent("delete");
+            }
+          );
+        }}
+        onCancel={() => setDeleteFlag(false)}
+      >
+        确定删除该站点?
+      </EdgeModal>
+      <EdgeModal
+        visible={enableFlag}
+        onOk={() => {
+          from(request(siteApi.EnableSite(selectedRowKeys))).subscribe(
+            (data) => {
+              if (data.length) {
+                data.map((item: any) => {
+                  notification.error({
+                    message: "Enable Failed",
+                    description: `UID: ${item.uid} ${item.message}`,
+                  });
+                });
+              } else {
+                notification.success({
+                  message: "Enable Success",
+                });
+              }
+              closeEvent("enable");
+            }
+          );
+        }}
+        onCancel={() => setDeleteFlag(false)}
+      >
+        确定启用该站点?
+      </EdgeModal>
+      <EdgeModal
+        visible={disableFlag}
+        onOk={() => {
+          from(request(siteApi.DisableSite(selectedRowKeys))).subscribe(
+            (data) => {
+              if (data.length) {
+                data.map((item: any) => {
+                  notification.error({
+                    message: "Disable Failed",
+                    description: `UID: ${item.uid} ${item.message}`,
+                  });
+                });
+              } else {
+                notification.success({
+                  message: "Disable Success",
+                });
+              }
+              closeEvent("disable");
+            }
+          );
+        }}
+        onCancel={() => setDeleteFlag(false)}
+      >
+        确定禁用该站点?
+      </EdgeModal>
     </>
   );
 };

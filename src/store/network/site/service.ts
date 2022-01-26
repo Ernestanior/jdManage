@@ -1,7 +1,8 @@
+import { notification } from "antd";
 import { BehaviorSubject, from } from "rxjs";
 import request from "@/store/request";
 import { siteApi } from "@/store/api";
-import { ISearchParamsSite, ISiteList } from "./interface";
+import { ICreateSite, ISearchParamsSite, ISiteList } from "./interface";
 
 /**
  * 用户相关功能
@@ -38,6 +39,7 @@ class Site {
       }
     });
   }
+<<<<<<< HEAD
   // create(params: ICreateUserParams) {
   //     from(request(userApi.CreateUser({
   //         ...params
@@ -46,8 +48,25 @@ class Site {
   //         if (data) {
   //             this..next(data)
   //         }
+=======
+  // createSite(data: ICreateSite) {
+  //   from(request(siteApi.CreateSite(data))).subscribe((data) => {
+  //     if (data) {
+  //       notification.success({
+  //         message: "Create Success",
+  //       });
+>>>>>>> 4c9d6bb3edb409d8ed5ebdb4921c9b6e468cf1b4
   //     }
-  //     )
+  //   });
+  // }
+  // deleteSite(data: string[]) {
+  //   from(request(siteApi.DeleteSite(data))).subscribe((data) => {
+  //     if (data) {
+  //       notification.success({
+  //         message: "Delete Success",
+  //       });
+  //     }
+  //   });
   // }
 }
 
