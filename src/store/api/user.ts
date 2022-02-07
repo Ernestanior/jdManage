@@ -9,6 +9,7 @@ import {} from "./common.interface";
  * @return 返回request的config
  */
 class UserAPI {
+
   /**
    * createUser
    * 生成请求参数
@@ -30,7 +31,7 @@ class UserAPI {
    */
   Delete = (params: IDeleteParams, data: {}) => {
     const config: AxiosRequestConfig = {
-      url: "/api/admin/user/delete",
+      url: "/admin/user/delete",
       method: "delete",
       params,
       data,
@@ -69,16 +70,43 @@ class UserAPI {
     config.headers = {};
     return config;
   };
-
-  FindUserInfo = () => {
+//UserInfo 
+  UserInfo = () => {
     const config: AxiosRequestConfig = {
       url: "/account/view",
       method: "get",
     };
     config.headers = {};
-    // console.log(config, 'user config')
+    console.log(config, 'userinfo config')
     return config;
   };
+
+  //
+  UserAPIWorklogCodeList = () =>{
+    const config: AxiosRequestConfig = {
+      url:"/log/code-list",
+      method:"get",
+   
+    };
+    config.headers={};
+    console.log(config,"worklogcode config");
+    return config;
+  };
+
+  UserAPIWorklogEventList = (params: any, data:any) =>{
+    const config: AxiosRequestConfig = {
+      url:"/log/event-list",
+      method:"post",
+      params,
+      data,
+   
+    };
+    config.headers={};
+    console.log(config,"workevenlog config");
+    return config;
+  }
+
+
 }
 export default UserAPI;
 
@@ -127,3 +155,5 @@ interface IModifyUserParams {
   newPwd: string;
   oldPwd: string;
 }
+
+

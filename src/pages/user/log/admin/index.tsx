@@ -1,44 +1,43 @@
 import { Divider, Table } from "antd";
-import React, { FC, ReactElement } from "react";
+import React, { FC, ReactElement, useEffect, useState } from "react";
 import "./index.less";
 import IconFont from "@/components/icon";
+import userService from "@/store/network/user/service";
+import { useCodeList, useEventList } from "@/store/network/user";
+import moment from "moment";
 
 const Index: FC = (): ReactElement => {
-  const temporaryData = [
-    {
-      key: "1",
-      function: "aaaa",
-      menu: "2",
-      cdn: "2",
-      user: "1",
-      time: "22",
-    },
-  ];
   const columns = [
     {
+      title: "key",
+      dataIndex: "eventId",
+      key: "eventId",
+    },
+    {
       title: "功能",
-      dataIndex: "function",
-      key: "function",
+      dataIndex: "eventType",
+      key: "eventType",
     },
     {
       title: "菜单",
-      dataIndex: "menu",
-      key: "menu",
+      dataIndex: "resourceType",
+      key: "resourceType",
     },
     {
       title: "站点/域名",
-      dataIndex: "cdn",
-      key: "cdn",
+      dataIndex: "resourceName",
+      key: "resourceName",
     },
     {
       title: "执行人",
-      dataIndex: "user",
-      key: "user",
+      dataIndex: "initiator",
+      key: "initiator",
     },
     {
       title: "执行时间",
-      dataIndex: "time",
-      key: "time",
+      dataIndex: "eventDate",
+      key: "eventDate",
+      render: (text: number) => moment(text).format(),
     },
     {
       title: "操作",
@@ -52,20 +51,68 @@ const Index: FC = (): ReactElement => {
             style={{ fontSize: 12 }}
             onClick={(_: any) => _}
           ></IconFont>
-          <Divider type='vertical' />
+          <Divider type="vertical" />
           <IconFont
             type="icon-shanchu"
             className="DeleteBtn"
-            style={{ fontSize: 17, color: "#FF8900"}}
+            style={{ fontSize: 17, color: "#FF8900" }}
             onClick={() => _}
           ></IconFont>
         </div>
       ),
     },
   ];
+  useEffect(() => userService.UserServiceWorkLogCodeList(), []);
+  const codelist = useCodeList();
+
+  useEffect(
+    () =>
+      userService.UserServiceWorkLogEventList({
+        eventType: "site.create",
+        keyWord: "",
+        searchPage: {
+          page: 1,
+          pageSize: 25,
+        },
+      }),
+    []
+  );
+  const eventList = useEventList();
+
+  useEffect(() => {
+    console.log(codelist, "codelist");
+  }, [codelist]);
+
+  useEffect(() => {
+    console.log(eventList, "eventlist");
+  }, [eventList]);
+
+  useEffect(() => {
+    const a = eventList?.map((item: any) => ({
+      key: item.eventId,
+      eventType: item.eventType,
+      resourceType: item.resourceType,
+      resourceName: item.resourceName,
+      initiator: item.initiator,
+      eventDate: item.eventDate,
+    }));
+    setfirst(a);
+  }, [eventList]);
+  const [first, setfirst] = useState<any | null>();
+
   return (
     <div>
-      <Table columns={columns} dataSource={temporaryData} />
+      <Table
+        columns={columns}
+  
+        dataSource={first}
+        expandable={{
+          expandedRowRender: () => <p style={{ margin: 0 }}>
+
+            aaaaa
+          </p>,
+        }}
+      />
     </div>
   );
 };

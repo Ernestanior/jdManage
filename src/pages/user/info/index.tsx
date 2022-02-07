@@ -1,61 +1,68 @@
 //New UI
 import React, { FC, useEffect, useState } from "react";
 import { Btn } from "@/components/button/index";
-import { Button, Form, Input, Table } from "antd";
+import { Form, Input, Select } from "antd";
 import "./index.less";
 import { Col, Row } from "antd";
-import request from "@/store/request";
-import { userApi } from "@/store/api";
+import { useNewUserInfo } from "@/store/network/user";
+import userService from "@/store/network/user/service";
+import moment from "moment";
+const { Option } = Select;
 
 interface UserInfoInterFace {
-  title?: string;
-  detail?: string;
+  label?: string;
   name?: string;
-  type?: string;
-  edditable?: boolean;
+  fieldType?: string;
 }
-
-const UserData = [
+const UserInfoForm = [
   {
-    title: "登录邮箱",
-    detail: "eddie@gmail.com",
+    label: "登入邮箱",
     name: "email",
+    fieldType: "Input",
     type: "email",
-    edditable: true,
   },
   {
-    title: "用户名称",
-    detail: "eddie",
-    name: "username",
-    edditable: true,
+    label: "用户名称",
+    name: "name",
+    fieldType: "Input",
+    type: "string",
   },
   {
-    title: "联系电话",
-    detail: "9991111",
-    name: "phoneNo",
-    edditable: true,
+    label: "联系电话",
+    name: "mobile",
+    fieldType: "Input",
+    type: "number",
   },
   {
-    title: "系统语言",
-    detail: "eddie",
-    name: "language",
-    edditable: true,
+    label: "系统语言",
+    name: "lang",
+    fieldType: "Select",
+    type: "string",
   },
   {
-    title: "注册时间",
-    detail: "2020",
-    name: "date",
-    edditable: false,
+    label: "注册时间",
+    name: "regTime",
+    fieldType: "Date",
   },
 ];
+
 export const Index: FC<UserInfoInterFace> = () => {
-  
-
-
-
-  
+  useEffect(() => userService.UserInfo(), []); //调接口
+  const rawInfo = useNewUserInfo(); // 订阅流
   const [form] = Form.useForm();
-  const [userDetail, setUserDetail] = useState<UserInfoInterFace[]>(UserData);
+
+  useEffect(() => {
+    form.setFieldsValue(rawInfo);
+    console.log(rawInfo);
+  }, [form, rawInfo]);
+
+  // useEffect(() => {
+  //   newUserInfoStream.subscribe((res) => {
+  //     console.log(res, 'res')
+  //     setInfo(res)
+  //   })
+  // }, [])
+
   const onFinish = (values: any) => {
     console.log("Success:", values);
     setOnSetting(!onSetting);
@@ -63,13 +70,13 @@ export const Index: FC<UserInfoInterFace> = () => {
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
-
   const [onSetting, setOnSetting] = useState<boolean>(false);
   return (
     <div className="userInfo-Container">
       <Form
         layout="horizontal"
         form={form}
+        initialValues={rawInfo}
         name="userInfo"
         preserve={true}
         onFinish={onFinish}
@@ -79,24 +86,44 @@ export const Index: FC<UserInfoInterFace> = () => {
         //   onFinish={}
         //   onFinishFailed={}
       >
-        {userDetail.map((item, index) => {
+        {UserInfoForm.map((item, index) => {
           return (
-           
-            
-            <Form.Item label={item.title} name={item.name}>
-           
-              <Input
-                type={`${item.type}`}
-                defaultValue={item.detail}
-                className={`${
-                  onSetting ? "" : "formInput-onSetting"
-                } formInput`}
-                readOnly={!onSetting ? true : !item.edditable}
-                bordered={onSetting ? item.edditable : false}
-              />
+            <Form.Item label={item.label} name={item.name} key={index}>
+              {item.fieldType === "Select" ? (
+                <Select
+                  showArrow={onSetting}
+                  style={
+                    !onSetting
+                      ? {
+                          cursor: "default",
+                          pointerEvents: "none",
+                          touchAction: "none",
+                        }
+                      : { cursor: "pointer" }
+                  }
+                  className={`form`}
+                  //disabled={!onSetting ? true : false}
+                  bordered={onSetting}
+                >
+                  <Option value="en_US">English</Option>
+                  <Option value="zh_TW">繁體中文</Option>
+                  <Option value="zh_CN">简体中文</Option>
+                </Select>
+              ) : item.fieldType === "Date" ? (
+                <div style={{ paddingLeft: 10 }} className={`form`}>
+                  {!rawInfo
+                    ? ""
+                    : moment(rawInfo?.regTime).format(`YYYY/MM/DD h:mm:ss`)}
+                </div>
+              ) : (
+                <Input
+                  style={onSetting ? { cursor: "text" } : { cursor: "default" }}
+                  className={`form`}
+                  readOnly={!onSetting}
+                  bordered={onSetting}
+                />
+              )}
             </Form.Item>
-       
-            
           );
         })}
 
@@ -214,7 +241,7 @@ export default Index;
 //                 {userData.time}
 //               </li>
 //               <li>
-//                 <Button htmlType="submit" className="user-info-btn">
+//                 <Button htmlfieldType="submit" className="user-info-btn">
 //                   Save
 //                 </Button>
 //                 <Button
