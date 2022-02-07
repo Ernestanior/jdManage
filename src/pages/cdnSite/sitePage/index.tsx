@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from "react";
+import { FC, ReactElement } from "react";
 import { Outlet } from "react-router-dom";
 const Index: FC = (): ReactElement => {
   return (

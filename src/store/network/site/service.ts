@@ -2,7 +2,12 @@ import { notification } from "antd";
 import { BehaviorSubject, from } from "rxjs";
 import request from "@/store/request";
 import { siteApi } from "@/store/api";
-import { ICreateSite, ISearchParamsSite, ISiteList } from "./interface";
+import {
+  ICreateSite,
+  ISearchParamsSite,
+  ISiteList,
+  ISslList,
+} from "./interface";
 
 /**
  * 用户相关功能
@@ -11,6 +16,7 @@ class Site {
   readonly siteList$ = new BehaviorSubject<ISiteList | null>(null);
   readonly siteAllList$ = new BehaviorSubject<any[] | null>(null);
   readonly siteInfo$ = new BehaviorSubject<any>(null);
+  readonly sslList$ = new BehaviorSubject<any>(null);
 
   /**
    * 条件查询site
@@ -36,6 +42,16 @@ class Site {
     from(request(siteApi.GetSiteInfo(uid))).subscribe((data) => {
       if (data) {
         this.siteInfo$.next(data);
+      }
+    });
+  }
+  /**
+   * 条件查询site
+   */
+  findSsl(uid: string, data: ISslList) {
+    from(request(siteApi.SslList(uid, data))).subscribe((data) => {
+      if (data) {
+        this.sslList$.next(data);
       }
     });
   }

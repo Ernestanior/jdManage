@@ -341,7 +341,7 @@ export interface IModule extends ICacheModule {
 }
 
 export interface ISelectItem {
-  id: string | number;
+  uid: string | number;
   [key: string]: any;
 }
 

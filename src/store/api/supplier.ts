@@ -1,4 +1,5 @@
 import { AxiosRequestConfig } from "axios";
+import { ISiteSupplierList } from "../network/supplier/interface";
 
 class SupplierAPI {
   /**
@@ -23,6 +24,15 @@ class SupplierAPI {
       url: "/site/supplier/list",
       method: "post",
       data: { uid },
+    };
+    config.headers = {};
+    return config;
+  };
+  FindSiteSupplierList = (data: ISiteSupplierList) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/supplier/list",
+      method: "post",
+      data,
     };
     config.headers = {};
     return config;

@@ -15,6 +15,7 @@ const Index: FC = (): ReactElement => {
 
   return (
     <Tabs
+      style={{ minWidth: "1200px" }}
       activeKey={index}
       type="card"
       onChange={(activeKey) =>

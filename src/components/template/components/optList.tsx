@@ -3,7 +3,11 @@ import { Btn } from "../button";
 import IconFont from "../icon";
 import React, { FC } from "react";
 import { IOperation, IColumnsTypeP, IOperationConfig } from "../interface";
-import { DownOutlined, MoreOutlined } from "@ant-design/icons";
+import {
+  DownOutlined,
+  EllipsisOutlined,
+  MoreOutlined,
+} from "@ant-design/icons";
 import { XOR } from "ts-xor";
 const isDateFormat = new RegExp(/^[0-9]{4}-[0-9]{2}$/g);
 /**
@@ -166,9 +170,7 @@ const OptListComp: FC<IOptProps> = (props) => {
   return (
     <Dropdown key="tb_opt" overlay={menus}>
       {/* <MoreOutlined style={{ transform: "rotate(90deg)", fontSize: "25px" }} /> */}
-      <Btn>
-        选项 <DownOutlined />
-      </Btn>
+      <EllipsisOutlined style={{ fontSize: "26px", fontWeight: "600" }} />
       {/* <IconFont
           type="iconsort-desc"
           style={{

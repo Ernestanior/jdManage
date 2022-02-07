@@ -36,6 +36,8 @@ interface ITemplateProps {
   // enableAutoLoadQueryParams?: boolean;
   /** 整个组件的标题 */
   title?: string;
+  /** 隐藏filter组件 */
+  closeFilter?: boolean;
   /** 搜索框条件 */
   primarySearch: string;
   /** 搜索组件列表，传入的每个对象将生成对应的input框 */
@@ -116,8 +118,8 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   //searchPage条件汇总
   const [searchPage, setSearchPage] = useState<ISearchPage>({
     desc: 1,
-    page: props.data.number || 1,
-    pageSize: props.data.size || 10,
+    page: (props.data && props.data.number) || 1,
+    pageSize: (props.data && props.data.size) || 10,
     sort: "",
   });
   //filter切换
@@ -128,10 +130,18 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   const tableData$ = useMemo(() => new Subject<any[]>(), []);
 
   const pagination = useMemo(() => {
+    if (props.data) {
+      return {
+        current: props.data.number + 1,
+        pageSize: props.data.size || 1,
+        total: props.data.totalElements,
+        hideOnSinglePage: true,
+      };
+    }
     return {
-      current: props.data.number + 1,
-      pageSize: props.data.size,
-      total: props.data.totalElements,
+      current: 1,
+      pageSize: 1,
+      total: 1,
       hideOnSinglePage: true,
     };
   }, [props]);
@@ -163,7 +173,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
       end: mul > _total ? `${total}` : `${mul}`,
       total: `${total}`,
       hide: _total <= 0,
-      size: props.data.size || 10,
+      size: (props.data && props.data.size) || 10,
     };
   }, [pagination]);
 
@@ -356,12 +366,12 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   }
 
   // 显示分页跳转
-  const showQuickJumper = useMemo(() => {
-    if (pagination.total && pagination.pageSize) {
-      return pagination.total > pagination.pageSize * 6;
-    }
-    return false;
-  }, [pagination]);
+  // const showQuickJumper = useMemo(() => {
+  //   if (pagination.total && pagination.pageSize) {
+  //     return pagination.total > pagination.pageSize * 6;
+  //   }
+  //   return false;
+  // }, [pagination]);
 
   useEffect(() => {
     if (props.event$) {
@@ -390,14 +400,15 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
             alignItems: "center",
           }}
         >
-          <Filter
-            searchList={props.searchList}
-            onSearch={(value: {}) => setSearchCondition(value)}
-            disable={showFilter}
-            primarySearch={props.primarySearch}
-          />
+          {!props.closeFilter && (
+            <Filter
+              searchList={props.searchList}
+              onSearch={(value: {}) => setSearchCondition(value)}
+              primarySearch={props.primarySearch}
+            />
+          )}
           <div>
-            {btns.length &&
+            {!!btns.length &&
               btns.map((btn, idx) => {
                 return (
                   <span style={{ marginRight: "10px" }} key={idx}>
@@ -414,7 +425,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
           pagination={false}
           showSorterTooltip={false}
           columns={tableRowConfig}
-          dataSource={props.data.content}
+          dataSource={props.data && props.data.content}
           // 实时刷新禁用loading图标
           loading={loading}
           rowKey={rowKey || "row_key"}

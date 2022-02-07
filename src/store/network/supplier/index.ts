@@ -8,3 +8,6 @@ export const useSupplierList = () => {
 export const useSiteSupplierList = () => {
   return useBehaviorSubject<any>(SupplierService.siteSupplierList$);
 };
+export const useSiteSupplierList$ = () => {
+  return useBehaviorSubject<any>(SupplierService.siteSupplierList$$);
+};

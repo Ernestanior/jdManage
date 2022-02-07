@@ -12,6 +12,8 @@ export interface ISearchDomain {
   customerUid?: string;
   status?: string;
   searchPage: ISearchPage;
+  siteUid?: string;
+  sslEnable?: number;
 }
 
 export interface ISearchPage {

@@ -29,6 +29,6 @@ class Dns {
   // }
 }
 
-const DnsService = new Dns();
+const dnsService = new Dns();
 
-export default DnsService;
+export default dnsService;

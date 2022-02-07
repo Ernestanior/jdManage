@@ -1,6 +1,7 @@
 import { BehaviorSubject, from } from "rxjs";
 import request from "@/store/request";
 import { supplierApi } from "@/store/api";
+import { ISiteSupplierList } from "./interface";
 // import { ISupplierList } from "./interface";
 
 /**
@@ -9,6 +10,7 @@ import { supplierApi } from "@/store/api";
 class Supplier {
   readonly supplierList$ = new BehaviorSubject<any | null>(null);
   readonly siteSupplierList$ = new BehaviorSubject<any | null>(null);
+  readonly siteSupplierList$$ = new BehaviorSubject<any | null>(null);
 
   findSupplier(uid: string) {
     from(request(supplierApi.FindSupplier(uid))).subscribe((data) => {
@@ -21,6 +23,13 @@ class Supplier {
     from(request(supplierApi.FindSiteSupplier(uid))).subscribe((data) => {
       if (data) {
         this.siteSupplierList$.next(data);
+      }
+    });
+  }
+  findSiteSupplierList(data: ISiteSupplierList) {
+    from(request(supplierApi.FindSiteSupplierList(data))).subscribe((data) => {
+      if (data) {
+        this.siteSupplierList$$.next(data);
       }
     });
   }
