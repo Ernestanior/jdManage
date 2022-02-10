@@ -33,14 +33,22 @@ requestPlx.middleware_before.use(async (config, next) => {
 });
 
 // analysis response status
-requestPlx.middleware_after.use(async (rep, next) => {
-  if (rep.status !== 200) {
+requestPlx.middleware_after.use(async (rep: any, next) => {
+  if (rep.status) {
+    if (rep.status !== 200) {
+      notification.error({
+        message: rep.status,
+        description: rep.statusText,
+      });
+      rep.data = null;
+    }
+  } else {
     notification.error({
-      message: rep.status,
-      description: rep.statusText,
+      message: rep.message,
     });
     rep.data = null;
   }
+
   await next();
 });
 
@@ -63,8 +71,6 @@ requestPlx.middleware_after.use(async (rep, next) => {
 
 async function request(config: AxiosRequestConfig) {
   const rep = await requestPlx.request(config);
-  // console.log(rep.data);
-
   return rep.data;
 }
 

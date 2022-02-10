@@ -39,7 +39,7 @@ interface ITemplateProps {
   /** 隐藏filter组件 */
   closeFilter?: boolean;
   /** 搜索框条件 */
-  primarySearch: string;
+  primarySearch?: string;
   /** 搜索组件列表，传入的每个对象将生成对应的input框 */
   searchList?: IRenderConfig[];
   /** 外部通过该函数得到template所有搜索条件，包括搜索条件汇总，searchPage参数 */

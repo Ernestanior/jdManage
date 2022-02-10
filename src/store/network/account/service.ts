@@ -19,17 +19,7 @@ class Account {
   }
   login(username: string, password: string) {
     // 登录成功之后将数据设置到info就可以触发登录信息的更新
-    from(
-      request(
-        authApi.Login(
-          {},
-          {
-            username,
-            password,
-          }
-        )
-      )
-    ).subscribe((data) => {
+    from(request(authApi.Login({ username, password }))).subscribe((data) => {
       if (data) {
         // token存储
         // console.log(data);

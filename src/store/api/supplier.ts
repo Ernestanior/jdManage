@@ -1,11 +1,11 @@
 import { AxiosRequestConfig } from "axios";
-import { ISiteSupplierList } from "../network/supplier/interface";
+import {
+  IChangeOption,
+  ISaveManagement,
+  ISiteSupplierList,
+} from "../network/supplier/interface";
 
 class SupplierAPI {
-  /**
-   * findSupplier
-   * 生成请求参数
-   */
   FindSupplier = (customerUid: string) => {
     const config: AxiosRequestConfig = {
       url: "/supplier/list",
@@ -15,10 +15,6 @@ class SupplierAPI {
     config.headers = {};
     return config;
   };
-  /**
-   * findSupplierBySite
-   * 生成请求参数
-   */
   FindSiteSupplier = (uid: string) => {
     const config: AxiosRequestConfig = {
       url: "/site/supplier/list",
@@ -31,6 +27,33 @@ class SupplierAPI {
   FindSiteSupplierList = (data: ISiteSupplierList) => {
     const config: AxiosRequestConfig = {
       url: "/site/supplier/list",
+      method: "post",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  FindManagementList = (uid: string) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/supplier/management/list",
+      method: "get",
+      params: { uid },
+    };
+    config.headers = {};
+    return config;
+  };
+  SaveManagement = (data: ISaveManagement) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/supplier/management/save",
+      method: "post",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  ChangeOption = (data: IChangeOption) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/supplier/change-option",
       method: "post",
       data,
     };

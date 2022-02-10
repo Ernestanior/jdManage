@@ -14,3 +14,6 @@ export const useSiteInfo = () => {
 export const useSslList = () => {
   return useBehaviorSubject<ISslList>(siteListService.sslList$);
 };
+export const useCNameList = () => {
+  return useBehaviorSubject<ISslList>(siteListService.cnameList$);
+};

@@ -87,7 +87,7 @@ const Index: FC = (): ReactElement => {
       {
         text: "配置",
         event: (data: any) => {
-          navigator(`/cdn-site/${data.uid}`);
+          // navigator(`/cdn-site/${data.uid}`);
         },
       },
       {

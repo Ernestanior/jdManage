@@ -84,3 +84,16 @@ export interface IAiSetting {
   tolerance: number;
   uid?: string;
 }
+export interface ICNameList {
+  keyword: string;
+  searchPage: ISearchPage;
+  uid: string;
+}
+export interface ISaveCName {
+  cnames: ICName[];
+  uid: string;
+}
+export interface ICName {
+  cname: string;
+  name: string;
+}

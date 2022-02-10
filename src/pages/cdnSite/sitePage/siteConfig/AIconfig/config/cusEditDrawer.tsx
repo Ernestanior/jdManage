@@ -1,6 +1,10 @@
-import { IAiSetting } from "@/store/network/site/interface";
-import { Col, Row, Select } from "antd";
-import React, { FC, useEffect, useState } from "react";
+// import "./index.less";
+import { FC, useEffect, useState } from "react";
+import { Drawer, Row, Select } from "antd";
+import { Btn } from "@/components/button";
+
+import { useLoading } from "@/components/loading";
+
 import {
   decisionWindowList,
   hourList,
@@ -9,67 +13,67 @@ import {
   speedList,
 } from "./data/area_tree";
 
-const { Option } = Select;
-
 interface IProps {
-  onSubmit: Function;
-  currAiSetting: IAiSetting;
-  cancelFlag: boolean;
-  testResult: any[];
+  visible: boolean;
+  onClose: () => void;
+  onOk: (e: any) => void;
+  editId: number;
+  currData: any;
 }
-const Auto: FC<IProps> = ({
-  onSubmit,
-  currAiSetting,
-  cancelFlag,
-  testResult,
+const { Option } = Select;
+const EditDrawer: FC<IProps> = ({
+  visible,
+  onClose,
+  onOk,
+  editId,
+  currData,
 }) => {
+  const loading = useLoading();
+  console.log(currData);
+  // console.log(editId);
   const [mode, setMode] = useState<string>("availability");
   const [adjustmentWindow, setAdjustmentWindow] = useState<number>(12);
   const [adjustmentThreshold, setAdjustmentThreshold] = useState<number>(1);
   const [tolerance, setTolerance] = useState<number>(50);
   const [decisionWindow, setDecisionWindow] = useState<number>(5);
+
   useEffect(() => {
-    if (currAiSetting) {
+    if (currData && editId !== -1) {
       setMode(
-        currAiSetting.mode === "availability" || currAiSetting.mode === "speed"
-          ? currAiSetting.mode
+        currData[editId].mode === "availability" ||
+          currData[editId].mode === "speed"
+          ? currData[editId].mode
           : "availability"
       );
-      setAdjustmentWindow(currAiSetting.adjustmentWindow || 12);
-      setAdjustmentThreshold(currAiSetting.adjustmentThreshold || 1);
-      setDecisionWindow(currAiSetting.decisionWindow || 5);
-      setTolerance(currAiSetting.tolerance || 50);
+      setAdjustmentWindow(currData[editId].adjustmentWindow || 12);
+      setAdjustmentThreshold(currData[editId].adjustmentThreshold || 1);
+      setDecisionWindow(currData[editId].decisionWindow || 5);
+      setTolerance(currData[editId].tolerance || 50);
     }
-  }, [currAiSetting, cancelFlag]);
-  useEffect(() => {
-    onSubmit({
-      ...currAiSetting,
-      mode,
+  }, [currData, editId, visible]);
+  const onConfirm = () => {
+    const newData = [...currData];
+    newData[editId] = {
+      ...newData[editId],
       adjustmentWindow,
       adjustmentThreshold,
       tolerance,
       decisionWindow,
       supplierUid: "",
-    });
-  }, [mode, adjustmentWindow, adjustmentThreshold, tolerance, decisionWindow]);
+    };
+    onOk(newData);
+    onClose();
+  };
   return (
-    <div className="ai-auto">
-      <Row align="middle" style={{ marginBottom: "20px" }}>
-        <Col span={4}>AI策略选择</Col>
-        <Col>
-          <Select
-            value={mode}
-            style={{ width: 120 }}
-            onChange={(mode: string) => {
-              setMode(mode);
-              setTolerance(50);
-            }}
-          >
-            <Option value="availability">availability</Option>
-            <Option value="speed">speed</Option>
-          </Select>
-        </Col>
-      </Row>
+    <Drawer
+      title={mode === "speed" ? "速度配置" : "可用率配置"}
+      width={720}
+      onClose={onClose}
+      closable={false}
+      visible={visible}
+      bodyStyle={{ paddingBottom: 80 }}
+      className="cdn-create-drawer"
+    >
       <Row align="middle" style={{ marginBottom: "20px" }}>
         1. 自动切换参数控制:
         <Select
@@ -151,16 +155,22 @@ const Auto: FC<IProps> = ({
         </Select>
         内的平均{mode === "speed" ? "响应速度" : "可用率"}进行判断。
       </Row>
-      {!!testResult.length && (
-        <Row align="middle" style={{ marginBottom: "20px" }}>
-          <Col span={4}>测试结果</Col>
-          <Col>
-            根据当前配置和数据测试，切换的平台服务为{JSON.stringify(testResult)}
-          </Col>
-        </Row>
-      )}
-    </div>
+      <div
+        style={{
+          width: "150px",
+          display: "flex",
+          marginTop: "50px",
+          justifyContent: "space-between",
+        }}
+      >
+        <Btn type="primary" onClick={onConfirm} boxShadow disabled={loading}>
+          确定
+        </Btn>
+        <Btn boxShadow onClick={() => onClose()} disabled={loading}>
+          取消
+        </Btn>
+      </div>
+    </Drawer>
   );
 };
-
-export default Auto;
+export default EditDrawer;

@@ -8,3 +8,15 @@ export interface ISearchPage {
   pageSize: number;
   sort?: string;
 }
+export interface IChangeOption {
+  option: string;
+  uid: string;
+}
+export interface ISaveManagement {
+  suppliers: ISupplier[];
+  uid: string;
+}
+interface ISupplier {
+  code: string;
+  isEnabled: boolean;
+}
