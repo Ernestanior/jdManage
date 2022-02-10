@@ -47,7 +47,7 @@ const UserInfoForm = [
 ];
 
 export const Index: FC<UserInfoInterFace> = () => {
-  useEffect(() => userService.UserInfo(), []); //调接口
+  useEffect(() => userService?.UserInfo(), []); //调接口
   const rawInfo = useNewUserInfo(); // 订阅流
   const [form] = Form.useForm();
 
@@ -65,6 +65,9 @@ export const Index: FC<UserInfoInterFace> = () => {
 
   const onFinish = (values: any) => {
     console.log("Success:", values);
+    console.log(rawInfo?.lang,values.lang);
+    
+    userService.UserChangeLanguage(rawInfo?.lang,values.lang)
     setOnSetting(!onSetting);
   };
   const onFinishFailed = (errorInfo: any) => {
@@ -83,8 +86,6 @@ export const Index: FC<UserInfoInterFace> = () => {
         onFinishFailed={onFinishFailed}
         labelCol={{ span: 2 }}
         wrapperCol={{ span: 5 }}
-        //   onFinish={}
-        //   onFinishFailed={}
       >
         {UserInfoForm.map((item, index) => {
           return (

@@ -55,17 +55,15 @@ requestPlx.middleware_after.use(async (rep, next) => {
         accountService.logout();
       }
     }
-    rep.data = rep.data.result;
+    //rep.data = rep.data.result;
   }
   loading.loading$.next(false);
   await next();
 });
 
-async function request(config: AxiosRequestConfig) {
+async function request(config: AxiosRequestConfig, additionParams?: boolean) {
   const rep = await requestPlx.request(config);
-  // console.log(rep.data);
-
-  return rep.data;
+  return additionParams ? rep.data : rep.data.result
 }
 
 export default request;
