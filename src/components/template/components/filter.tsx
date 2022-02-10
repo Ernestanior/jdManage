@@ -6,17 +6,11 @@ import { Btn } from "../button";
 import { EdgeModal } from "@/components/modal";
 interface IProps {
   searchList?: IRenderConfig[];
-  disable: boolean;
   onSearch: (value: {}) => void;
   primarySearch: string;
 }
 
-export const Filter = ({
-  searchList,
-  onSearch,
-  disable,
-  primarySearch,
-}: IProps) => {
+export const Filter = ({ searchList, onSearch, primarySearch }: IProps) => {
   const [showMal, setModal] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const onFinish = (value: any) => {
@@ -35,15 +29,17 @@ export const Filter = ({
           />
         }
         suffix={
-          <SlidersOutlined
-            style={{
-              backgroundColor: "#fde5ce",
-              padding: "5px 7px",
-              borderRadius: "10px",
-              color: "orange",
-            }}
-            onClick={() => setModal(true)}
-          />
+          searchList && (
+            <SlidersOutlined
+              style={{
+                backgroundColor: "#fde5ce",
+                padding: "5px 7px",
+                borderRadius: "10px",
+                color: "orange",
+              }}
+              onClick={() => setModal(true)}
+            />
+          )
         }
       ></Input>
       <EdgeModal

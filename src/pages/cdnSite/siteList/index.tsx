@@ -13,7 +13,6 @@ import { from } from "rxjs";
 import request from "@/store/request";
 import { siteApi } from "@/store/api";
 import { notification } from "antd";
-
 // interface IData {
 //   number: number;
 //   size: number;
@@ -167,6 +166,12 @@ const Index: FC = (): ReactElement => {
         title: "状态",
         dataIndex: "status",
         key: "status",
+        render: (status: any) =>
+          status === "enabled" ? (
+            <div className={`${"status-box"} ${"status-normal"}`}>正常</div>
+          ) : (
+            <div className={`${"status-box"} ${"status-error"}`}>故障</div>
+          ),
       },
       {
         title: "客户",
@@ -194,7 +199,7 @@ const Index: FC = (): ReactElement => {
     ],
   };
   return (
-    <>
+    <div style={{ padding: "20px" }}>
       <CreateDrawer
         title="新增站点"
         visible={createFlag}
@@ -311,7 +316,7 @@ const Index: FC = (): ReactElement => {
       >
         确定禁用该站点?
       </EdgeModal>
-    </>
+    </div>
   );
 };
 

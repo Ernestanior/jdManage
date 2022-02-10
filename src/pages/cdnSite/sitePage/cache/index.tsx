@@ -1,10 +1,9 @@
 import { FC, ReactElement, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import CacheClear from "./clearModule";
-import CacheSetting from "./setModule";
+import CacheClear from "./cacheClear";
+import CacheSetting from "./cacheSetting";
 import { Tabs } from "antd";
-
 const { TabPane } = Tabs;
 const Index: FC = (): ReactElement => {
   const navigator = useNavigate();
@@ -19,10 +18,10 @@ const Index: FC = (): ReactElement => {
       }
     >
       <TabPane tab="缓存设置" key="1">
-        <CacheClear />
+        <CacheSetting />
       </TabPane>
       <TabPane tab="缓存清理" key="2">
-        <CacheSetting />
+        <CacheClear />
       </TabPane>
     </Tabs>
   );

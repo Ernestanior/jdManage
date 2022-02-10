@@ -1,7 +1,17 @@
+import { IAiSettingSave } from "./../network/site/interface";
 /*jshint -W069 */
 // tslint:disable
 import { AxiosRequestConfig } from "axios";
-import { ISearchParamsSite, ICreateSite } from "../network/site/interface";
+import {
+  ISearchParamsSite,
+  ICreateSite,
+  ISiteSource,
+  IWebsocketSave,
+  ICorsSave,
+  ISslList,
+  IAiList,
+  IAiLog,
+} from "../network/site/interface";
 
 /**
  * @class UserAPI
@@ -109,6 +119,165 @@ class SiteAPI {
       url: "/site/info",
       method: "get",
       params: { uid },
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * 源点查询
+   */
+  SourceList = (uid: string) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/source/list",
+      method: "post",
+      data: { searchPage: { page: 1, pageSize: 999 }, uid },
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * 更新源点
+   */
+  SourceUpdate = (data: ISiteSource) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/source/update",
+      method: "post",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * websocket查询
+   */
+  WebsocketSetting = (uid: string) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/websocket/setting",
+      method: "get",
+      params: { uid },
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * websocket修改
+   */
+  WebsocketSave = (data: IWebsocketSave) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/websocket/save",
+      method: "post",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * 跨越功能查询
+   */
+  CorsSetting = (uid: string) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/cors/setting",
+      method: "get",
+      params: { uid },
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * cors修改
+   */
+  CorsSave = (data: ICorsSave) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/cors/save",
+      method: "post",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * SSL查询
+   */
+  SslList = (uid: string, data: ISslList) => {
+    const config: AxiosRequestConfig = {
+      url: "/ssl/site/cert-list",
+      method: "post",
+      params: { uid },
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * 禁用https
+   */
+  DisableHttps = (data: string[]) => {
+    const config: AxiosRequestConfig = {
+      url: "/ssl/site/disable-force-https",
+      method: "put",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * 禁用https
+   */
+  EnableHttps = (data: string[]) => {
+    const config: AxiosRequestConfig = {
+      url: "/ssl/site/enable-force-https",
+      method: "put",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * ai查询
+   */
+  AiList = (data: IAiList) => {
+    const config: AxiosRequestConfig = {
+      url: "/ai/list",
+      method: "post",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * ai设置保存
+   */
+  AiSave = (data: IAiSettingSave) => {
+    const config: AxiosRequestConfig = {
+      url: "/ai/save-setting",
+      method: "post",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+
+  /**
+   * ai设置保存
+   */
+  AiTest = (data: IAiSettingSave) => {
+    const config: AxiosRequestConfig = {
+      url: "/ai/test-setting",
+      method: "post",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+
+  /**
+   * ai日志
+   */
+  AiLog = (data: IAiLog) => {
+    const config: AxiosRequestConfig = {
+      url: "/ai/log/list",
+      method: "post",
+      data,
     };
     config.headers = {};
     return config;

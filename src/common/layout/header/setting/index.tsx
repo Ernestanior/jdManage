@@ -23,7 +23,7 @@ const HeaderPlx: FC = () => {
   }
   return (
     <span className="pop-over">
-      unknow@greypanel.com
+      -----------------
       <DownOutlined style={{ marginLeft: "30px" }} />
     </span>
   );

@@ -1,234 +1,318 @@
-import React, { FC, ReactElement } from "react";
-import { Table, Switch, Button } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-import Search from "./search";
-import "./index.less";
-// import { NavLink } from "react-router-dom";
+import { FC, ReactElement, useEffect, useMemo, useState } from "react";
+import { Template } from "@/components/template";
+import useEvent from "@/common/hooks/useEvent";
+import dnsService from "@/store/network/dns/service";
+// import CreateDrawer from "./createDrawer";
+// import EditDrawer from "./editDrawer";
+import { useCustomerList } from "@/store/network/customer";
+import customerService from "@/store/network/customer/service";
+import { useNavigate } from "react-router-dom";
+import { EdgeModal } from "@/components/modal";
+import { from } from "rxjs";
+import request from "@/store/request";
+import { siteApi } from "@/store/api";
+import { notification } from "antd";
+import { useDomainList } from "@/store/network/dns";
+import useUid from "@/hooks/useUid";
 
-interface IData {
-  key: string;
-  record: string;
-  domain: string;
-  cname: string;
-  status: string;
-  dnsStatus: string;
-  sslStatus: string;
-  action: string;
-}
-enum Status {
-  enable = "enable",
-  disable = "disable",
-}
-const columns = [
-  {
-    title: "记录",
-    dataIndex: "record",
-  },
-  {
-    title: "域名",
-    dataIndex: "domain",
-  },
-  {
-    title: "CNAME",
-    dataIndex: "cname",
-  },
-  {
-    title: "状态",
-    dataIndex: "status",
-  },
-  {
-    title: "DNS 状态",
-    dataIndex: "dnsStatus",
-  },
-  {
-    title: "SSL 状态",
-    dataIndex: "sslStatus",
-  },
-  {
-    title: "操作",
-    dataIndex: "action",
-  },
-];
-let source = [
-  {
-    key: "a1",
-    record: "p5926665.we.com",
-    domain: "bbbb",
-    cname: "AAAA",
-    status: Status.enable,
-    dnsStatus: "已指向",
-    sslStatus: "on",
-    action: "on",
-  },
-  {
-    key: "a2",
-    record: "p5926665.we.com",
-    domain: "cccc",
-    cname: "AAAA",
-    status: Status.enable,
-    dnsStatus: "已指向",
-    sslStatus: "off",
-    action: "on",
-  },
-  {
-    key: "a3",
-    record: "p5926665.we.com",
-    domain: "dddd",
-    cname: "AAAA",
-    status: Status.enable,
-    dnsStatus: "未指向",
-    sslStatus: "on",
-    action: "on",
-  },
-  {
-    key: "a4",
-    record: "aaa.com",
-    domain: "g9999-29-g",
-    cname: "AASS",
-    status: Status.disable,
-    dnsStatus: "未指向",
-    sslStatus: "off",
-    action: "off",
-  },
-  {
-    key: "a5",
-    record: "zzz.com",
-    domain: "g9999-29-g",
-    cname: "AVVVSS",
-    status: Status.enable,
-    dnsStatus: "未指向",
-    sslStatus: "on",
-    action: "off",
-  },
-  {
-    key: "a6",
-    record: "aaa.com",
-    domain: "g9999-29-g",
-    cname: "OOO",
-    status: Status.disable,
-    dnsStatus: "已指向",
-    sslStatus: "on",
-    action: "off",
-  },
-  {
-    key: "a4",
-    record: "fff.com",
-    domain: "g9999-29-g",
-    cname: "A",
-    status: Status.disable,
-    dnsStatus: "已指向",
-    sslStatus: "off",
-    action: "off",
-  },
-];
+// interface IData {
+//   number: number;
+//   size: number;
+//   totalPages: number;
+//   numberOfElements: number;
+//   totalElements: number;
+//   sort: any;
+//   content: any[];
+// }
 
 const Index: FC = (): ReactElement => {
-  // 选中数据的key集合列表
-  const [selectedRowKeys, setSelectedKey] = React.useState<string[]>([]);
-  // 数据保存
-  const [data, setData] = React.useState<IData[]>(source);
-  // let token: string;
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: (selectedRowKeys: any) => {
-      setSelectedKey(selectedRowKeys);
-    },
+  const navigator = useNavigate();
+
+  // 获取当前uid
+  const uid = useUid();
+  // const customerList = useCustomerList();
+  // useEffect(() => {
+  //   if (!customerList || !customerList.content) {
+  //     customerService.findCustomer({
+  //       searchPage: { page: 1, pageSize: 99999 },
+  //     });
+  //   }
+  // }, [customerList]);
+  // const cusList = useMemo(
+  //   () => (customerList && customerList.content) || [],
+  //   [customerList]
+  // );
+
+  const currData = useDomainList();
+  // 表格数据
+  const currdata = useMemo(() => {
+    if (currData && currData.content) {
+      return currData;
+    }
+  }, [currData]);
+
+  // 表格内选中的数据的key集合
+  const [selectedRowKeys, setSelectedKey] = useState<string[]>([]);
+  const [editRow, setEditRow] = useState<string>("");
+
+  const [createFlag, setCreateFlag] = useState(false);
+  const [editFlag, setEditFlag] = useState(false);
+  const [deleteFlag, setDeleteFlag] = useState(false);
+  const [enableFlag, setEnableFlag] = useState(false);
+  const [disableFlag, setDisableFlag] = useState(false);
+
+  const [event$, sendMessage] = useEvent();
+  const closeEvent = (
+    type: "create" | "edit" | "disable" | "delete" | "enable"
+  ) => {
+    if (type === "create") {
+      setCreateFlag(false);
+    }
+    if (type === "edit") {
+      setEditFlag(false);
+    }
+    if (type === "disable") {
+      setDisableFlag(false);
+    }
+    if (type === "enable") {
+      setEnableFlag(false);
+    }
+    if (type === "delete") {
+      setDeleteFlag(false);
+    }
+    sendMessage("reload");
   };
-  // React.useEffect(() => {
-  //   // 订阅record筛选条件
-  //   PubSub.subscribe("RecordSearch", (_: any, condition: any) => {
-  //     if (condition) {
-  //       let newSource: IData[] = source;
-  //       for (let i in condition) {
-  //         if (condition[i]) {
-  //           newSource = newSource.filter(
-  //             (item: any) => item[i].indexOf(condition[i]) !== -1
-  //           );
-  //         }
-  //       }
-  //       setData(newSource);
-  //     }
-  //   });
-  // }, []);
-  // 美化渲染数据
-  const newlist = data.map((item: IData) => {
-    return {
-      key: item.key,
-      record: item.record,
-      domain: item.domain,
-      cname: item.cname,
-      status: (
-        <span
-          className={`site-list-status ${
-            item.status === "enable" ? "well" : "error"
-          }`}
-        >
-          {item.status}
-        </span>
-      ),
-      dnsStatus: item.dnsStatus,
-      sslStatus: item.sslStatus,
-      action: (
-        <Switch
-          className="site-list-switch"
-          checkedChildren="开启"
-          unCheckedChildren="关闭"
-          defaultChecked={item.action === "on" ? true : false}
-        />
-      ),
-    };
-  });
-  // console.log(newlist);
+  const TempConfig = {
+    optList: [
+      {
+        text: "配置",
+        event: (data: any) => {
+          navigator(`/cdn-site/${data.uid}`);
+        },
+      },
+      {
+        text: "编辑",
+        event: (data: any) => {
+          setEditRow(data);
+          setEditFlag(true);
+        },
+      },
+      {
+        text: "删除",
+        event: (data: any) => {
+          setDeleteFlag(true);
+          setSelectedKey([data.uid]);
+        },
+      },
+    ],
+    onSearch: (params: any) => {
+      // const { customerUid, health, status, name } = params.filters;
+
+      dnsService.findDomain({
+        ...params.filters,
+        siteUid: uid || "",
+        searchPage: params.searchPage,
+      });
+    },
+    batchBtns: [
+      {
+        text: "删除记录",
+        onClick: (value: any) => {
+          setDeleteFlag(true);
+          setSelectedKey(value);
+        },
+      },
+      {
+        text: "启用SSL",
+        onClick: (value: any) => {
+          setEnableFlag(true);
+          setSelectedKey(value);
+        },
+      },
+      {
+        text: "禁用SSL",
+        onClick: (value: any) => {
+          setDisableFlag(true);
+          setSelectedKey(value);
+        },
+      },
+      {
+        text: "申请证书",
+        onClick: (value: any) => {
+          // setDisableFlag(true);
+          // setSelectedKey(value);
+        },
+      },
+    ],
+    normalBtns: [
+      {
+        text: "新增记录",
+        onClick: () => setCreateFlag(true),
+      },
+    ],
+    rowId: "uid",
+    data: currdata,
+    config: [
+      {
+        title: "记录",
+        dataIndex: "displayName",
+        key: "displayName",
+      },
+      {
+        title: "域名",
+        dataIndex: "masterName",
+        key: "masterName",
+      },
+      {
+        title: "CNAME",
+        dataIndex: "cname",
+        key: "cname",
+      },
+      {
+        title: "状态",
+        dataIndex: "status",
+        key: "status",
+        render: (status: number) => {
+          switch (status) {
+            case -1:
+              return (
+                <div className={`${"status-box"} ${"status-error"}`}>故障</div>
+              );
+            case 0:
+              return (
+                <div className={`${"status-box"} ${"status-normal"}`}>正常</div>
+              );
+            case 1:
+              return (
+                <div className={`${"status-box"} ${"status-processing"}`}>
+                  处理中
+                </div>
+              );
+            default:
+              return (
+                <div className={`${"status-box"} ${"status-normal"}`}>正常</div>
+              );
+          }
+        },
+      },
+      {
+        title: "DNS状态",
+        dataIndex: "dnsStatus",
+        key: "dnsStatus",
+        render: (status: number) => (status ? "已指向" : "未指向"),
+      },
+      {
+        title: "SSL状态",
+        dataIndex: "sslEnable",
+        key: "sslEnable",
+        render: (status: number) => (status === 1 ? "已启用" : "未启用"),
+      },
+    ],
+  };
   return (
     <>
-      <Search></Search>
-      <div className="site-list-container">
-        <Button type="primary" className="site-list-button">
-          <PlusOutlined />
-          新增记录
-        </Button>
-        <Button
-          type="primary"
-          disabled={selectedRowKeys.length === 0 ? true : false}
-          className="site-list-button"
-        >
-          刷新DNS
-        </Button>
-        <Button
-          type="primary"
-          disabled={selectedRowKeys.length === 0 ? true : false}
-          className="site-list-button"
-        >
-          删除记录
-        </Button>
-        <Button
-          type="primary"
-          disabled={selectedRowKeys.length === 0 ? true : false}
-          className="site-list-button"
-        >
-          启动SSL
-        </Button>{" "}
-        <Button
-          type="primary"
-          disabled={selectedRowKeys.length === 0 ? true : false}
-          className="site-list-button"
-        >
-          关闭SSL
-        </Button>{" "}
-        <Button
-          type="primary"
-          disabled={selectedRowKeys.length === 0 ? true : false}
-          className="site-list-button"
-        >
-          申请SSL
-        </Button>
-        <Table
-          rowSelection={rowSelection}
-          columns={columns}
-          dataSource={newlist}
-          pagination={{ pageSize: 6 }}
-        ></Table>
-      </div>
+      <Template
+        searchList={[
+          { type: "input", text: "记录", name: "displayName" },
+          { type: "input", text: "域名", name: "masterName" },
+          {
+            type: "select",
+            text: "DNS状态",
+            name: "dnsStatus",
+            data: [
+              { uid: "1", name: "已指向" },
+              { uid: "0", name: "未指向" },
+            ],
+          },
+          {
+            type: "select",
+            text: "SSL状态",
+            name: "sslEnable",
+            data: [
+              { uid: "1", name: "已启用" },
+              { uid: "0", name: "未启用" },
+            ],
+          },
+        ]}
+        primarySearch="displayName"
+        event$={event$}
+        {...TempConfig}
+      />
+      <EdgeModal
+        visible={deleteFlag}
+        onOk={() => {
+          from(request(siteApi.DeleteSite(selectedRowKeys))).subscribe(
+            (data) => {
+              if (data.length) {
+                data.map((item: any) => {
+                  notification.error({
+                    message: "Delete Failed",
+                    description: `UID: ${item.uid} ${item.message}`,
+                  });
+                });
+              } else {
+                notification.success({
+                  message: "Delete Success",
+                });
+              }
+              closeEvent("delete");
+            }
+          );
+        }}
+        onCancel={() => setDeleteFlag(false)}
+      >
+        确定删除该站点?
+      </EdgeModal>
+      <EdgeModal
+        visible={enableFlag}
+        onOk={() => {
+          from(request(siteApi.EnableSite(selectedRowKeys))).subscribe(
+            (data) => {
+              if (data.length) {
+                data.map((item: any) => {
+                  notification.error({
+                    message: "Enable Failed",
+                    description: `UID: ${item.uid} ${item.message}`,
+                  });
+                });
+              } else {
+                notification.success({
+                  message: "Enable Success",
+                });
+              }
+              closeEvent("enable");
+            }
+          );
+        }}
+        onCancel={() => setDeleteFlag(false)}
+      >
+        确定启用该站点?
+      </EdgeModal>
+      <EdgeModal
+        visible={disableFlag}
+        onOk={() => {
+          from(request(siteApi.DisableSite(selectedRowKeys))).subscribe(
+            (data) => {
+              if (data.length) {
+                data.map((item: any) => {
+                  notification.error({
+                    message: "Disable Failed",
+                    description: `UID: ${item.uid} ${item.message}`,
+                  });
+                });
+              } else {
+                notification.success({
+                  message: "Disable Success",
+                });
+              }
+              closeEvent("disable");
+            }
+          );
+        }}
+        onCancel={() => setDeleteFlag(false)}
+      >
+        确定禁用该站点?
+      </EdgeModal>
     </>
   );
 };

@@ -1,8 +1,40 @@
-.cdn-scroll{
+@normal: #379eff;
+@error: #ff6637;
+@processing: #ec8525;
+
+.cdn-scroll {
   height: 100%;
   overflow: auto;
 }
 
-.height-fill{
+.height-fill {
   height: 100%;
+}
+
+.status-box {
+  width: 60px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3px 10px;
+}
+.status-normal {
+  border: 1px solid @normal;
+  color: @normal;
+}
+.status-error {
+  border: 1px solid @error;
+  color: @error;
+}
+.status-processing {
+  border: 1px solid @processing;
+  color: @processing;
+}
+.ant-tabs-tabpane {
+  min-height: 580px;
+  position: relative;
+}
+.ant-select {
+  margin: 0 5px;
 }

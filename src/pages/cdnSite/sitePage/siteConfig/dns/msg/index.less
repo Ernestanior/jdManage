@@ -1,11 +1,17 @@
-@secondColor: #e97335;
+@mainColor: #ef8f35;
 .site-domain-msg-container {
-  background-color: #fcf5e1;
+  border: 1px solid @mainColor;
   text-align: left;
   padding: 15px 20px;
-  margin-bottom: 30px;
   h3:nth-child(1) {
-    color: @secondColor;
+    color: @mainColor;
     text-decoration: underline;
+    display: flex;
+    justify-content: space-between;
+  }
+  ul {
+    li {
+      list-style: none;
+    }
   }
 }
