@@ -1,4 +1,4 @@
-import mock from 'mockjs';
+
 import compose from "./compose";
 
 const middles = [

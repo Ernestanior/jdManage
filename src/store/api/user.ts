@@ -1,7 +1,7 @@
 /*jshint -W069 */
 // tslint:disable
 import { AxiosRequestConfig } from "axios";
-import {} from "./common.interface";
+import { useNewUserInfo } from "@/store/network/user";
 
 /**
  * @class UserAPI
@@ -9,7 +9,6 @@ import {} from "./common.interface";
  * @return 返回request的config
  */
 class UserAPI {
-
   /**
    * createUser
    * 生成请求参数
@@ -70,44 +69,118 @@ class UserAPI {
     config.headers = {};
     return config;
   };
-//UserInfo 
+  //UserInfo
   UserInfo = () => {
     const config: AxiosRequestConfig = {
       url: "/account/view",
       method: "get",
     };
     config.headers = {};
-    console.log(config, 'userinfo config')
     return config;
   };
-
-  //
-  UserAPIWorklogCodeList = () =>{
+  //Change Language
+  UserChangeLanguage = (lang:{},data:{lang: string})=>{
+    console.log(lang,data);
+    
     const config: AxiosRequestConfig = {
-      url:"/log/code-list",
-      method:"get",
-   
+      url:"/account/change-lang",
+      method:'POST',
+      params:{lang},
+      data:{lang:data},
     };
-    config.headers={};
-    console.log(config,"worklogcode config");
-    return config;
-  };
-
-  UserAPIWorklogEventList = (params: any, data:any) =>{
-    const config: AxiosRequestConfig = {
-      url:"/log/event-list",
-      method:"post",
-      params,
-      data,
-   
-    };
-    config.headers={};
-    console.log(config,"workevenlog config");
+    config.headers = {};
     return config;
   }
 
 
+  //Code List
+  UserAPIWorklogCodeList = () => {
+    const config: AxiosRequestConfig = {
+      url: "/log/code-list",
+      method: "get",
+    };
+    config.headers = {};
+    return config;
+  };
+  //Event List
+  UserAPIWorklogEventList = (params: any, data: GeteventList) => {
+    const config: AxiosRequestConfig = {
+      url: "/log/event-list",
+      method: "post",
+      params,
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  //Log Detail
+
+  UserAPILogDetail = (eventId: any) => {
+    console.log(eventId, "api eventID");
+
+    const config: AxiosRequestConfig = {
+      url: `/log/view?uid=${eventId.eventId}`,
+      method: "GET",
+    };
+    config.headers = {};
+    return config;
+  };
+
+  //Delete WorkLog
+  UserDeleteWorkLog = (eventId: string[] | null) => {
+    const config: AxiosRequestConfig = {
+      url: `/log/delete`,
+      method: "DELETE",
+      data: eventId,
+    };
+    config.headers = {};
+    return config;
+  };
+  //Change Password
+  UserChangePassword = (password: string[] | null) => {
+    const config: AxiosRequestConfig = {
+      url: `/account/change-pwd`,
+      method: "POST",
+      data: password,
+    };
+    config.headers = {};
+    return config;
+  };
+  //Account View
+
+  UserAccountView = () => {
+    const config: AxiosRequestConfig = {
+      url: `/account/view`,
+      method: "GET",
+    };
+    config.headers = {};
+    return config;
+  };
+
+  //Access Log
+  UserAccessLog = (data:ISearchPage) => {
+    const config: AxiosRequestConfig = {
+      url: `/access/list/access-log`,
+      method: "POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  //Access WhiteList
+  UserWhiteList = (data:ISearchPage) => {
+    const config: AxiosRequestConfig = {
+      url: `/access/list/access-whitelist`,
+      method: "POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+
 }
+
+
 export default UserAPI;
 
 /** createUser的请求参数*/
@@ -156,4 +229,36 @@ interface IModifyUserParams {
   oldPwd: string;
 }
 
+export interface eventList {
+  eventId: string;
+  eventType: string;
+  eventService: string;
+  eventDate: number;
+  resourceType: string;
+  resourceName: string;
+  initiator: string;
+  platform: string;
+  key?: number;
+}
+export interface worklogDetail {
+  eventId: string;
+  eventType: string;
+  eventService: string;
+  eventDate: number;
+  resourceType: string;
+  resourceName: string;
+  initiator: string;
+  oldData: string;
+  newData: string;
+  platform: string;
+}
 
+export interface GeteventList {
+  includesAll?: boolean;
+  eventType?: string;
+  eventService?: string;
+  keyword?: string;
+  endDate?: string;
+  startDate?: string;
+  searchPage: {};
+}

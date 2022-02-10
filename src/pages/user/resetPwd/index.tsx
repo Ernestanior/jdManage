@@ -1,9 +1,11 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect } from "react";
 import "./index.less";
 import Tip from "@/components/tip/index";
 import { TipInfo } from "./msg";
 import { Form, Input } from "antd";
 import { Btn } from "@/components/button/index";
+import userService from "@/store/network/user/service";
+import { useNewChangePassword } from "@/store/network/user";
 
 interface userPassword {
   userID?: string;
@@ -11,10 +13,11 @@ interface userPassword {
 }
 
 const Index: FC<userPassword> = () => {
+  const [form] = Form.useForm();
   const resetPwdFormList = [
     {
       label: "当前密码",
-      name: "currentPwd",
+      name: "oldPwd",
     },
     {
       label: "新密码",
@@ -26,10 +29,23 @@ const Index: FC<userPassword> = () => {
     },
   ];
 
-  const [password, setPassword] = useState<boolean>(true);
   const onFinish = (values: any) => {
-    console.log("Success:", values);
+    if (values.oldPwd && values.newPwd && values.comfirmPwd !== null) {
+      if (values.newPwd === values.confirmPwd) {
+        userService.UserChangePassword(values);
+      }
+      console.log("Comfirm Password and New Password must be same");
+    } else console.log("Cannot Be Empty");
   };
+
+  const changepassword = useNewChangePassword();
+
+  useEffect(() => {
+    if (changepassword?.response === "success") {
+      alert("success");
+      form.resetFields();
+    }
+  }, [changepassword]);
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
@@ -40,6 +56,7 @@ const Index: FC<userPassword> = () => {
       <Tip children={TipInfo}></Tip>
       <div className={`ResetPassword-Form`}>
         <Form
+          form={form}
           name="basic"
           labelCol={{ span: 3 }}
           labelAlign="left"
@@ -52,7 +69,7 @@ const Index: FC<userPassword> = () => {
           {resetPwdFormList.map((item, index) => {
             return (
               <Form.Item
-              key={index}
+                key={index}
                 label={item.label}
                 name={item.name}
                 rules={[{ message: "Please input your password!" }]}

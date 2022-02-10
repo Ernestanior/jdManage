@@ -1,74 +1,89 @@
 import IconFont from "@/components/icon";
-import { Table } from "antd";
+import { Pagination, Table } from "antd";
 import "./index.less";
-import React, { FC, ReactElement, useState } from "react";
-
-const temporaryData = [
-  {
-    key: 1,
-    loginStage: "ja1c",
-    ip: "122.44.1.0",
-    loginTime: "19:00",
-  },
-  {
-    key: 4,
-    loginStage: "ja2c",
-    ip: "122.44.1.0",
-    loginTime: "19:00",
-  },
-  {
-    key: 2,
-    loginStage: "ja3c",
-    ip: "122.44.1.0",
-    loginTime: "19:00",
-  },
-];
+import React, { FC, ReactElement, useEffect, useState } from "react";
+import userService from "@/store/network/user/service";
+import { useNewUserAccessLog } from "@/store/network/user";
 
 const Index: FC = (): ReactElement => {
   const columns = [
     {
       title: "登陆平台",
-      dataIndex: "loginStage",
-      key: "loginStage",
-    
+      dataIndex: "userAgent",
+      key: "userAgent",
     },
     {
       title: "IP地址",
-      dataIndex: "ip",
-      key: "ip",
-      
+      dataIndex: "remoteIp",
+      key: "remoteIp",
     },
     {
       title: "登陆时间",
-      dataIndex: "loginTime",
-      key: "loginTime",
-      
+      dataIndex: "accessTime",
+      key: "accessTime",
     },
     {
       title: "操作",
       dataIndex: "delete",
       key: "delete",
-      render: (_: any, record: { key: React.Key }) => (
+      render: () => (
         <div>
           <IconFont
             type="icon-shanchu"
-            style={{ fontSize: 17, color: "#FF8900"}}
-            onClick={() => handleDelete(record.key)}
+            style={{ fontSize: 17, color: "#FF8900" }}
           ></IconFont>
         </div>
       ),
     },
   ];
-  const [data, setData] = useState<any>(temporaryData);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(25);
+  const [Accesslog, setAccessLog] = useState<any>();
+  const [loading, setLoading] = useState<boolean>(false);
+  useEffect(() => {
+    userService.UserAccessLog({
+      searchPage: { desc: 1, page: 1, pageSize: 25 },
+    });
+  },[]);
 
-  const handleDelete = (key: any) => {
-    setData(data.filter((item: any) => item.key !== key));
+  const accessLog = useNewUserAccessLog();
+
+  useEffect(() => {
+    const a = accessLog?.content.map((item: any) => ({
+      ...item,
+      key: item.id,
+    }));
+    setAccessLog(a);
+    setLoading(false);
+  }, [accessLog]);
+
+  const hanldePagination = (page: number, pageSize: number) => {
+    setLoading(true);
+    setAccessLog([]);
+    userService?.UserAccessLog({
+      searchPage: { desc: 1, page: page, pageSize: pageSize },
+    });
   };
-
   return (
     <div>
-     
-      <Table dataSource={data} columns={columns} bordered={false} />
+      <Table
+        loading={loading}
+        dataSource={Accesslog}
+        columns={columns}
+        bordered={false}
+        pagination={false}
+      />
+      <Pagination
+        total={loading?"":accessLog?.totalElements}
+        showSizeChanger
+        showQuickJumper
+        showTotal={(total) => `Total ${total} items ${loading?"":accessLog?.totalPages} pages`}
+        pageSizeOptions={[25, 50, 75, 100]}
+        defaultPageSize={25}
+        onChange={(page, pageSize) => {
+          hanldePagination(page, pageSize);
+        }}
+      />
     </div>
   );
 };
