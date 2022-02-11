@@ -49,7 +49,6 @@ const Index: FC<IncludeAll> = (props: IncludeAll) => {
   const [filterSearch, setfilterSearch] = useState<GeteventList>();
   const [loading, setLoading] = useState<boolean>();
   const [hidden, setHidden] = useState<boolean>(true);
-  //const [role, setRole] = useState<boolean>(props);
   useEffect(() => userService?.UserServiceWorkLogCodeList(), []);
   useEffect(() => userService?.UserServiceLogDetail(eventID), [eventID]);
   //page load
@@ -123,7 +122,7 @@ const Index: FC<IncludeAll> = (props: IncludeAll) => {
     console.log("Failed:", errorInfo);
   };
 
-  const onSearch = (value: string| undefined) => {
+  const onSearch = (value: string | undefined) => {
     console.log(value);
     setSearchValues(value);
     setLoading(true);
@@ -171,18 +170,15 @@ const Index: FC<IncludeAll> = (props: IncludeAll) => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
         >
+
           <Form.Item name="keyword">
             <Input
-             onChange={(e) => onSearch(e.target.value)}
+              onChange={(e) => onSearch(e.target.value)}
               style={{ borderRadius: "15px", width: "250px", fontSize: "18px" }}
               //  onChange={(e) => setInputValue(e.currentTarget.value)}
               // onPressEnter={() => onSearch({ [primarySearch]: inputValue })}
               // onPressEnter={e=>onSearch({[primarySearch]:e.currentTarget.value })}
-              prefix={
-                <SearchOutlined
-                onClick={()=>onSearch(searchValues)}
-                />
-              }
+              prefix={<SearchOutlined onClick={() => onSearch(searchValues)} />}
               suffix={
                 <SlidersOutlined
                   style={{
@@ -261,7 +257,6 @@ const Index: FC<IncludeAll> = (props: IncludeAll) => {
               )}
             </Select>
           </Form.Item>
-
           <Form.Item
             label="开始日期"
             name="startDate"

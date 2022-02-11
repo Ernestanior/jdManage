@@ -2,6 +2,7 @@ import React, { FC, ReactElement, useState } from "react";
 import "./index.less";
 import { Tabs } from "antd";
 import Admin from "./admin";
+import NewTemplate from "./newTemplate";
 
 const { TabPane } = Tabs;
 const Index: FC = (): ReactElement => {
@@ -24,6 +25,9 @@ const Index: FC = (): ReactElement => {
 
       <TabPane tab="客户操作日志" key="2">
         <Admin role={role} />
+      </TabPane>
+      <TabPane tab="Template" key="3">
+     <NewTemplate/>
       </TabPane>
     </Tabs>
   );

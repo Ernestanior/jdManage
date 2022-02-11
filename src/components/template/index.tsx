@@ -45,7 +45,7 @@ interface ITemplateProps {
   /** 外部通过该函数得到template所有搜索条件，包括搜索条件汇总，searchPage参数 */
   onSearch: (value: any) => void;
   /** 列表column的配置集合 */
-  config: IColumnsTypeP<any>[];
+  config: IColumnsTypeP<any>[]|any;
   /** 操作列的操作汇总  */
   optList?: IOperationConfig;
   /** 每行数据的key */
@@ -264,7 +264,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   );
 
   const tableRowConfig: any = useMemo(() => {
-    const conf = props.config.map((cof) => {
+    const conf = props.config.map((cof: any) => {
       const _cof: any = { ...cof };
       if (!_cof.render) {
         _cof.render = ellopsisRender;
