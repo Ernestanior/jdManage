@@ -4,7 +4,7 @@ import { ICallback, ISelectItem, ISelectOptionConfig } from "../interface";
 // import { FormattedMessage } from "react-intl";
 import { upperCasePlx } from "../utils";
 interface IProps {
-  data: ISelectItem[] | string[] | number[];
+  data: ISelectItem[] | string[] | number[] | object[];
   size?: "small";
   onChange?: ICallback<any>;
   placeholder?: string;

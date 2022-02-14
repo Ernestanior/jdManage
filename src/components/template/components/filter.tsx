@@ -7,7 +7,7 @@ import { EdgeModal } from "@/components/modal";
 interface IProps {
   searchList?: IRenderConfig[];
   onSearch: (value: {}) => void;
-  primarySearch: string;
+  primarySearch?: string;
 }
 
 export const Filter = ({ searchList, onSearch, primarySearch }: IProps) => {
@@ -21,11 +21,15 @@ export const Filter = ({ searchList, onSearch, primarySearch }: IProps) => {
       <Input
         style={{ borderRadius: "15px", width: "250px", fontSize: "18px" }}
         onChange={(e) => setInputValue(e.currentTarget.value)}
-        onPressEnter={() => onSearch({ [primarySearch]: inputValue })}
+        onPressEnter={() =>
+          primarySearch && onSearch({ [primarySearch]: inputValue })
+        }
         // onPressEnter={e=>onSearch({[primarySearch]:e.currentTarget.value })}
         prefix={
           <SearchOutlined
-            onClick={() => onSearch({ [primarySearch]: inputValue })}
+            onClick={() =>
+              primarySearch && onSearch({ [primarySearch]: inputValue })
+            }
           />
         }
         suffix={
@@ -42,6 +46,7 @@ export const Filter = ({ searchList, onSearch, primarySearch }: IProps) => {
           )
         }
       ></Input>
+      
       <EdgeModal
         visible={showMal}
         onCancel={() => setModal(false)}

@@ -39,13 +39,13 @@ interface ITemplateProps {
   /** 隐藏filter组件 */
   closeFilter?: boolean;
   /** 搜索框条件 */
-  primarySearch: string;
+  primarySearch?: string;
   /** 搜索组件列表，传入的每个对象将生成对应的input框 */
   searchList?: IRenderConfig[];
   /** 外部通过该函数得到template所有搜索条件，包括搜索条件汇总，searchPage参数 */
   onSearch: (value: any) => void;
   /** 列表column的配置集合 */
-  config: IColumnsTypeP<any>[]|any;
+  config: IColumnsTypeP<any>[];
   /** 操作列的操作汇总  */
   optList?: IOperationConfig;
   /** 每行数据的key */
@@ -145,6 +145,9 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
       hideOnSinglePage: true,
     };
   }, [props]);
+
+
+  
   // const { current: initMoreFilters } = useRef(props.moreFilters);
   // const moreFilters = props.moreFilters;
 
@@ -227,7 +230,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
 
   useLayoutEffect(() => {
     const sub = params$.subscribe((data) => {
-      // console.log(data);
+       console.log(data, "aasdasd");
       props.onSearch(data);
     });
     return () => sub.unsubscribe();
@@ -264,7 +267,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   );
 
   const tableRowConfig: any = useMemo(() => {
-    const conf = props.config.map((cof: any) => {
+    const conf = props.config.map((cof) => {
       const _cof: any = { ...cof };
       if (!_cof.render) {
         _cof.render = ellopsisRender;
@@ -319,9 +322,11 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
       return {
         expandedRowRender: props.expandedRowRender,
         rowExpandable: props.rowExpandable,
+        onExpand: props.onExpand,
+        expandedRowKeys: props.expandedRowKeys,
       };
     }
-  }, [props.expandedRowRender, props.rowExpandable]);
+  }, [props.expandedRowRender, props.onExpand, props.rowExpandable]);
 
   // 普通操作和批量操作按钮
   const btns: any[] = [];

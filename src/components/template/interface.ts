@@ -498,8 +498,9 @@ export interface IExpandableModule {
   expandedRowRender?: (record: any) => React.ReactNode;
   /** 是否允许展开此行 */
   rowExpandable?: (record: any) => boolean;
+  onExpand?: (expanded: boolean, record: any) => void;
+  expandedRowKeys?: readonly React.Key[];
 }
-
 /**
  * 搜索条件过滤模块
  */
