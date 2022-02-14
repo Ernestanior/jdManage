@@ -22,3 +22,12 @@ export interface ISearchPage {
   pageSize: number;
   sort?: string;
 }
+
+export interface IDnsDomain {
+  searchPage: ISearchPage;
+  uid: string;
+}
+export interface IDnsRecord {
+  searchPage: ISearchPage;
+  domainUid: string;
+}

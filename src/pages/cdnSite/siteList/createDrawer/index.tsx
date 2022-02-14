@@ -70,7 +70,7 @@ const CreateDrawer: FC<IProps> = ({ title, visible, cusList, onClose }) => {
   return (
     <Drawer
       title={title}
-      width={520}
+      width={570}
       onClose={onClose}
       closable={false}
       visible={visible}
@@ -80,24 +80,20 @@ const CreateDrawer: FC<IProps> = ({ title, visible, cusList, onClose }) => {
       <Loading display={loading}></Loading>
 
       <Tip>
-        123
-        {/* <div className="note">
-          <FormattedMessage id="Note" />
-        </div>
-        <div>
-          <FormattedMessage id="addSiteNote" />
-        </div>
-        <ol className="note-list">
-          <li className="note-list-item">
-            <FormattedMessage id="addSiteList1" />
-          </li>
-          <li className="note-list-item">
-            <FormattedMessage id="addSiteList2" />
-          </li>
-          <li className="note-list-item">
-            <FormattedMessage id="addSiteList3" />
-          </li>
-        </ol> */}
+        <p>
+          新增站点配置将帮助并指导进行相应的站点基本配置。系统提供多源点下负载，用户可以根据源站点相关设置进行配置。
+        </p>
+        <p>
+          1.
+          选择正确配置的源点回源方式，系统默认HTTP回源端口为：80，HTTPS回源端口为443；
+        </p>
+        <p>
+          2. 平台为已购买的平台，如需要其他平台进行负载，请联系销售进行购买；
+        </p>
+        <p>
+          3.
+          新增站点配置完成并保存后，请前往DNS管理下菜单的二级菜单：记录管理中进行域名记录指向配置。
+        </p>
       </Tip>
       <Form
         onFinish={onFinish}

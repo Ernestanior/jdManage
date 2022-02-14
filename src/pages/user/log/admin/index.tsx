@@ -80,8 +80,8 @@ const Index: FC<IncludeAll> = (props: IncludeAll) => {
 
   //把得到的eventlist加多一个keyCol
   useEffect(() => {
-    if (worklog) {
-      let a = worklog?.content.map((item: eventList, index: number) => ({
+    if (worklog && worklog.content) {
+      let a = worklog.content.map((item: eventList, index: number) => ({
         ...item,
         key: index,
       }));
@@ -123,7 +123,7 @@ const Index: FC<IncludeAll> = (props: IncludeAll) => {
     console.log("Failed:", errorInfo);
   };
 
-  const onSearch = (value: string| undefined) => {
+  const onSearch = (value: string | undefined) => {
     console.log(value);
     setSearchValues(value);
     setLoading(true);
@@ -173,16 +173,12 @@ const Index: FC<IncludeAll> = (props: IncludeAll) => {
         >
           <Form.Item name="keyword">
             <Input
-             onChange={(e) => onSearch(e.target.value)}
+              onChange={(e) => onSearch(e.target.value)}
               style={{ borderRadius: "15px", width: "250px", fontSize: "18px" }}
               //  onChange={(e) => setInputValue(e.currentTarget.value)}
               // onPressEnter={() => onSearch({ [primarySearch]: inputValue })}
               // onPressEnter={e=>onSearch({[primarySearch]:e.currentTarget.value })}
-              prefix={
-                <SearchOutlined
-                onClick={()=>onSearch(searchValues)}
-                />
-              }
+              prefix={<SearchOutlined onClick={() => onSearch(searchValues)} />}
               suffix={
                 <SlidersOutlined
                   style={{

@@ -305,5 +305,14 @@ class SiteAPI {
     config.headers = {};
     return config;
   };
+  GetSuffix = (uid: string) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/suffix",
+      method: "get",
+      params: { uid },
+    };
+    config.headers = {};
+    return config;
+  };
 }
 export default SiteAPI;

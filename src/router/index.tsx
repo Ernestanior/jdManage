@@ -12,6 +12,17 @@ import SitePage from "@/pages/cdnSite/sitePage";
 import SiteConfig from "@/pages/cdnSite/sitePage/siteConfig";
 
 // import Domain from "./cdnSite/sitePage/siteConfig/dns/domain";
+import SysManage from "@/pages/sysMana";
+
+import CusManage from "@/pages/cusMana";
+
+import Platform from "@/pages/platMana";
+
+import DnsMana from "@/pages/dnsMana";
+
+import InfoInquiry from "@/pages/infoInquiry";
+
+import SslMana from "@/pages/sslMana";
 
 import Cache from "@/pages/cdnSite/sitePage/cache";
 import Firewall from "@/pages/cdnSite/sitePage/firewall";
@@ -60,16 +71,26 @@ const ProjectRouter: FC = () => {
             </Route>
             <Route path="*" element={<Navigate to="info" replace />} /> */}
           </Route>
-          {/* <Route path="/customer-management/*" element={<CusManage />}>
-                    <Route path="registered" element={<Registered />} />
+          <Route path="/system-management/*" element={<SysManage />}>
+            {/* <Route path="userlist/*" element={<UserList />}>
+              <Route path="admin" element={<UserAdmin />} />
+              <Route path="om" element={<Om />} />
+              <Route path="sale" element={<Agent />} />
+              <Route path="agent" element={<Sale />} />
+              <Route path="*" element={<Navigate to="admin" replace />} />
+            </Route>
+            <Route path="*" element={<Navigate to="userlist"></Navigate>} /> */}
+          </Route>
+          <Route path="/customer-management/*" element={<CusManage />}>
+            {/* <Route path="registered" element={<Registered />} />
                     <Route path="sales" element={<Sales />}></Route>
-                    <Route path="*" element={<Navigate to="registered" replace />} />
-                </Route> */}
-          {/* <Route path="/dns/*" element={<Dns />}>
-                    <Route path="record-management" element={<DnsRecord />}></Route>
+                    <Route path="*" element={<Navigate to="registered" replace />} /> */}
+          </Route>
+          <Route path="/dns-management/*" element={<DnsMana />}>
+            {/* <Route path="record-management" element={<DnsRecord />}></Route>
                     <Route path="domain-management" element={<DnsDomain />}></Route>
-                    <Route path="*" element={<Navigate to="domain-management" replace />} />
-                </Route> */}
+                    <Route path="*" element={<Navigate to="domain-management" replace />} /> */}
+          </Route>
           <Route path="/cdn-site/*" element={<CdnSite />}>
             <Route path=":sitename/*" element={<SitePage />}>
               <Route path="firewall/*" element={<Firewall />}>
@@ -122,35 +143,26 @@ const ProjectRouter: FC = () => {
             </Route>
             <Route path="*" element={<SiteList />}></Route>
           </Route>
-          {/* <Route path="/information-inquiry/*" element={<InfoInquiry />}>
-                    <Route path="cdn-query" element={<CdnQuery />} />
-                    <Route path="*" element={<Navigate to="cdn-query" replace />} />
-                </Route> */}
-          {/* <Route path="/platform/*" element={<Platform />}>
-                    <Route path="all" element={<All />} />
+          <Route path="/info-inquiry/*" element={<InfoInquiry />}>
+            {/* <Route path="cdn-query" element={<CdnQuery />} />
+                    <Route path="*" element={<Navigate to="cdn-query" replace />} /> */}
+          </Route>
+          <Route path="/platform-management/*" element={<Platform />}>
+            {/* <Route path="all" element={<All />} />
                     <Route path="china-icp" element={<ChinaICP />} />
                     <Route path="china" element={<China />} />
                     <Route path="global" element={<Global />} />
                     <Route path="global-ddos" element={<GlobalDDOS />} />
                     <Route path="custom-platform" element={<CusPlat />} />
-                    <Route path="*" element={<Navigate to="all" replace />} />
-                </Route> */}
-          {/* <Route path="/ssl-management/*" element={<SslManage />}>
-                    <Route path="client-certificate" element={<Client />} />
+                    <Route path="*" element={<Navigate to="all" replace />} /> */}
+          </Route>
+          <Route path="/ssl-management/*" element={<SslMana />}>
+            {/* <Route path="client-certificate" element={<Client />} />
                     <Route path="origin-certificate" element={<Origin />} />
                     <Route path="certificate-download" element={<Download />} />
-                    <Route path="*" element={<Navigate to="client-certificate" replace />} />
-                </Route> */}
-          {/* <Route path="/system-management/*" element={<SysManage />}>
-                    <Route path="userlist/*" element={<UserList />}>
-                        <Route path="admin" element={<UserAdmin />} />
-                        <Route path="om" element={<Om />} />
-                        <Route path="sale" element={<Agent />} />
-                        <Route path="agent" element={<Sale />} />
-                        <Route path="*" element={<Navigate to="admin" replace />} />
-                    </Route>
-                    <Route path="*" element={<Navigate to="userlist"></Navigate>} />
-                </Route> */}
+                    <Route path="*" element={<Navigate to="client-certificate" replace />} /> */}
+          </Route>
+
           {/* <Route path="/" element={<Navigate to="/home" replace />} /> */}
           <Route path="*" element={<Navigate to="/home" />} />
         </Routes>

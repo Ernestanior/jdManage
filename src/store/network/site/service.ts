@@ -19,6 +19,7 @@ class Site {
   readonly siteInfo$ = new BehaviorSubject<any>(null);
   readonly sslList$ = new BehaviorSubject<any>(null);
   readonly cnameList$ = new BehaviorSubject<any>(null);
+  readonly suffix$ = new BehaviorSubject<string | null>(null);
 
   /**
    * 条件查询site
@@ -61,6 +62,13 @@ class Site {
     from(request(siteApi.CNameList(data))).subscribe((data) => {
       if (data) {
         this.cnameList$.next(data);
+      }
+    });
+  }
+  getSuffix(uid: string) {
+    from(request(siteApi.GetSuffix(uid))).subscribe((data) => {
+      if (data) {
+        this.suffix$.next(data);
       }
     });
   }
