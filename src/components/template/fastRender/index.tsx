@@ -19,6 +19,7 @@ export const fastRender = (config: IRenderConfig, size?: any) => {
       "checkBox",
       "checkButton",
       "select",
+      "datepicker",
       "timer",
       "singleTimer",
       "select-async",
@@ -29,7 +30,7 @@ export const fastRender = (config: IRenderConfig, size?: any) => {
   let el = null;
   switch (config.type) {
     case "input":
-      el = <Input size={size} placeholder={config.placeholder}/>;
+      el = <Input size={size} placeholder={config.placeholder} />;
       break;
     case "select":
       el = (
@@ -56,6 +57,7 @@ export const fastRender = (config: IRenderConfig, size?: any) => {
     //     />
     //   );
     //   break;
+
     case "timer":
       el = <RangePicker showTime={config.showTime === true} size={size} />;
       break;
@@ -69,6 +71,9 @@ export const fastRender = (config: IRenderConfig, size?: any) => {
           rows={config.rows || 2}
         />
       );
+      break;
+    case "datepicker":
+      el = <DatePicker format="YYYY-MM-DD" />;
       break;
     default:
       el = <Input type="checkbox" />;
@@ -155,6 +160,13 @@ type IItem1 = XOR<IInput, ITextArea>;
 interface ICheckBox {
   type: "checkBox";
 }
+/**
+ * Datepicker
+ */
+interface IDatePicker {
+  type: "datepicker";
+}
+
 type IItem2 = XOR<IItem1, ICheckBox>;
 
 /**
@@ -170,7 +182,7 @@ type IItem3 = XOR<IItem2, ICheckButton>;
  */
 interface ISelectorSync {
   type: "select";
-  data: ISelectItem[] | string[];
+  data: ISelectItem[] | string[]| object[];
   // listCacheID: string;
   config?: ISelectOptionConfig;
 }
@@ -198,8 +210,8 @@ interface ISingleTimer {
 
 type IItem5 = XOR<IItem4, ITimer>;
 type Item6 = XOR<IItem5, ISingleTimer>;
-
+type IItem7 = XOR<Item6, IDatePicker>;
 /**
  * 高级搜索配置
  */
-export type IRenderConfig = Item6 & IBasic;
+export type IRenderConfig = IItem7 & IBasic;

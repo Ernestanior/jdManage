@@ -69,8 +69,7 @@ class User {
     });
   }
 
-  UserServiceWorkLogEventList(data: any) {
- 
+  UserServiceWorkLogEventList(data: any) {   
     from(request(userApi.UserAPIWorklogEventList({}, data))).subscribe(
       (data) => {
         if (data) {
@@ -81,8 +80,8 @@ class User {
     );
   }
 
-  UserServiceLogDetail(eventId: string | null) {
-    if (eventId !== null) {
+  UserServiceLogDetail(eventId: string | "") {
+    if (eventId !== "") {
       from(request(userApi.UserAPILogDetail({ eventId }))).subscribe((data) => {
         if (data) {
           this.userLogDetail$.next(data);

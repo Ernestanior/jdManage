@@ -145,6 +145,9 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
       hideOnSinglePage: true,
     };
   }, [props]);
+
+
+  
   // const { current: initMoreFilters } = useRef(props.moreFilters);
   // const moreFilters = props.moreFilters;
 
@@ -227,7 +230,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
 
   useLayoutEffect(() => {
     const sub = params$.subscribe((data) => {
-      // console.log(data);
+       console.log(data, "aasdasd");
       props.onSearch(data);
     });
     return () => sub.unsubscribe();
@@ -319,9 +322,11 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
       return {
         expandedRowRender: props.expandedRowRender,
         rowExpandable: props.rowExpandable,
+        onExpand: props.onExpand,
+        expandedRowKeys: props.expandedRowKeys,
       };
     }
-  }, [props.expandedRowRender, props.rowExpandable]);
+  }, [props.expandedRowRender, props.onExpand, props.rowExpandable]);
 
   // 普通操作和批量操作按钮
   const btns: any[] = [];

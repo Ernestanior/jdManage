@@ -46,6 +46,7 @@ export const Filter = ({ searchList, onSearch, primarySearch }: IProps) => {
           )
         }
       ></Input>
+      
       <EdgeModal
         visible={showMal}
         onCancel={() => setModal(false)}
