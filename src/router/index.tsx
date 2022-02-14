@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { HashRouter, Routes, Navigate, Route } from "react-router-dom";
 import { useAccountInfo } from "@/store/network/account";
 import Login from "@/pages/login";
@@ -12,8 +12,6 @@ import SitePage from "@/pages/cdnSite/sitePage";
 import SiteConfig from "@/pages/cdnSite/sitePage/siteConfig";
 
 // import Domain from "./cdnSite/sitePage/siteConfig/dns/domain";
-
-
 
 import Cache from "@/pages/cdnSite/sitePage/cache";
 import Firewall from "@/pages/cdnSite/sitePage/firewall";
@@ -32,11 +30,12 @@ import User from "@/pages/user";
 const ProjectRouter: FC = () => {
   const accountInfo = useAccountInfo();
   //   console.log(accountInfo);
-
+  useEffect(() => {
+    accountService.UserInfo();
+  }, []);
   if (!accountInfo) {
     return <Login />;
   }
-  accountService.UserInfo();
 
   return (
     <HashRouter>

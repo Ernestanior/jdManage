@@ -11,6 +11,7 @@ class Supplier {
   readonly supplierList$ = new BehaviorSubject<any | null>(null);
   readonly siteSupplierList$ = new BehaviorSubject<any | null>(null);
   readonly siteSupplierList$$ = new BehaviorSubject<any | null>(null);
+  readonly managementList$ = new BehaviorSubject<any | null>(null);
 
   findSupplier(uid: string) {
     from(request(supplierApi.FindSupplier(uid))).subscribe((data) => {
@@ -30,6 +31,13 @@ class Supplier {
     from(request(supplierApi.FindSiteSupplierList(data))).subscribe((data) => {
       if (data) {
         this.siteSupplierList$$.next(data);
+      }
+    });
+  }
+  findManagementList(uid: string) {
+    from(request(supplierApi.FindManagementList(uid))).subscribe((data) => {
+      if (data) {
+        this.managementList$.next(data);
       }
     });
   }

@@ -8,7 +8,7 @@ import moment from "moment";
 import Loading from "@/components/loading/context";
 import Auto from "./auto";
 import Manual from "./manual";
-import Customized from "./customized";
+import Customized from "./cus";
 import { useLoading } from "@/components/loading";
 interface IData {
   type: string;
@@ -27,15 +27,19 @@ const Index: FC = (): ReactElement => {
   const [testResult, setTestResult] = useState<any[]>([]);
   const loading = useLoading();
   const uid = useUid();
+
   const payload = {
     searchPage: { page: 1, pageSize: 5 },
     siteUid: uid,
     skipCurrentSetting: false,
   };
-  const currData: any = useMemo(
-    () => dataList.find((item: any) => item.createDate === currId),
-    [currId]
-  );
+  const currData: any = useMemo(() => {
+    return dataList.find((item: any) => item.createDate === currId);
+  }, [currId]);
+  useEffect(() => {
+    currData && setType(currData.type);
+  }, [currData]);
+
   const content = useMemo(() => {
     switch (type) {
       case "auto":
@@ -58,8 +62,8 @@ const Index: FC = (): ReactElement => {
       case "customized":
         return (
           <Customized
-            currAiSetting={currData && currData.aiSettings[0]}
-            onSubmit={(e: any) => console.log(e)}
+            currAiSetting={currData && currData.aiSettings}
+            onSubmit={(e: any) => setAiSettings(e)}
             cancelFlag={cancelFlag}
           />
         );
@@ -86,15 +90,27 @@ const Index: FC = (): ReactElement => {
   }, [refreshFlag]);
   useEffect(() => {
     if (dataList.length) {
-      if (
-        currId !== dataList[0].createDate ||
-        type !== currData.type ||
-        JSON.stringify({ ...aiSettings[0], uid: "" }) !==
-          JSON.stringify({ ...currData.aiSettings[0], uid: "" })
-      ) {
-        setEditFlag(true);
+      if (type === "customized") {
+        if (
+          currId !== dataList[0].createDate ||
+          type !== currData.type ||
+          JSON.stringify(aiSettings) !== JSON.stringify(currData.aiSettings)
+        ) {
+          setEditFlag(true);
+        } else {
+          setEditFlag(false);
+        }
       } else {
-        setEditFlag(false);
+        if (
+          currId !== dataList[0].createDate ||
+          type !== currData.type ||
+          JSON.stringify({ ...aiSettings[0], uid: "" }) !==
+            JSON.stringify({ ...currData.aiSettings[0], uid: "" })
+        ) {
+          setEditFlag(true);
+        } else {
+          setEditFlag(false);
+        }
       }
     }
   }, [currId, type, aiSettings]);
@@ -106,17 +122,22 @@ const Index: FC = (): ReactElement => {
     const payload = { type, uid, aiSettings };
     from(request(siteApi.AiTest(payload))).subscribe((data) => {
       setTestResult(data && data.decisions);
-      // setRefreshFlag(!refreshFlag);
     });
   };
   const onOk = () => {
-    const payload = { type, uid, aiSettings };
-    from(request(siteApi.AiSave(payload))).subscribe((data) => {
-      if (data instanceof Object) {
-        notification.success({ message: "AI Upload Success" });
-      }
-      setRefreshFlag(!refreshFlag);
-    });
+    const listOne = aiSettings.map((item: any) => item.lineId);
+    const listTwo = new Set(listOne);
+    if (listOne.length === listTwo.size) {
+      const payload = { type, uid, aiSettings };
+      from(request(siteApi.AiSave(payload))).subscribe((data) => {
+        if (data instanceof Object) {
+          notification.success({ message: "AI Upload Success" });
+        }
+        setRefreshFlag(!refreshFlag);
+      });
+    } else {
+      notification.error({ message: "区域选择不能重复" });
+    }
   };
   return (
     <div style={{ color: "#666" }}>

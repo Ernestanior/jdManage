@@ -1,4 +1,8 @@
-import { IAiSettingSave } from "./../network/site/interface";
+import {
+  IAiSettingSave,
+  ICNameList,
+  ISaveCName,
+} from "./../network/site/interface";
 /*jshint -W069 */
 // tslint:disable
 import { AxiosRequestConfig } from "axios";
@@ -276,6 +280,25 @@ class SiteAPI {
   AiLog = (data: IAiLog) => {
     const config: AxiosRequestConfig = {
       url: "/ai/log/list",
+      method: "post",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+
+  CNameList = (data: ICNameList) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/cname/list",
+      method: "post",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  SaveCName = (data: ISaveCName) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/cname/save",
       method: "post",
       data,
     };

@@ -13,12 +13,11 @@ class AuthAPI {
    * login
    * 生成请求参数
    */
-  Login = (params: ILoginParams, data: {}) => {
+  Login = (data: ILogin) => {
     const config: AxiosRequestConfig = {
       // url: '/api/auth/login',
       url: "/login",
       method: "post",
-      params,
       data,
     };
     config.headers = {};
@@ -73,7 +72,10 @@ class AuthAPI {
 export default AuthAPI;
 
 /** login的请求参数*/
-interface ILoginParams {}
+interface ILogin {
+  username: string;
+  password: string;
+}
 
 /** logout的请求参数*/
 interface ILogoutParams {}

@@ -3,6 +3,7 @@ import { BehaviorSubject, from } from "rxjs";
 import request from "@/store/request";
 import { siteApi } from "@/store/api";
 import {
+  ICNameList,
   ICreateSite,
   ISearchParamsSite,
   ISiteList,
@@ -17,6 +18,7 @@ class Site {
   readonly siteAllList$ = new BehaviorSubject<any[] | null>(null);
   readonly siteInfo$ = new BehaviorSubject<any>(null);
   readonly sslList$ = new BehaviorSubject<any>(null);
+  readonly cnameList$ = new BehaviorSubject<any>(null);
 
   /**
    * 条件查询site
@@ -52,6 +54,13 @@ class Site {
     from(request(siteApi.SslList(uid, data))).subscribe((data) => {
       if (data) {
         this.sslList$.next(data);
+      }
+    });
+  }
+  findCNameList(data: ICNameList) {
+    from(request(siteApi.CNameList(data))).subscribe((data) => {
+      if (data) {
+        this.cnameList$.next(data);
       }
     });
   }

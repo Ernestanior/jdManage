@@ -13,7 +13,7 @@ export interface IProps extends HTMLAttributes<HTMLButtonElement> {
   // backgroundColor?: string;
   // color?: string;
   size?: "large" | "middle" | "small";
-  // disabled?: boolean;
+  disabled?: boolean;
   children?: any;
   icon?: ReactElement;
   htmlType?: "submit" | "reset";
