@@ -545,3 +545,8 @@ export interface IMultSelectProps extends IFormComponent {
   layout?: "vertical" | "horizontal";
   tipId?: number;
 }
+
+export interface Role {
+  type: string;
+  group: number;
+}

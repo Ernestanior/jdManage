@@ -211,6 +211,7 @@ interface ISingleTimer {
 type IItem5 = XOR<IItem4, ITimer>;
 type Item6 = XOR<IItem5, ISingleTimer>;
 type IItem7 = XOR<Item6, IDatePicker>;
+
 /**
  * 高级搜索配置
  */
