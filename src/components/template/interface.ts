@@ -547,6 +547,5 @@ export interface IMultSelectProps extends IFormComponent {
 }
 
 export interface Role {
-  type: string;
-  group: number;
+  type: string| number;
 }
