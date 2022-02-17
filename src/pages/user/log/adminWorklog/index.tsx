@@ -8,7 +8,7 @@ import { Col, message, Popconfirm, Row } from "antd";
 import moment from "moment";
 import { FC, useEffect, useState } from "react";
 interface Role {
-  role: boolean;
+  type: number;
 }
 const Index: FC<Role> = (props: Role) => {
   const codelist = useCodeList();
@@ -18,69 +18,57 @@ const Index: FC<Role> = (props: Role) => {
   const [eventID, seteventID] = useState<string>("");
   const [eventType, setEventType] = useState<object[]>([]);
   const [eventService, setEventService] = useState<object[]>([]);
-
   const [params, setparams] = useState<any>();
   useEffect(() => userService?.UserServiceWorkLogCodeList(), []);
   useEffect(() => {
-    if (codelist) {
+    if (codelist !== undefined) {
       // if (codelist.eventType && codelist.eventService !== undefined) {
-        let eventType: object[] = [];
-        let eventService: object[] = [];
-        codelist.eventType && Object.entries(codelist?.eventType).map(
+      let eventType: object[] = [];
+      let eventService: object[] = [];
+      codelist?.eventType &&
+        Object.entries(codelist?.eventType).map(
           ([key, value]: any, index: number) => {
             eventType.push({ uid: key, name: value });
           }
         );
-        codelist.eventService && Object.entries(codelist?.eventService).map(
+      codelist?.eventService &&
+        Object.entries(codelist?.eventService).map(
           ([key, value]: any, index: number) => {
             eventService.push({ uid: key, name: value });
           }
         );
-        setEventType(eventType);
-        setEventService(eventService);
-     // }
+      setEventType(eventType);
+      setEventService(eventService);
+      // }
     }
   }, [codelist, codelist?.evetType, codelist?.eventService]);
-
   useEffect(() => userService?.UserServiceLogDetail(eventID), [eventID]);
-
   useEffect(() => {
-    console.log(params, "paramnsssds");
-  }, [params]);
+    if (props.type === 1) {
+      if(params){
+        if (params.filters !== undefined) {
+          userService?.UserServiceWorkLogEventList({
+            keyword: params.filters.keyword,
+            searchPage: params.searchPage,
 
-  useEffect(() => {
-    if (params !== undefined) {
-      userService?.UserServiceWorkLogEventList({
-        keyword: params.filters.keyword,
-        searchPage: params.searchPage,
-        includesAll: props.role,
-        eventType: params.filters.eventType,
-        eventService: params.filters.eventService,
-        startDate: params.filters.startDate,
-        endDate: params.filters.endDate,
-      });
-    } else {
-      userService?.UserServiceWorkLogEventList({
-        searchPage: { desc: 1, page: 1, pageSize: 10, sort: "" },
-        includesAll: props.role,
-      });
-    }
-  }, [params, props.role]);
+            eventType: params.filters.eventType,
+            eventService: params.filters.eventService,
+            startDate: params.filters.startDate,
+            endDate: params.filters.endDate,
+          });
+        } else {
+          userService?.UserServiceWorkLogEventList({
+            searchPage: { desc: 1, page: 1, pageSize: 10, sort: "" },
+          });
+        }
+      }
+      }
+      
+   
+  }, [params, props.type]);
 
   const TempConfig = {
-    // optList: [
-    //   {
-    //     text: "修改",
-    //     event: (data: any) => {},
-    //   },
-    //   {
-    //     text: "编辑",
-    //     event: (data: any) => {
-    //       // setEditRow(data);
-    //       // setEditFlag(true);
-    //     },
-    //   },
-    // ],
+
     onSearch: (params: any) => {
       setparams(params);
     },
