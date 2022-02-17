@@ -9,19 +9,19 @@ const Index: FC<Role> = (props: Role) => {
   const [params, setParams] = useState<any>();
   const customerList = useUserManage();
   useEffect(() => {
-    if (props.type === "operation") {
+    if (props.type === "agent") {
       if (params !== undefined) {
         if (params.filters !== undefined) {
           userManage?.CustomerList({
             keyword: params.filters.keyword,
             searchPage: params.searchPage,
-            type: "operation",
+            type: "agent",
             status: params.filters.status,
             name: params.filters.name,
           });
         } else {
           userManage?.CustomerList({
-            type: "operation",
+            type: "agent",
             searchPage: { desc: 1, page: 1, pageSize: 25, sort: "create_Date" },
           });
         }
@@ -40,6 +40,12 @@ const Index: FC<Role> = (props: Role) => {
       title: "状态",
       dataIndex: "status",
       key: "status",
+    },
+    {
+      title: "账户类型",
+      //??
+      dataIndex: "probationFlag",
+      key: "probationFlag",
     },
   ];
 

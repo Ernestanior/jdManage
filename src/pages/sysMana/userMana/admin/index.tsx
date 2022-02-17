@@ -9,28 +9,28 @@ const Index: FC<Role> = (props: Role) => {
   const [params, setParams] = useState<any>();
   const customerList = useUserManage();
   useEffect(() => {
-    if (props.type === "operation") {
+    if (props.type === "admin") {
       if (params !== undefined) {
         if (params.filters !== undefined) {
           userManage?.CustomerList({
             keyword: params.filters.keyword,
             searchPage: params.searchPage,
-            type: "operation",
+            type: "admin",
             status: params.filters.status,
             name: params.filters.name,
           });
         } else {
           userManage?.CustomerList({
-            type: "operation",
+            type: "admin",
             searchPage: { desc: 1, page: 1, pageSize: 25, sort: "create_Date" },
           });
         }
       }
     }
-   
-  }, [params, props.type]);
+  
+  }, [params,props.type]);
 
-  const config = [
+  let config = [
     {
       title: "使用者名称",
       dataIndex: "name",
@@ -92,19 +92,10 @@ const Index: FC<Role> = (props: Role) => {
           },
           {
             text: "状态",
-            name: "supplier",
+            name: "status",
             data: [
               { uid: 0, name: "未启用" },
               { uid: 1, name: "正常" },
-            ],
-            type: "select",
-          },
-          {
-            text: "账户类型",
-            name: "supplier",
-            data: [
-              { uid: 0, name: "正式" },
-              { uid: 1, name: "试用" },
             ],
             type: "select",
           },
