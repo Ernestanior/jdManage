@@ -3,39 +3,38 @@ import { useUserManage } from "@/store/network/userManage";
 import userManage from "@/store/network/userManage/service";
 import { FC, useEffect, useState } from "react";
 
-export interface Role {
-  type: string;
-  group?: number;
-  channel?: string;
-}
+interface props{
+    props: string
+  }
 
-const Index: FC<Role> = (props: Role) => {
+const Index: FC<props> = (props:props) => {
   const [params, setParams] = useState<any>();
   const customerList = useUserManage();
   useEffect(() => {
-    console.log(props);
-
+if (props.props === "2") {
     if (params) {
-      if (params.filters === undefined) {
-        userManage?.CustomerList({
-          channel: props.channel,
-          searchPage: { desc: 1, page: 1, pageSize: 25, sort: "create_date" },
-          type: props.type,
-        });
-      } else {
-        userManage?.CustomerList({
-          keyword: params.filters.keyword,
-          searchPage: params.searchPage,
-          type: props.type,
-          status: params.filters.status,
-          name: params.filters.name,
-          channel: props.channel,
-          email: params.filters.email,
-          probationFlag: params.filters.probationFlag,
-        });
+        if (params.filters === undefined) {
+          userManage?.CustomerList({
+            channel: "sales",
+            searchPage: { desc: 1, page: 1, pageSize: 25, sort: "create_date" },
+            type: "customer",
+          });
+        } else {
+          userManage?.CustomerList({
+            keyword: params.filters.keyword,
+            searchPage: params.searchPage,
+            type: "customer",
+            status: params.filters.status,
+            name: params.filters.name,
+            channel: "sales",
+            email: params.filters.email,
+            probationFlag: params.filters.probationFlag,
+          });
+        }
       }
-    }
-  }, [params, props.channel, props.type]);
+}
+   
+  }, [params,props]);
 
   const TempConfig = {
     batchBtns: [
