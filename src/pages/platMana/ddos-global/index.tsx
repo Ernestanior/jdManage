@@ -11,12 +11,11 @@ const Index: FC<Role> = (props: Role) => {
   const [option, setOption] = useState<Object[]>([]);
 
   useEffect(() => {
-    platformManage?.SupplierInfo(props.type);
+    if (props.type === "ddos-global") {
+      platformManage?.SupplierInfo("ddos-global");
+    }
   }, [props.type]);
-
   useEffect(() => {
-    console.log(supplierInfo);
-
     if (supplierInfo) {
       let platformOption: object[] = [];
       Object.entries(supplierInfo).map((item: any) => {
@@ -30,25 +29,28 @@ const Index: FC<Role> = (props: Role) => {
   }, [supplierInfo]);
 
   useEffect(() => {
-    if (params) {
-      if (params.filters !== undefined) {
-        platformManage?.SupplierAccountList({
-          keyword: params.filters.keyword,
-          searchPage: params.searchPage,
-          type: props.type,
-          supplier: params.filters.supplier,
-          name: params.filters.name,
-        });
-      } else {
-        platformManage?.SupplierAccountList({
-          searchPage: { desc: 0, page: 1, pageSize: 25, sort: "name" },
-          keyword: "",
-          name: "",
-          supplier: "",
-        });
+    if (props.type === "ddos-global") {
+      if (params) {
+        if (params.filters !== undefined) {
+          platformManage?.SupplierAccountList({
+            keyword: params.filters.keyword,
+            searchPage: params.searchPage,
+            type: props.type,
+            supplier: params.filters.supplier,
+            name: params.filters.name,
+          });
+        } else {
+          platformManage?.SupplierAccountList({
+            searchPage: { desc: 0, page: 1, pageSize: 25, sort: "name" },
+            keyword: "",
+            name: "",
+            supplier: "",
+          });
+        }
       }
+  
     }
-  }, [params, props.type]);
+     }, [params, props.type]);
 
   const TempConfig = {
     normalBtns: [

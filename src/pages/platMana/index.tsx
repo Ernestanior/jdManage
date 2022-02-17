@@ -1,8 +1,11 @@
 import { FC, ReactElement, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-
-import PlatformManageTable from "./platformMangeConfig";
-
+import All from "./allPlatform";
+import AccelerationChinaICP from "./acceleration-china-icp-licence";
+import AccelerationChina from "./acceleration-china";
+import AccelerationGlabal from "./acceleration-global";
+import DdoosGlobal from "./ddos-global";
+import Customized from "./customized";
 import { Tabs } from "antd";
 const { TabPane } = Tabs;
 const Index: FC = (): ReactElement => {
@@ -32,22 +35,22 @@ const Index: FC = (): ReactElement => {
       onChange={(e: string) => handleOnchange(e)}
     >
       <TabPane tab="全部" key="1">
-        <PlatformManageTable type={role} group={0} />
+        <All type={role} />
       </TabPane>
       <TabPane tab="国内加速(备案)" key="2">
-        <PlatformManageTable type={role} group={0} />
+        <AccelerationChinaICP type={role} />
       </TabPane>
       <TabPane tab="国内加速(免备案)" key="3">
-        <PlatformManageTable type={role} group={0} />
+        <AccelerationChina type={role} />
       </TabPane>
       <TabPane tab="全球加速" key="4">
-        <PlatformManageTable type={role} group={0} />
+        <AccelerationGlabal type={role} />
       </TabPane>
       <TabPane tab="全球高防" key="5">
-        <PlatformManageTable type={role} group={0} />
+        <DdoosGlobal type={role} />
       </TabPane>
       <TabPane tab="自定义平台" key="6">
-        <PlatformManageTable type={role} group={0} />
+        <Customized type={role} />
       </TabPane>
     </Tabs>
   );
