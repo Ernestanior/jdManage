@@ -14,3 +14,7 @@ export const useDomainList = () => {
 export const useRecordList = ()=>{
     return useBehaviorSubject<any>(dnsManage.dnsManageRecordList$);
 }
+
+export const useDnsCertList= ()=>{
+  return useBehaviorSubject<any>(dnsManage.dnsManageCertList$);
+}

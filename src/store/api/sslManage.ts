@@ -4,10 +4,10 @@ import { AxiosRequestConfig } from "axios";
  * @description 用户管理API
  * @return 返回request的config
  */
-class DnsManageAPI {
-  DnsCustomerList = (data: any) => {
+class SslManageAPI {
+  customerList = (data: any) => {
     const config: AxiosRequestConfig = {
-      url: "/dns/customer/list",
+      url: "/customer/list",
       method: "POST",
       data,
     };
@@ -15,9 +15,9 @@ class DnsManageAPI {
     return config;
   };
 
-  DnsDomainList = (data: any) => {
+  certList = (data: any) => {
     const config: AxiosRequestConfig = {
-      url: "/dns/domain/list",
+      url: "/ssl/customer/cert-list",
       method: "POST",
       data,
     };
@@ -25,25 +25,15 @@ class DnsManageAPI {
     return config;
   };
 
-  DnsRecordList = (data: any) => {
+  originCertList = (data: any) => {
     const config: AxiosRequestConfig = {
-      url: "/dns/record/list",
+      url: "/ssl/origin-cert/list",
       method: "POST",
       data,
     };
     config.headers = {};
     return config;
   };
-
-  DnsCertList = (data: any)=>{
-    const config: AxiosRequestConfig ={
-      url:"/dns/cert/list",
-      method:"POST",
-      data,
-    };
-    config.headers = {};
-    return config;
-  }
 }
 
-export default DnsManageAPI;
+export default SslManageAPI;
