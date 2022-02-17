@@ -6,8 +6,7 @@ import {
 } from "@/store/network/infoInquiry";
 import {} from "@/store/network/infoInquiry";
 import infoInquiry from "@/store/network/infoInquiry/service";
-import React, { FC, useEffect, useState } from "react";
-import { infoInquiryApi } from "@/store/api";
+import  { FC, useEffect, useState } from "react";
 
 const Index: FC = () => {
   const [params, setParams] = useState<any>();
@@ -45,23 +44,21 @@ const Index: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (site && customerList) {
-      let siteOption: object[] = [];
-      let cusNameOption: object[] = [];
+    let siteOption: object[] = [];
+    let cusNameOption: object[] = [];
+    site &&
       Object.entries(site).map((item: any) => {
-        console.log(item);
         let a = item[1];
         siteOption.push({ uid: a.uid, name: a.name });
       });
+    customerList?.content &&
       Object.entries(customerList?.content).map((item: any) => {
-        console.log(item);
         let a = item[1];
         cusNameOption.push({ uid: a.uid, name: a.name });
       });
-      setSiteOption(siteOption);
-      setCusNameOption(cusNameOption);
-    }
-  }, [customerList, site]);
+    setSiteOption(siteOption);
+    setCusNameOption(cusNameOption);
+  }, [site, customerList?.content]);
 
   const TempConfig = {
     onSearch: (params: any) => {
