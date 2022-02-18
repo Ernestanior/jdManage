@@ -1,5 +1,4 @@
 import { FC, ReactElement, useMemo, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import All from "./allPlatform";
 import AccelerationChinaICP from "./acceleration-china-icp-licence";
 import AccelerationChina from "./acceleration-china";

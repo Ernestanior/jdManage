@@ -10,7 +10,6 @@ class UserManage {
     from(request(userManageApi.UserManageCustomerList({}, data))).subscribe(
       (data) => {
         if (data) {
-          console.log(data, "data");
           this.userManageCustomerList$.next(data);
         }
       }

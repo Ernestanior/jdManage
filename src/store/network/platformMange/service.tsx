@@ -5,7 +5,7 @@ import { platformManageApi } from "../../api";
 class PlatformManage {
   readonly platformManageSupplierList$ = new BehaviorSubject<any>(null);
   readonly platformManangeSupplierInfo$ = new BehaviorSubject<any>(null);
-
+  readonly platformManageSupplierAccountView$ = new BehaviorSubject<any>(null);
   SupplierAccountList(data: any) {
     from(
       request(platformManageApi.PlatformManageSupplierList({}, data))
@@ -26,7 +26,20 @@ class PlatformManage {
       }
     });
   }
+  viewSupplierAccount(data:string){
+    if(data!==""){
+      from(request(platformManageApi.PlatformManageSupplierAccountView({data}))).subscribe((data)=>{
+        if (data) {
+          this.platformManageSupplierAccountView$.next(data);
+        }
+      });
+    }
+  }
 }
+
+ 
+
+
 
 const platformManage = new PlatformManage();
 export default platformManage;

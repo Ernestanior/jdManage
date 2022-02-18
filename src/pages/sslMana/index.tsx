@@ -1,16 +1,13 @@
-import { FC, ReactElement, useMemo, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-
-
-import CusSsl from './cusSsl';
-import Ssl from './ssl';
-import SslDownload from './sslDownload';
-
+import { FC, ReactElement, useState } from "react";
+import CusSsl from "./cusSsl";
+import Ssl from "./ssl";
+import SslDownload from "./sslDownload";
 import { Tabs } from "antd";
-const { TabPane } = Tabs;
+
 const Index: FC = (): ReactElement => {
+  const { TabPane } = Tabs;
   const [role, setRole] = useState<number>(1);
-  const handleOnchange = (e:string) => {
+  const handleOnchange = (e: string) => {
     if (e === "1") {
       setRole(1);
     } else if (e === "2") {
@@ -25,10 +22,10 @@ const Index: FC = (): ReactElement => {
   return (
     <Tabs defaultActiveKey="1" type="card" onChange={(e) => handleOnchange(e)}>
       <TabPane tab="客户端证书" key="1">
-        <CusSsl type={role}  />
+        <CusSsl type={role} />
       </TabPane>
       <TabPane tab="源证书" key="2">
-        <Ssl type={role}  />
+        <Ssl type={role} />
       </TabPane>
       <TabPane tab="证书下载" key="3">
         <SslDownload type={role} />

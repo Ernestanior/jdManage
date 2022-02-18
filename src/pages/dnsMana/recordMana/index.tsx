@@ -2,13 +2,14 @@ import { Template } from "@/components/template";
 import { useDomainList } from "@/store/network/dnsManage";
 import { useRecordList } from "@/store/network/dnsManage";
 import dnsManage from "@/store/network/dnsManage/service";
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 const Index: FC = () => {
   const [params, setParams] = useState<any>();
   const domainList = useDomainList();
   const recordList = useRecordList();
   const [option, setOption] = useState<Object[]>([]);
+  
   useEffect(() => {
     if (params) {
       if (params.filters !== undefined) {
@@ -18,8 +19,7 @@ const Index: FC = () => {
           domainUid: params.filters.domainUid,
           status: params.filters.status,
           value: params.filters.value,
-          name: params.filters.name
- 
+          name: params.filters.name,
         });
       } else {
         dnsManage?.recordList({
@@ -73,9 +73,9 @@ const Index: FC = () => {
         title: "线路",
         dataIndex: "line",
         key: "line",
-        render: (key:any)=>{
-          return <div>{key.name}</div>
-        }
+        render: (key: any) => {
+          return <div>{key.name}</div>;
+        },
       },
       {
         title: "记录值",
@@ -101,9 +101,9 @@ const Index: FC = () => {
         title: "客户",
         dataIndex: "customer",
         key: "customer",
-        render: (key:any)=>{
-          return <div>{key.name}</div>
-        }
+        render: (key: any) => {
+          return <div>{key.name}</div>;
+        },
       },
       {
         title: "状态",

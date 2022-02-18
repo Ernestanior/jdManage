@@ -1,18 +1,13 @@
 import { FC, ReactElement, useMemo, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-
 import Admin from "./admin";
 import Agent from "./agent";
 import Sales from "./sales";
 import Operation from "./operation";
-
 import { Tabs } from "antd";
 const { TabPane } = Tabs;
 const Index: FC = (): ReactElement => {
-  // const navigator = useNavigate();
-  // const path: any = useLocation().state;
-  // const index = useMemo(() => (path && path.siteConfig) || "1", [path]);
   const [role, setRole] = useState<string>("admin");
+  
   const handleOnchange = (e: string) => {
     if (e === "1") {
       setRole("admin");
@@ -24,6 +19,7 @@ const Index: FC = (): ReactElement => {
       setRole("agent");
     }
   };
+
   return (
     <Tabs
     type="card"

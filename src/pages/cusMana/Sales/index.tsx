@@ -3,16 +3,16 @@ import { useUserManage } from "@/store/network/userManage";
 import userManage from "@/store/network/userManage/service";
 import { FC, useEffect, useState } from "react";
 
-interface props{
-    props: string
-  }
+interface props {
+  props: string;
+}
 
-const Index: FC<props> = (props:props) => {
+const Index: FC<props> = (props: props) => {
   const [params, setParams] = useState<any>();
   const customerList = useUserManage();
   useEffect(() => {
-if (props.props === "2") {
-    if (params) {
+    if (props.props === "2") {
+      if (params) {
         if (params.filters === undefined) {
           userManage?.CustomerList({
             channel: "sales",
@@ -32,9 +32,8 @@ if (props.props === "2") {
           });
         }
       }
-}
-   
-  }, [params,props]);
+    }
+  }, [params, props]);
 
   const TempConfig = {
     batchBtns: [
@@ -63,7 +62,7 @@ if (props.props === "2") {
     normalBtns: [
       {
         text: "新增站点",
-        onClick: () => (true),
+        onClick: () => true,
       },
     ],
     onSearch: (params: any) => {
@@ -97,11 +96,6 @@ if (props.props === "2") {
           return <div>{key > 0 ? ` 试用` : `正式`}</div>;
         },
       },
-      // {
-      //   title: "平台管理",
-      //   dataIndex: "",
-      //   key: "",
-      // },
       {
         title: "使用者类型",
         dataIndex: "supportsSupplier",

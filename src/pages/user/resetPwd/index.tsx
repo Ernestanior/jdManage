@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import { FC, useEffect } from "react";
 import "./index.less";
 import Tip from "@/components/tip/index";
 import { TipInfo } from "./msg";

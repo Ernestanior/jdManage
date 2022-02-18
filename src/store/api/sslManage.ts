@@ -34,6 +34,27 @@ class SslManageAPI {
     config.headers = {};
     return config;
   };
+
+  viewCert = (params: any) => {
+    console.log(params, "uidudid");
+
+    const config: AxiosRequestConfig = {
+      url: `/ssl/view-cert?uid=${params.data}`,
+      method: "GET",
+    };
+    config.headers = {};
+    return config;
+  };
+
+  viewOriginCert = (params:any)=>{
+    const config: AxiosRequestConfig={
+      url:`/ssl/origin-cert/view?uid=${params.data}`,
+      method:"GET",
+    };
+    config.headers={};
+    return config;
+  }
+
 }
 
 export default SslManageAPI;

@@ -4,12 +4,13 @@ import { worklogDetail } from "@/store/api/user";
 import { useCodeList, useEventList, useWorkLog } from "@/store/network/user";
 import userService from "@/store/network/user/service";
 import { Col, message, Popconfirm, Row } from "antd";
-
 import moment from "moment";
 import { FC, useEffect, useState } from "react";
+
 interface Role {
   type: number;
 }
+
 const Index: FC<Role> = (props: Role) => {
   const codelist = useCodeList();
   const worklog = useEventList();
@@ -20,9 +21,9 @@ const Index: FC<Role> = (props: Role) => {
   const [eventService, setEventService] = useState<object[]>([]);
   const [params, setparams] = useState<any>();
   useEffect(() => userService?.UserServiceWorkLogCodeList(), []);
+
   useEffect(() => {
     if (codelist !== undefined) {
-      // if (codelist.eventType && codelist.eventService !== undefined) {
       let eventType: object[] = [];
       let eventService: object[] = [];
       codelist?.eventType &&
@@ -39,10 +40,11 @@ const Index: FC<Role> = (props: Role) => {
         );
       setEventType(eventType);
       setEventService(eventService);
-      // }
     }
   }, [codelist, codelist?.evetType, codelist?.eventService]);
+
   useEffect(() => userService?.UserServiceLogDetail(eventID), [eventID]);
+
   useEffect(() => {
     if (props.type === 2) {
       if(params){
@@ -206,35 +208,3 @@ const Index: FC<Role> = (props: Role) => {
 };
 
 export default Index;
-// expandable={{
-
-// expandIcon: ({ expanded, onExpand, record }) =>
-//   expanded ? (
-//     <IconFont
-//       type="icon-search"
-//       className="SearchBtn"
-//       style={{ fontSize: 12 }}
-//       onClick={(e) => {
-//         onExpand(record, e);
-//       }}
-//     ></IconFont>
-//   ) : (
-//     <IconFont
-//       type="icon-search"
-//       className="SearchBtn"
-//       style={{ fontSize: 12 }}
-//       onClick={(e) => {
-//         onExpand(record, e);
-//       }}
-//     ></IconFont>
-//   ),
-//   onExpand: (e, record: any) => {
-//     if (e) {
-//       seteventID(record?.eventId);
-//       setKey(record?.key);
-//       console.log(record, "aa");
-//     } else {
-//       setKey(-1);
-//     }
-//   },
-// }}

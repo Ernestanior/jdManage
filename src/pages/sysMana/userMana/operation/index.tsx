@@ -1,13 +1,13 @@
 import { Template } from "@/components/template";
-import { IRenderConfig } from "@/components/template/fastRender";
 import { Role } from "@/components/template/interface";
 import { useUserManage } from "@/store/network/userManage";
 import userManage from "@/store/network/userManage/service";
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 const Index: FC<Role> = (props: Role) => {
   const [params, setParams] = useState<any>();
   const customerList = useUserManage();
+  
   useEffect(() => {
     if (props.type === "operation") {
       if (params !== undefined) {

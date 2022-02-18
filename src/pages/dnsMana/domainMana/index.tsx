@@ -2,7 +2,7 @@ import { Template } from "@/components/template";
 import { useDomainList } from "@/store/network/dnsManage";
 import { useDnsCustomerList } from "@/store/network/dnsManage";
 import dnsManage from "@/store/network/dnsManage/service";
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 const Index: FC = () => {
   const [params, setParams] = useState<any>();
@@ -51,7 +51,7 @@ const Index: FC = () => {
         onClick: (value: any) => {
           // setDeleteFlag(true);
           // setSelectedKey(value);
-        },  
+        },
       },
       {
         text: "批量启用",

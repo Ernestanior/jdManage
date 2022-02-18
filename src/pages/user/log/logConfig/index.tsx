@@ -4,7 +4,6 @@ import { worklogDetail } from "@/store/api/user";
 import { useCodeList, useEventList, useWorkLog } from "@/store/network/user";
 import userService from "@/store/network/user/service";
 import { Col, message, Popconfirm, Row } from "antd";
-
 import moment from "moment";
 import { FC, useEffect, useState } from "react";
 interface Role {
@@ -18,27 +17,28 @@ const Index: FC<Role> = (props: Role) => {
   const [eventID, seteventID] = useState<string>("");
   const [eventType, setEventType] = useState<object[]>([]);
   const [eventService, setEventService] = useState<object[]>([]);
-
   const [params, setparams] = useState<any>();
+
   useEffect(() => userService?.UserServiceWorkLogCodeList(), []);
+
   useEffect(() => {
     if (codelist) {
-      // if (codelist.eventType && codelist.eventService !== undefined) {
-        let eventType: object[] = [];
-        let eventService: object[] = [];
-        codelist.eventType && Object.entries(codelist?.eventType).map(
+      let eventType: object[] = [];
+      let eventService: object[] = [];
+      codelist.eventType &&
+        Object.entries(codelist?.eventType).map(
           ([key, value]: any, index: number) => {
             eventType.push({ uid: key, name: value });
           }
         );
-        codelist.eventService && Object.entries(codelist?.eventService).map(
+      codelist.eventService &&
+        Object.entries(codelist?.eventService).map(
           ([key, value]: any, index: number) => {
             eventService.push({ uid: key, name: value });
           }
         );
-        setEventType(eventType);
-        setEventService(eventService);
-     // }
+      setEventType(eventType);
+      setEventService(eventService);
     }
   }, [codelist, codelist?.evetType, codelist?.eventService]);
 
@@ -68,19 +68,6 @@ const Index: FC<Role> = (props: Role) => {
   }, [params, props.role]);
 
   const TempConfig = {
-    // optList: [
-    //   {
-    //     text: "修改",
-    //     event: (data: any) => {},
-    //   },
-    //   {
-    //     text: "编辑",
-    //     event: (data: any) => {
-    //       // setEditRow(data);
-    //       // setEditFlag(true);
-    //     },
-    //   },
-    // ],
     onSearch: (params: any) => {
       setparams(params);
     },
@@ -217,35 +204,3 @@ const Index: FC<Role> = (props: Role) => {
 };
 
 export default Index;
-// expandable={{
-
-// expandIcon: ({ expanded, onExpand, record }) =>
-//   expanded ? (
-//     <IconFont
-//       type="icon-search"
-//       className="SearchBtn"
-//       style={{ fontSize: 12 }}
-//       onClick={(e) => {
-//         onExpand(record, e);
-//       }}
-//     ></IconFont>
-//   ) : (
-//     <IconFont
-//       type="icon-search"
-//       className="SearchBtn"
-//       style={{ fontSize: 12 }}
-//       onClick={(e) => {
-//         onExpand(record, e);
-//       }}
-//     ></IconFont>
-//   ),
-//   onExpand: (e, record: any) => {
-//     if (e) {
-//       seteventID(record?.eventId);
-//       setKey(record?.key);
-//       console.log(record, "aa");
-//     } else {
-//       setKey(-1);
-//     }
-//   },
-// }}

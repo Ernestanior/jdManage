@@ -39,7 +39,6 @@ class User {
       if (data) {
         this.userList$.next(data);
       }
-      console.log(data, "user list");
     });
   }
 
@@ -69,11 +68,10 @@ class User {
     });
   }
 
-  UserServiceWorkLogEventList(data: any) {   
+  UserServiceWorkLogEventList(data: any) {
     from(request(userApi.UserAPIWorklogEventList({}, data))).subscribe(
       (data) => {
         if (data) {
-          console.log(data, "data");
           this.userWorkLogEventList$.next(data);
         }
       }
@@ -123,7 +121,6 @@ class User {
     from(request(userApi.UserAccountView())).subscribe((data) => {
       if (data) {
         this.userAccountView$.next(data);
-        console.log(data, "accountview");
       }
     });
   }
@@ -133,7 +130,6 @@ class User {
       (data) => {
         if (data) {
           this.userChangePassword$.next(data);
-          console.log(data, "changepassword");
         }
       }
     );
@@ -141,7 +137,6 @@ class User {
   UserAccessLog(data: any) {
     from(request(userApi.UserAccessLog(data))).subscribe((data) => {
       if (data) {
-        console.log(data, "accesslog");
         this.userAccessLog$.next(data);
       }
     });
@@ -150,7 +145,6 @@ class User {
   UserAccessWhiteList(data: any) {
     from(request(userApi.UserWhiteList(data))).subscribe((data) => {
       if (data) {
-        console.log(data, "whilist");
         this.userAccessWhiteList$.next(data);
       }
     });

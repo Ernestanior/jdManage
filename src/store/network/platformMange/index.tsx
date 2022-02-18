@@ -1,4 +1,5 @@
 import useBehaviorSubject from "@/hooks/useBehaviorSubject";
+import { platformManageApi } from "@/store/api";
 import platformManage from "./service";
 
 export const usePlatformManage = ()=>{
@@ -7,4 +8,8 @@ export const usePlatformManage = ()=>{
 
 export const useSupplierInfo =  ()=>{
     return useBehaviorSubject<any>(platformManage.platformManangeSupplierInfo$);
+}
+
+export const useViewSupplierAccount = ()=>{
+    return useBehaviorSubject<any>(platformManage.platformManageSupplierAccountView$);
 }

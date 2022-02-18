@@ -9,7 +9,6 @@ class InfoInquiry {
   customerList(data: {}) {
     from(request(infoInquiryApi.customerList(data))).subscribe((data) => {
       if (data) {
-        console.log(data, "data");
         this.infoInquiryCustomerList$.next(data);
       }
     });
@@ -17,7 +16,6 @@ class InfoInquiry {
   domainList(data: {}) {
     from(request(infoInquiryApi.domainList(data))).subscribe((data) => {
       if (data) {
-        console.log(data, "data");
         this.infoInquiryDomainList$.next(data);
       }
     });

@@ -1,7 +1,13 @@
 import { Template } from "@/components/template";
 import { Role } from "@/components/template/interface";
-import { usePlatformManage, useSupplierInfo } from "@/store/network/platformMange";
+import {
+  usePlatformManage,
+  useSupplierInfo,
+  useViewSupplierAccount,
+} from "@/store/network/platformMange";
 import platformManage from "@/store/network/platformMange/service";
+import { DownOutlined } from "@ant-design/icons";
+import { Col, Divider, Drawer, Dropdown, Menu, Row } from "antd";
 import { FC, useEffect, useState } from "react";
 
 const Index: FC<Role> = (props: Role) => {
@@ -9,6 +15,9 @@ const Index: FC<Role> = (props: Role) => {
   const supplierList = usePlatformManage();
   const supplierInfo = useSupplierInfo();
   const [option, setOption] = useState<Object[]>([]);
+  const [visible, setVisible] = useState<boolean>(false);
+  const [supplierAccount, setSupplierAccount] = useState<any>();
+  const supplierDetail = useViewSupplierAccount();
 
   useEffect(() => {
     if (props.type === "") {
@@ -17,15 +26,12 @@ const Index: FC<Role> = (props: Role) => {
   }, [props.type]);
 
   useEffect(() => {
-
     if (supplierInfo) {
       let platformOption: object[] = [];
       Object.entries(supplierInfo).map((item: any) => {
         let a = item[1];
         platformOption.push({ uid: a.code, name: a.displayName });
       });
-      console.log(platformOption);
-
       setOption(platformOption);
     }
   }, [supplierInfo]);
@@ -51,8 +57,25 @@ const Index: FC<Role> = (props: Role) => {
         }
       }
     }
-   
   }, [params, props.type]);
+
+  useEffect(() => {
+    setSupplierAccount(supplierDetail);
+    console.log(supplierDetail);
+  }, [supplierDetail]);
+
+  const handleOnclick = (key: any) => {
+    platformManage.viewSupplierAccount(key);
+  };
+
+  const showDrawer = () => {
+    setVisible(true);
+  };
+
+  const onClose = () => {
+    setVisible(false);
+    setSupplierAccount({});
+  };
 
   const TempConfig = {
     normalBtns: [
@@ -97,6 +120,34 @@ const Index: FC<Role> = (props: Role) => {
           );
         },
       },
+      {
+        title: "操作",
+        dataIndex: "uid",
+        key: "uid",
+        render: (key: any) => {
+          const menu = (
+            <Menu>
+              <Menu.Item
+                key="1"
+                onClick={() => {
+                  handleOnclick(key);
+                  showDrawer();
+                }}
+              >
+                查看
+              </Menu.Item>
+              <Menu.Item key="2">删除账户</Menu.Item>
+            </Menu>
+          );
+          return (
+            <div>
+              <Dropdown overlay={menu}>
+                <DownOutlined />
+              </Dropdown>
+            </div>
+          );
+        },
+      },
     ],
   };
 
@@ -119,6 +170,58 @@ const Index: FC<Role> = (props: Role) => {
         ]}
         {...TempConfig}
       ></Template>
+      <Drawer
+        title="查看证书"
+        placement="right"
+        onClose={onClose}
+        visible={visible}
+        width={570}
+        bodyStyle={{ paddingBottom: 80 }}
+      >
+        <Row>
+          <Col span={7}>平台账号</Col>
+          <Col span={15} offset={2}>
+            {supplierAccount?.name}
+          </Col>
+          <Divider />
+          <Col span={7}>平台</Col>
+          <Col span={15} offset={2}>
+            {supplierAccount?.supplier?.displayName}
+          </Col>
+          <Divider />
+          <Col span={7}>电邮地址</Col>
+          <Col span={15} offset={2}>
+            {supplierAccount?.supplier?.tokenValue?.email
+              ? supplierAccount?.supplier?.tokenValue?.email
+              : "-"}
+          </Col>
+          <Divider />
+          <Col span={7}>API 密钥 （API KEY）</Col>
+          <Col span={15} offset={2}>
+            {supplierAccount?.supplier?.tokenValue?.apiKey
+              ? supplierAccount?.supplier?.tokenValue?.apiKey
+              : "-"}
+          </Col>
+          <Divider />
+          <Col span={7}>账户ID (Account ID)</Col>
+          <Col span={15} offset={2}>
+            {supplierAccount?.supplier?.tokenValue?.accountId
+              ? supplierAccount?.supplier?.tokenValue?.accountId
+              : "-"}
+          </Col>
+          <Divider />
+          <Col span={7}>状态</Col>
+          <Col span={15} offset={2}>
+            {supplierAccount?.status ? supplierAccount?.status : "-"}
+          </Col>
+          <Divider />
+          <Col span={7}>备注</Col>
+          <Col span={15} offset={2}>
+            {supplierAccount?.remark === "" ? "-" : supplierAccount?.remark}
+          </Col>
+          <Divider />
+        </Row>
+      </Drawer>
     </div>
   );
 };
