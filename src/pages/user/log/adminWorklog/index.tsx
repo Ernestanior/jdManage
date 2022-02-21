@@ -3,7 +3,7 @@ import { Template } from "@/components/template";
 import { worklogDetail } from "@/store/api/user";
 import { useCodeList, useEventList, useWorkLog } from "@/store/network/user";
 import userService from "@/store/network/user/service";
-import { Col, message, Popconfirm, Row } from "antd";
+import { Col, Input, message, Popconfirm, Row } from "antd";
 import moment from "moment";
 import { FC, useEffect, useState } from "react";
 
@@ -12,6 +12,7 @@ interface Role {
 }
 
 const Index: FC<Role> = (props: Role) => {
+  const { TextArea } = Input;
   const codelist = useCodeList();
   const worklog = useEventList();
   const LogDetail = useWorkLog();
@@ -29,13 +30,13 @@ const Index: FC<Role> = (props: Role) => {
       let eventType: object[] = [];
       let eventService: object[] = [];
       codelist?.eventType &&
-        Object.entries(codelist?.eventType).map(
+        Object.entries(codelist?.eventType).forEach(
           ([key, value]: any, index: number) => {
             eventType.push({ uid: key, name: value });
           }
         );
       codelist?.eventService &&
-        Object.entries(codelist?.eventService).map(
+        Object.entries(codelist?.eventService).forEach(
           ([key, value]: any, index: number) => {
             eventService.push({ uid: key, name: value });
           }
@@ -55,7 +56,6 @@ const Index: FC<Role> = (props: Role) => {
           userService?.UserServiceWorkLogEventList({
             keyword: params.filters.keyword,
             searchPage: params.searchPage,
-
             eventType: params.filters.eventType,
             eventService: params.filters.eventService,
             startDate: params.filters.startDate,
@@ -133,9 +133,17 @@ const Index: FC<Role> = (props: Role) => {
         <div>
           {expandaRowDetail.map((item, index) => {
             return (
-              <Row key={index}>
+              <Row key={index} style={{paddingBottom: 15}}>
                 <Col span={4}>{item.name}</Col>
-                <Col span={5}>{item.data}</Col>
+                <Col span={16}>
+                  {item.name === "oldData" || item.name === "newData" ? (
+                    <div>
+                      <TextArea style={{width:500,height:190}} value={item.data} allowClear={false}></TextArea>
+                    </div>
+                  ) : (
+                    item.data?item.data:"-"
+                  )}
+                </Col>
               </Row>
             );
           })}

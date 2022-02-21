@@ -1,6 +1,8 @@
 import { Template } from "@/components/template";
 import { useUserManage } from "@/store/network/userManage";
 import userManage from "@/store/network/userManage/service";
+import { DownOutlined } from "@ant-design/icons";
+import { Drawer, Dropdown, Menu } from "antd";
 import { FC, useEffect, useState } from "react";
 
 interface props {
@@ -9,6 +11,7 @@ interface props {
 
 const Index: FC<props> = (props: props) => {
   const [params, setParams] = useState<any>();
+  const [visible, setVisible] = useState<boolean>(false);
   const customerList = useUserManage();
   useEffect(() => {
     if (props.props === "2") {
@@ -34,6 +37,19 @@ const Index: FC<props> = (props: props) => {
       }
     }
   }, [params, props]);
+
+  const handleOnclick = (key: any) => {
+    //  platformManage.viewSupplierAccount(key);
+  };
+
+  const showDrawer = () => {
+    setVisible(true);
+  };
+
+  const onClose = () => {
+    setVisible(false);
+    //  setSupplierAccount({});
+  };
 
   const TempConfig = {
     batchBtns: [
@@ -112,6 +128,34 @@ const Index: FC<props> = (props: props) => {
           return <div>{key ? `` : `X`}</div>;
         },
       },
+      {
+        title: "操作",
+        dataIndex: "uid",
+        key: "uid",
+        render: (key: any) => {
+          const menu = (
+            <Menu>
+              <Menu.Item
+                key="1"
+                onClick={() => {
+                  handleOnclick(key);
+                  showDrawer();
+                }}
+              >
+                登入客户账号
+              </Menu.Item>
+              <Menu.Item key="2">删除账户</Menu.Item>
+            </Menu>
+          );
+          return (
+            <div>
+              <Dropdown overlay={menu}>
+                <DownOutlined />
+              </Dropdown>
+            </div>
+          );
+        },
+      },
     ],
   };
   return (
@@ -150,6 +194,14 @@ const Index: FC<props> = (props: props) => {
         ]}
         {...TempConfig}
       ></Template>
+      <Drawer
+        title="查看"
+        placement="left"
+        onClose={onClose}
+        visible={visible}
+        width={570}
+        bodyStyle={{ paddingBottom: 80 }}
+      ></Drawer>
     </div>
   );
 };
