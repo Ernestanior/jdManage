@@ -38,4 +38,8 @@ export const useNewUserWhiteList = () => {
   return useBehaviorSubject<any>(userService.userAccessWhiteList$);
 };
 
+export const useNewUserLogin = () => {
+  return useBehaviorSubject<any>(userService.userLogin$);
+};
+
 //export const newUserInfoStream = new BehaviorSubject<any>(null);

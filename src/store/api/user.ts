@@ -178,6 +178,18 @@ class UserAPI {
     return config;
   };
 
+  UserLogin = (data: any)=>{
+    const config: AxiosRequestConfig ={
+      url: `/user/login?`,
+      method: "PUT",
+      data,
+    };
+    config.headers ={};
+    return config;
+  };
+
+
+
 }
 
 

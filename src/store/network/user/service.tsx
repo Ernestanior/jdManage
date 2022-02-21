@@ -6,6 +6,7 @@ import { ISearchPage, IUserList, ICreateUserParams } from "./interface";
 import { GeteventList } from "@/store/api/user";
 import { notification, Result } from "antd";
 import { loading } from "@/components/loading";
+import { saveToken } from "@/store/storage";
 
 //import { newUserInfoStream } from ".";
 
@@ -24,6 +25,7 @@ class User {
   readonly userAccessLog$ = new BehaviorSubject<any>(null);
   readonly userAccessWhiteList$ = new BehaviorSubject<any>(null);
   readonly userChangeLanguage$ = new BehaviorSubject<any>(null);
+  readonly userLogin$ = new BehaviorSubject<any>(null);
   findUser(keyWord: string, searchPage: ISearchPage) {
     from(
       request(
@@ -146,6 +148,16 @@ class User {
     from(request(userApi.UserWhiteList(data))).subscribe((data) => {
       if (data) {
         this.userAccessWhiteList$.next(data);
+      }
+    });
+  }
+
+  UserLogin(data: any) {
+    from(request(userApi.UserLogin(data))).subscribe((data) => {
+      
+      if (data) {
+        saveToken(data.token);
+        this.userLogin$.next(data);
       }
     });
   }
