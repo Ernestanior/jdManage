@@ -32,6 +32,7 @@ import Statistics from "@/pages/cdnSite/sitePage/statistics";
 import PlatMana from "@/pages/cdnSite/sitePage/plat-mana";
 
 import User from "@/pages/user";
+import { useNewUserLogin } from "@/store/network/user";
 
 /**
  * 项目路由组件
@@ -40,10 +41,11 @@ import User from "@/pages/user";
  */
 const ProjectRouter: FC = () => {
   const accountInfo = useAccountInfo();
+  const userLogin = useNewUserLogin();
   //   console.log(accountInfo);
   useEffect(() => {
     accountService.UserInfo();
-  }, []);
+  },[userLogin]);
   if (!accountInfo) {
     return <Login />;
   }
