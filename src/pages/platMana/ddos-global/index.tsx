@@ -27,7 +27,7 @@ const Index: FC<Role> = (props: Role) => {
   useEffect(() => {
     if (supplierInfo) {
       let platformOption: object[] = [];
-      Object.entries(supplierInfo).map((item: any) => {
+      Object.entries(supplierInfo).forEach((item: any) => {
         let a = item[1];
         platformOption.push({ uid: a.code, name: a.displayName });
       });

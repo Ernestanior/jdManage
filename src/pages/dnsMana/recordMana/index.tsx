@@ -39,7 +39,7 @@ const Index: FC = () => {
   useEffect(() => {
     if (domainList) {
       let dnsOption: object[] = [];
-      Object.entries(domainList?.content).map((item: any) => {
+      Object.entries(domainList?.content).forEach((item: any) => {
         let a = item[1];
         dnsOption.push({ uid: a.uid, name: a.name });
       });

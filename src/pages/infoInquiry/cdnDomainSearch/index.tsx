@@ -63,12 +63,12 @@ const Index: FC = () => {
     let siteOption: object[] = [];
     let cusNameOption: object[] = [];
     site &&
-      Object.entries(site).map((item: any) => {
+      Object.entries(site).forEach((item: any) => {
         let a = item[1];
         siteOption.push({ uid: a.uid, name: a.name });
       });
     customerList?.content &&
-      Object.entries(customerList?.content).map((item: any) => {
+      Object.entries(customerList?.content).forEach((item: any) => {
         let a = item[1];
         cusNameOption.push({ uid: a.uid, name: a.name });
       });

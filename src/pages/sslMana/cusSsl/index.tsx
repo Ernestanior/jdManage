@@ -69,7 +69,7 @@ const Index: FC<Role> = (props: Role) => {
   useEffect(() => {
     let Option: object[] = [];
     customerList?.content &&
-      Object.entries(customerList?.content).map((item: any) => {
+      Object.entries(customerList?.content).forEach((item: any) => {
         let a = item[1];
         Option.push({ value: a.uid, label: a.name });
       });

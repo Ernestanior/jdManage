@@ -37,7 +37,7 @@ const Index: FC<Role> = (props: Role) => {
     if (props.type === 3) {
       let filterOption: object[] = [];
       dnsCustomerList?.content &&
-        Object.entries(dnsCustomerList?.content).map((item: any) => {
+        Object.entries(dnsCustomerList?.content).forEach((item: any) => {
           let a = item[1];
           filterOption.push({ uid: a.uid, name: a.name });
         });

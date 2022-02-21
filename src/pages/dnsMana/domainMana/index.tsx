@@ -36,7 +36,7 @@ const Index: FC = () => {
   useEffect(() => {
     if (customerList) {
       let dnsOption: object[] = [];
-      Object.entries(customerList?.content).map((item: any) => {
+      Object.entries(customerList?.content).forEach((item: any) => {
         let a = item[1];
         dnsOption.push({ uid: a.uid, name: a.name });
       });
@@ -113,12 +113,12 @@ const Index: FC = () => {
         primarySearch={"keyword"}
         searchList={[
           {
-            text: "平台账号",
+            text: "功能变数名称",
             name: "name",
             type: "input",
           },
           {
-            text: "平台",
+            text: "域名状态",
             name: "status",
             data: [
               { uid: "enabled", name: "已启用" },
@@ -127,7 +127,7 @@ const Index: FC = () => {
             type: "select",
           },
           {
-            text: "平台",
+            text: "客户",
             name: "customerUid",
             data: option,
             type: "select",
