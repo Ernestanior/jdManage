@@ -60,7 +60,7 @@ requestPlx.middleware_after.use(async (rep, next) => {
         description: rep.data.message,
       });
       if (rep.data.response === "ERROR0001") {
-        accountService.logout();
+        accountService.logout({});
       }
     }
     //rep.data = rep.data.result;
@@ -72,7 +72,7 @@ requestPlx.middleware_after.use(async (rep, next) => {
 async function request(config: AxiosRequestConfig, additionParams?: boolean) {
   const rep = await requestPlx.request(config);
   //rep.data 需要得到respone 等data，
-  return additionParams ? rep.data : rep.data.result;
+  return additionParams ? rep.data : rep.data?.result;
 }
 
 export default request;

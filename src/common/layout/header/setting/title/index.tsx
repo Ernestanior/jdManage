@@ -19,7 +19,7 @@ const Index: FC<IProps> = ({ userName, lastLoginTime }) => {
       <Btn
         type="primary"
         onClick={() => {
-          accountService.logout();
+          accountService.logout({});
         }}
       >
         退出
