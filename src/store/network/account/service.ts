@@ -10,8 +10,12 @@ import { deleteToken, getToken, saveToken } from "@/store/storage";
 class Account {
   readonly info$ = new BehaviorSubject<IAccountInfo | null>(null);
   readonly userInfo$ = new BehaviorSubject<IUserInfo | null>(null);
+
   constructor() {
+    
     const token = getToken();
+    console.log(token,"aaaaa");
+    
     // console.log(token);
     if (token) {
       this.info$.next(token);
@@ -19,24 +23,36 @@ class Account {
   }
   login(username: string, password: string) {
     // 登录成功之后将数据设置到info就可以触发登录信息的更新
-    from(request(authApi.Login({ username, password }))).subscribe((data) => {
+    from(request(authApi.Login({ username, password }), true)).subscribe(
+      (data) => {
+        if (data) {
+          // token存储
+          // console.log(data);
+          if (data.response === "success") {
+            if (data.result) {
+              saveToken(data.result.token);
+              this.info$.next(data.result);
+            }
+          }
+        }
+      }
+    );
+  }
+  logout(data: {}) {
+    from(request(authApi.Logout(data))).subscribe((data) => {
       if (data) {
-        // token存储
-        // console.log(data);
-        saveToken(data.token);
-        this.info$.next(data);
+        this.info$.next(null);
+        if (getToken()) {
+          deleteToken();
+        }
       }
     });
   }
-  logout() {
-    this.info$.next(null);
-    if (getToken()) {
-      deleteToken();
-    }
-  }
+
   UserInfo() {
     // 登录成功之后将数据设置到info就可以触发登录信息的更新
     from(request(authApi.User({}, {}))).subscribe((data) => {
+      console.log(data, "dataUserInfo");
       //   console.log(data);
       this.userInfo$.next(data);
     });
