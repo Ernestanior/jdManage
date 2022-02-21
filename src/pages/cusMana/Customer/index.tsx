@@ -206,15 +206,18 @@ const Index: FC<props> = (props: props) => {
         width={570}
         bodyStyle={{ paddingBottom: 80 }}
       >
-        <Button
-          onClick={() => {
-            userService.UserLogin({
-              customerUid: customerUid,
-            });
-            accountService.UserInfo();
-          }}
-        >
-          <NavLink to={"/"}>Login</NavLink>
+        <Button>
+          <NavLink
+            to={"/"}
+            onClick={() => {
+              userService.UserLogin({
+                customerUid: customerUid,
+              });
+              accountService.UserInfo();
+            }}
+          >
+            asdasd
+          </NavLink>
         </Button>
       </Drawer>
     </div>

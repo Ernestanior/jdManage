@@ -6,6 +6,8 @@ import LineChart from "./lineChart";
 import request from "@/store/request";
 import { dnsApi, siteApi } from "@/store/api";
 import "./index.less";
+import { useNewUserLogin } from "@/store/network/user";
+import { use } from "echarts";
 
 export interface IData {
   number: number;
@@ -26,6 +28,7 @@ const initData = {
   content: [],
 };
 const Home: FC = () => {
+  const userLogin = useNewUserLogin();
   const [cdnPage, setCdnPage] = useState(1);
   const [cdnData, setCdnData] = useState<IData>(initData);
   const [cdnLoading, setcdnLoading] = useState(false);
@@ -34,6 +37,9 @@ const Home: FC = () => {
   const [dnsData, setDnsData] = useState<IData>(initData);
   const [dnsLoading, setDnsLoading] = useState(false);
 
+  useEffect(() => {
+    console.log(userLogin,"userlogin");
+  }, [userLogin]);
   //cdn-list
   useEffect(() => {
     setcdnLoading(true);
@@ -51,7 +57,7 @@ const Home: FC = () => {
   }, [cdnPage]);
   const cdnList = useMemo(
     () => cdnData.content.map((item) => item.name),
-    [cdnData]
+    [cdnData, userLogin]
   );
 
   //dns-list
@@ -71,7 +77,7 @@ const Home: FC = () => {
   }, [dnsPage]);
   const dnsList = useMemo(
     () => dnsData.content.map((item) => item.displayName),
-    [dnsData]
+    [dnsData, userLogin]
   );
 
   return (
