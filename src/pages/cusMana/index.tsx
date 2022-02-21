@@ -28,7 +28,7 @@ const Index: FC = (): ReactElement => {
       <TabPane tab="注册客户" key="1">
         <Customer props={props} />
       </TabPane>
-      <TabPane tab="用户管理" key="2">
+      <TabPane tab="销售客户" key="2">
         <Sales props={props} />
       </TabPane>
     </Tabs>
