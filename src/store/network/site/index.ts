@@ -1,22 +1,22 @@
 import useBehaviorSubject from "@/hooks/useBehaviorSubject";
-import siteListService from "./service";
+import siteService from "./service";
 import { ISiteList, ISslList } from "./interface";
 
 export const useSiteList = () => {
-  return useBehaviorSubject<ISiteList>(siteListService.siteList$);
+  return useBehaviorSubject<ISiteList>(siteService.siteList$);
 };
 export const useSiteAll = () => {
-  return useBehaviorSubject<any[]>(siteListService.siteAllList$);
+  return useBehaviorSubject<any[]>(siteService.siteAllList$);
 };
 export const useSiteInfo = () => {
-  return useBehaviorSubject<any>(siteListService.siteInfo$);
+  return useBehaviorSubject<any>(siteService.siteInfo$);
 };
 export const useSslList = () => {
-  return useBehaviorSubject<ISslList>(siteListService.sslList$);
+  return useBehaviorSubject<ISslList>(siteService.sslList$);
 };
 export const useCNameList = () => {
-  return useBehaviorSubject<ISslList>(siteListService.cnameList$);
+  return useBehaviorSubject<ISslList>(siteService.cnameList$);
 };
 export const useSuffix = () => {
-  return useBehaviorSubject<string>(siteListService.suffix$);
+  return useBehaviorSubject<string>(siteService.suffix$);
 };

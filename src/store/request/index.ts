@@ -59,7 +59,7 @@ requestPlx.middleware_after.use(async (rep, next) => {
         description: rep.data.message,
       });
       if (rep.data.response === "ERROR0001") {
-        accountService.logout();
+        accountService.logout({});
       }
     }
     //rep.data = rep.data.result;

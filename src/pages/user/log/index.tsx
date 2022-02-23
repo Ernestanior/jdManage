@@ -1,16 +1,18 @@
 import React, { FC, ReactElement, useState } from "react";
 import "./index.less";
 import { Tabs } from "antd";
-import Worklog from "./logConfig";
+import AdminWorklog from "./adminWorklog";
+import CustomerWorklog from "./customerWorklog";
 
 const { TabPane } = Tabs;
 const Index: FC = (): ReactElement => {
-  const [role, setrole] = useState<boolean>(false);
+  const [role, setrole] = useState<number>(1);
   const handleOnchange = (e: string) => {
     console.log(e);
-    if (e === "2") {
-      setrole(true);
-    } else setrole(false);
+    if (e === "1") {
+      setrole(1);
+    } else if(e === "2"){
+      setrole(2);}
   };
   return (
     <Tabs
@@ -19,10 +21,10 @@ const Index: FC = (): ReactElement => {
       onChange={(e: string) => handleOnchange(e)}
     >
       <TabPane tab="管理员操作日志" key="1">
-        <Worklog role={role} />
+        <AdminWorklog type={role} />
       </TabPane>
       <TabPane tab="客户操作日志" key="2">
-        <Worklog role={role} />
+        <CustomerWorklog type={role} />
       </TabPane>
       {/* <TabPane tab="客户操作日志" key="3">
         <Admin role={role} />

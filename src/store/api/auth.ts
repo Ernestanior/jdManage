@@ -28,11 +28,11 @@ class AuthAPI {
    * logout
    * 生成请求参数
    */
-  Logout = (params: ILogoutParams, data: {}) => {
+  Logout = (data: {}) => {
     const config: AxiosRequestConfig = {
-      url: "/api/auth/logout",
+      url: "/logout",
       method: "get",
-      params,
+
       data,
     };
     config.headers = {};

@@ -1,11 +1,10 @@
 import { FC, ReactElement, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-
 import User from "./userMana";
-
 import { Tabs } from "antd";
-const { TabPane } = Tabs;
+
 const Index: FC = (): ReactElement => {
+  const { TabPane } = Tabs;
   const navigator = useNavigate();
   const path: any = useLocation().state;
   const index = useMemo(() => (path && path.sysMana) || "1", [path]);
