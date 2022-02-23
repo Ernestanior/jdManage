@@ -178,34 +178,6 @@ const Index: FC<Role> = (props: Role) => {
         } else return <div>-</div>;
       },
     },
-    {
-      title: "操作",
-      dataIndex: "uid",
-      key: "uid",
-      render: (key: any) => {
-        const menu = (
-          <Menu>
-            <Menu.Item
-              key="1"
-              onClick={() => {
-                passUid(key);
-                showCertDrawer();
-              }}
-            >
-              查看
-            </Menu.Item>
-            <Menu.Item key="2">删除账户</Menu.Item>
-          </Menu>
-        );
-        return (
-          <div>
-            <Dropdown overlay={menu}>
-              <DownOutlined />
-            </Dropdown>
-          </div>
-        );
-      },
-    },
   ];
 
   //Checkbox
@@ -231,6 +203,19 @@ const Index: FC<Role> = (props: Role) => {
 
   //TemplateConfig
   const TempConfig = {
+    optList: [
+      {
+        text: "查看",
+        event: (data: any) => {
+          passUid(data.uid);
+          showCertDrawer();
+        },
+      },
+      {
+        text: "更新",
+        event: (data: any) => {},
+      },
+    ],
     batchBtns: batchBtns,
     onSearch: (params: any) => setParams(params),
     rowId: "key",

@@ -78,6 +78,27 @@ const Index: FC<Role> = (props: Role) => {
   };
 
   const TempConfig = {
+    optList: [
+      {
+        text: "查看",
+        event: (data: any) => {
+          handleOnclick(data.uid);
+          showDrawer();
+        },
+      },
+      {
+        text: "修改",
+        event: (data: any) => {},
+      },
+      {
+        text: "禁用",
+        event: (data: any) => {},
+      },
+      {
+        text: "删除",
+        event: (data: any) => {},
+      },
+    ],
     normalBtns: [
       {
         text: "新增站点",
@@ -120,34 +141,6 @@ const Index: FC<Role> = (props: Role) => {
           );
         },
       },
-      {
-        title: "操作",
-        dataIndex: "uid",
-        key: "uid",
-        render: (key: any) => {
-          const menu = (
-            <Menu>
-              <Menu.Item
-                key="1"
-                onClick={() => {
-                  handleOnclick(key);
-                  showDrawer();
-                }}
-              >
-                查看
-              </Menu.Item>
-              <Menu.Item key="2">删除账户</Menu.Item>
-            </Menu>
-          );
-          return (
-            <div>
-              <Dropdown overlay={menu}>
-                <DownOutlined />
-              </Dropdown>
-            </div>
-          );
-        },
-      },
     ],
   };
 
@@ -183,27 +176,29 @@ const Index: FC<Role> = (props: Role) => {
           <Col span={15} offset={2}>
             {supplierAccount?.name}
           </Col>
-          <Divider/>
+          <Divider />
           <Col span={7}>平台</Col>
           <Col span={15} offset={2}>
             {supplierAccount?.supplier?.displayName}
           </Col>
-          <Divider/>
+          <Divider />
           <Col span={7}>API 金钥</Col>
           <Col span={15} offset={2}>
-            {supplierAccount?.supplier?.tokenValue?.apiKey?supplierAccount?.supplier?.tokenValue?.apiKey:"-"}
+            {supplierAccount?.supplier?.tokenValue?.apiKey
+              ? supplierAccount?.supplier?.tokenValue?.apiKey
+              : "-"}
           </Col>
-          <Divider/>
+          <Divider />
           <Col span={7}>状态</Col>
           <Col span={15} offset={2}>
-            {supplierAccount?.status?supplierAccount?.status:"-"}
+            {supplierAccount?.status ? supplierAccount?.status : "-"}
           </Col>
-          <Divider/>
+          <Divider />
           <Col span={7}>备注</Col>
           <Col span={15} offset={2}>
             {supplierAccount?.remark === "" ? "-" : supplierAccount?.remark}
           </Col>
-          <Divider/>
+          <Divider />
         </Row>
       </Drawer>
     </div>

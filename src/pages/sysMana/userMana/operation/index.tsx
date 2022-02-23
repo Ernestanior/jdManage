@@ -39,7 +39,7 @@ const Index: FC<Role> = (props: Role) => {
   const showDrawer = () => {
     setVisible(true);
   };
-  const showEditDrawer = (key: any) => {
+  const showEditDrawer = () => {
     setEditDrawerVisible(true);
   };
 
@@ -57,8 +57,8 @@ const Index: FC<Role> = (props: Role) => {
     let obj = { ...key, uid: selectedCustomer.uid };
     CustomerService.modifyCustomer(obj);
   };
-  const handleOnclick = (key: any, index: any) => {
-    setSelectedCustomer(index);
+  const handleOnclick = (data: any) => {
+    setSelectedCustomer(data);
   };
   useEffect(() => {
     console.log(selectedCustomer);
@@ -81,37 +81,30 @@ const Index: FC<Role> = (props: Role) => {
       dataIndex: "status",
       key: "status",
     },
-    {
-      title: "操作",
-      dataIndex: `email`,
-      key: "uid",
-      render: (key: any, index: any) => {
-        const menu = (
-          <Menu>
-            <Menu.Item
-              key="1"
-              onClick={() => {
-                handleOnclick(key, index);
-                showEditDrawer(key);
-              }}
-            >
-              编辑
-            </Menu.Item>
-            <Menu.Item key="2">删除账户</Menu.Item>
-          </Menu>
-        );
-        return (
-          <div>
-            <Dropdown overlay={menu}>
-              <DownOutlined />
-            </Dropdown>
-          </div>
-        );
-      },
-    },
   ];
 
   const TempConfig = {
+    optList: [
+      {
+        text: "编辑",
+        event: (data: any) => {
+          handleOnclick(data);
+          showEditDrawer();
+        },
+      },
+      {
+        text: "重置密码",
+        event: (data: any) => {},
+      },
+      {
+        text: "启用｜｜ 禁用",
+        event: (data: any) => {},
+      },
+      {
+        text: "删除",
+        event: (data: any) => {},
+      },
+    ],
     batchBtns: [
       {
         text: "批量删除",

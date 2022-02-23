@@ -45,6 +45,7 @@ const Index: FC = () => {
   }, [customerList]);
 
   const TempConfig = {
+    
     batchBtns: [
       {
         text: "批量删除",

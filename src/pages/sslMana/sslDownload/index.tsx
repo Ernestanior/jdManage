@@ -102,6 +102,13 @@ const Index: FC<Role> = (props: Role) => {
   ];
 
   const TempConfig = {
+    optList: [{
+      text:"删除",
+      event: (data: any) => {
+       
+      },
+    },{text:"",event:()=>{}}
+  ],
     onSearch: (params: any) => setParams(params),
     rowId: "uid",
     data: dnsCertList,
