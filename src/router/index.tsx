@@ -43,7 +43,7 @@ const ProjectRouter: FC = () => {
   //   console.log(accountInfo);
   useEffect(() => {
     accountService.UserInfo();
-  }, []);
+  }, [accountInfo]);
   if (!accountInfo) {
     return <Login />;
   }

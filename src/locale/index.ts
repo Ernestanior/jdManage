@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { from, BehaviorSubject } from "rxjs";
+import WorldMap from "./world";
+import ChinaMap from "./china";
 import useBehaviorSubject from "../hooks/useBehaviorSubject";
+import zh_CN from "@/locale/zh_CN";
 
 const locale$ = new BehaviorSubject<string | null>(null);
 
@@ -21,7 +24,10 @@ export const useLanguage = () => {
 export const setLanguage = (type: string) => {
   locale$.next(type);
 };
-
+export const getMapLanguage = (mapType: "world" | "china") => {
+  const mapCollection: any = mapType === "world" ? WorldMap : ChinaMap;
+  return mapCollection["en_US"];
+};
 const loadLanPkg = (lan: any) => {
   switch (lan) {
     case "zh_CN":

@@ -146,8 +146,6 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
     };
   }, [props]);
 
-
-  
   // const { current: initMoreFilters } = useRef(props.moreFilters);
   // const moreFilters = props.moreFilters;
 
@@ -230,7 +228,6 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
 
   useLayoutEffect(() => {
     const sub = params$.subscribe((data) => {
-       console.log(data, "aasdasd");
       props.onSearch(data);
     });
     return () => sub.unsubscribe();

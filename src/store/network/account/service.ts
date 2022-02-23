@@ -37,7 +37,6 @@ class Account {
   UserInfo() {
     // 登录成功之后将数据设置到info就可以触发登录信息的更新
     from(request(authApi.User({}, {}))).subscribe((data) => {
-      //   console.log(data);
       this.userInfo$.next(data);
     });
   }

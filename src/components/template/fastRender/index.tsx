@@ -182,7 +182,7 @@ type IItem3 = XOR<IItem2, ICheckButton>;
  */
 interface ISelectorSync {
   type: "select";
-  data: ISelectItem[] | string[]| object[];
+  data: ISelectItem[] | string[] | object[];
   // listCacheID: string;
   config?: ISelectOptionConfig;
 }

@@ -8,25 +8,41 @@ import request from "@/store/request";
 import { dnsApi } from "@/store/api";
 import _ from "underscore";
 import IconFont from "@/components/icon";
+import { useLoading } from "@/components/loading";
+import Loading from "@/components/loading/context";
+
 interface IProps {
   dnsList: any[];
+  id: number;
+  onDelete: () => void;
+  numOfList: number;
+  onSubmit: Function;
 }
 const { Option } = Select;
-const DnsSelector: FC<IProps> = ({ dnsList }) => {
+const DnsSelector: FC<IProps> = ({
+  dnsList,
+  id,
+  onDelete,
+  numOfList,
+  onSubmit,
+}) => {
+  const loading = useLoading();
   const [record, setRecord] = useState<any[]>();
-  // const dnsList = useDnsDomainList();
-  // useEffect(() => {
-  //   if (!dnsList) {
-  //     dnsService.findDnsDomain({
-  //       searchPage: { page: 1, pageSize: 9999 },
-  //       uid: "",
-  //     });
-  //   }
-  // }, []);
-  // console.log(dnsList);
-  console.log(record);
+  const [loading$, setLoading] = useState<boolean>(false);
+  const [domain, setDomain] = useState<string>("");
+  const [subDomain, setSubDomain] = useState<string[]>([]);
 
-  const dnsChange = (domainUid: string) => {
+  // const dnsList = useDnsDomainList();
+  useEffect(() => {
+    if (subDomain && domain) {
+      onSubmit(subDomain.map((item) => `${item}.${domain}`));
+      // onSubmit({ [domain]: subDomain });
+    }
+  }, [subDomain, domain]);
+  // console.log(dnsList);
+
+  const domainChange = (domainUid: string) => {
+    setLoading(true);
     const payload = { domainUid, searchPage: { page: 1, pageSize: 9999 } };
     from(request(dnsApi.FindDnsRecord(payload))).subscribe((data) => {
       if (data && data.content) {
@@ -36,38 +52,62 @@ const DnsSelector: FC<IProps> = ({ dnsList }) => {
             item.defaultStatus !== "default" && item.name !== "_acme-challenge"
         );
         setRecord(newList);
+        setLoading(false);
       }
     });
   };
-  console.log(record);
+  // useEffect(()=>{
+  //   if(domainUid){
+  //     setLoading(true);
+  //     const payload = { domainUid, searchPage: { page: 1, pageSize: 9999 } };
+  //     from(request(dnsApi.FindDnsRecord(payload))).subscribe((data) => {
+  //       if (data && data.content) {
+  //         // uniq方法去重,再去default选项
+  //         const newList = _.uniq(data.content, "name").filter(
+  //           (item: any) =>
+  //             item.defaultStatus !== "default" && item.name !== "_acme-challenge"
+  //         );
+  //         setRecord(newList);
+  //         setLoading(false);
+  //       }
+  //     });
+  //   }
+  // },[])
 
   return (
-    <Row style={{ marginTop: 10, display: "flex", alignItems: "center" }}>
+    <Row style={{ marginTop: 20, display: "flex", alignItems: "center" }}>
       <Select
         style={{ width: 200, marginRight: 20 }}
-        onChange={(uid) => dnsChange(uid)}
+        onChange={(value) => {
+          setSubDomain([]);
+          domainChange(value.split("+++")[0]);
+          setDomain(value.split("+++")[1]);
+        }}
       >
         {dnsList &&
           dnsList.map((v: any) => (
-            <Option value={v.uid} key={v.uid}>
+            <Option value={`${v.uid}+++${v.displayName}`} key={v.uid}>
               {v.displayName}
             </Option>
           ))}
       </Select>
       <Select
         style={{ width: 200 }}
-        onChange={(uid) => console.log(uid)}
+        onChange={(list) => setSubDomain(list)}
+        value={subDomain}
         mode="multiple"
+        loading={loading$}
       >
         {record &&
           record.map((v: any) => (
-            <Option value={v.uid} key={v.uid}>
+            <Option value={v.displayName} key={v.uid}>
               {v.displayName}
             </Option>
           ))}
       </Select>
+      {/* {numOfList > 1 && ( */}
       <IconFont
-        onClick={() => {}}
+        onClick={onDelete}
         style={{
           color: "#ef8f35",
           fontSize: "20px",
@@ -75,6 +115,7 @@ const DnsSelector: FC<IProps> = ({ dnsList }) => {
         }}
         type="icon-trash"
       />
+      {/* )} */}
     </Row>
   );
 };

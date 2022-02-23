@@ -7,7 +7,7 @@ import {
   numberList,
   percentList,
   speedList,
-} from "./data/area_tree";
+} from "../../../../../../common/data/area_tree";
 
 const { Option } = Select;
 

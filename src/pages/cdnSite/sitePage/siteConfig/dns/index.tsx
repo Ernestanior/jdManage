@@ -330,7 +330,10 @@ const Index: FC = (): ReactElement => {
         确定禁用该站点?
       </EdgeModal>
       <CreateDrawer
-        onClose={() => setCreateFlag(false)}
+        onClose={() => {
+          setCreateFlag(false);
+          navigator(".", { state: { dnsCreate: "1" } });
+        }}
         title="新增域名"
         visible={createFlag}
       ></CreateDrawer>
