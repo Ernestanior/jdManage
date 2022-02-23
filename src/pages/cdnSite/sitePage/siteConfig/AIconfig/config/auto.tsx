@@ -1,13 +1,13 @@
 import { IAiSetting } from "@/store/network/site/interface";
 import { Col, Row, Select } from "antd";
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   decisionWindowList,
   hourList,
   numberList,
   percentList,
   speedList,
-} from "../../../../../../common/data/area_tree";
+} from "@/common/data/area_tree";
 
 const { Option } = Select;
 

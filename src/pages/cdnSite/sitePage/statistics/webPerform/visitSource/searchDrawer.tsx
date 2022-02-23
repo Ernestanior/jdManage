@@ -1,9 +1,7 @@
 // import "./index.less";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { Drawer, Input, Table } from "antd";
-
 import { useLoading } from "@/components/loading";
-
 import { ISiteOrigin } from ".";
 import { IStatSiteOrigin } from "@/store/network/stat/interface";
 import { from } from "rxjs";

@@ -1,23 +1,12 @@
 import useUid from "@/hooks/useUid";
-import { statApi, supplierApi } from "@/store/api";
 import {
-  useStatSiteBandwidth,
-  useStatSiteFlow,
   useStatSupplierAvail,
   useStatSupplierResTime,
 } from "@/store/network/stat";
 import statService from "@/store/network/stat/service";
-import React, {
-  FC,
-  ReactElement,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import Map from "./map";
 import TableComp from "./table";
-import { useLoading } from "@/components/loading";
 import TimeFilter, { ETimeFilter, ITimeFilter } from "@/components/timeFilter";
 import { Radio, Select, TreeSelect } from "antd";
 import { useSiteSupplierList } from "@/store/network/supplier";
@@ -37,7 +26,6 @@ const Index: FC<IProps> = ({ type }): ReactElement => {
   const siteSupplier = useSiteSupplierList();
   const statSupplierAvail = useStatSupplierAvail();
   const statSupplierResTime = useStatSupplierResTime();
-  const loading = useLoading();
   const [suppliers, setSuppliers] = useState<string[]>([]);
   const [timeFilter, setTimeFilter] = useState<ITimeFilter>({
     reportType: ETimeFilter.CURRENT_MONTH,

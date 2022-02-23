@@ -1,6 +1,5 @@
-import React from "react";
 import { XOR } from "ts-xor";
-import { Form, Input, DatePicker, Row, Col } from "antd";
+import { Form, Input, DatePicker } from "antd";
 import SelectP from "../select";
 import { ISelectItem, ISelectOptionConfig, IMap } from "../interface";
 import "./index.less";

@@ -1,5 +1,5 @@
 import { IFormComponent } from "../interface";
-import React, { FC, useState, useMemo } from "react";
+import { FC, useState, useMemo } from "react";
 import { Checkbox, Col, Row } from "antd";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import { CheckboxValueType } from "antd/lib/checkbox/Group";

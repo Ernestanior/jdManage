@@ -1,4 +1,3 @@
-import { notification } from "antd";
 import { AxiosRequestConfig, AxiosResponse, default as axios } from "axios";
 import Middleware from "../middleware";
 

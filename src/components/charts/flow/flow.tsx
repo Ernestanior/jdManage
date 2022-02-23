@@ -1,8 +1,5 @@
 import { FC, useMemo } from "react";
 import ReactECharts from "echarts-for-react";
-import * as echarts from "echarts";
-import moment from "moment";
-import { Col, Row } from "antd";
 import { isEmptyObj } from "@/common/utils/helper";
 
 export interface IDataModule<T = any> {

@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useState } from "react";
+import { FC, ReactElement, useState } from "react";
 import "./index.less";
 export interface IProps {
   navList: any[];

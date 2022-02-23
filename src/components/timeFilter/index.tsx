@@ -2,6 +2,35 @@ import { FC, useCallback, useState } from "react";
 import { Button, Col, DatePicker, Row, Space, Tabs } from "antd";
 import moment from "moment";
 import "./index.less";
+
+/**
+ * 时间筛选
+ */
+export enum ETimeFilter {
+  TODAY = "today",
+  YESTERDAY = "yesterday",
+  LAST7DAY = "last7day",
+  LAST30DAY = "last30day",
+  CURRENT_MONTH = "currentMonth",
+  CUSTOM = "custom",
+}
+
+export interface ITimeFilter {
+  startDate?: moment.Moment;
+  endDate?: moment.Moment;
+  reportType: ETimeFilter;
+}
+
+export interface ITimeFilterModule {
+  timeFilter?: ITimeFilter;
+}
+export interface IFormComponent<T = any> {
+  value?: T;
+  onChange?: IChangeModule;
+  disable?: boolean;
+}
+export type IChangeModule = (value: any, totalSelectConfig?: any) => void;
+
 const { RangePicker } = DatePicker;
 
 const { TabPane } = Tabs;
@@ -82,31 +111,3 @@ const TimeFilter: FC<IFormComponent<ITimeFilter>> = ({ value, onChange }) => {
 };
 
 export default TimeFilter;
-
-/**
- * 时间筛选
- */
-export enum ETimeFilter {
-  TODAY = "today",
-  YESTERDAY = "yesterday",
-  LAST7DAY = "last7day",
-  LAST30DAY = "last30day",
-  CURRENT_MONTH = "currentMonth",
-  CUSTOM = "custom",
-}
-
-export interface ITimeFilter {
-  startDate?: moment.Moment;
-  endDate?: moment.Moment;
-  reportType: ETimeFilter;
-}
-
-export interface ITimeFilterModule {
-  timeFilter?: ITimeFilter;
-}
-export interface IFormComponent<T = any> {
-  value?: T;
-  onChange?: IChangeModule;
-  disable?: boolean;
-}
-export type IChangeModule = (value: any, totalSelectConfig?: any) => void;

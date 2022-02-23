@@ -2,13 +2,11 @@
 import { FC, useMemo, useState } from "react";
 import { Form, Drawer, Input, Select, Switch, notification } from "antd";
 import Tip from "@/components/tip";
-import { FormattedMessage } from "react-intl";
+// import { FormattedMessage } from "react-intl";
 import IconFont, { tipIcon } from "@/components/icon";
-import { ICustomerList } from "@/store/network/customer/interface";
 import { Btn } from "@/components/button";
 import CheckboxGroup from "@/components/checkboxGroup";
 import SupplierService from "@/store/network/supplier/service";
-import siteService from "@/store/network/site/service";
 import { useSupplierList } from "@/store/network/supplier";
 import Loading from "@/components/loading/context";
 import { useLoading } from "@/components/loading";
@@ -20,10 +18,6 @@ interface IProps {
   visible: boolean;
   cusList: any[];
   onClose: () => void;
-}
-enum Status {
-  故障 = "故障",
-  正常 = "正常",
 }
 
 const formItemLayout = {

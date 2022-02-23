@@ -1,22 +1,7 @@
 import useUid from "@/hooks/useUid";
-import { statApi, supplierApi } from "@/store/api";
-import {
-  useStatSiteAvail,
-  useStatSiteBandwidth,
-  useStatSiteFlow,
-  useStatSiteResTime,
-  useStatSupplierAvail,
-  useStatSupplierResTime,
-} from "@/store/network/stat";
+import { useStatSiteAvail, useStatSiteResTime } from "@/store/network/stat";
 import statService from "@/store/network/stat/service";
-import React, {
-  FC,
-  ReactElement,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import TableComp from "./table";
 import { useLoading } from "@/components/loading";
 import TimeFilter, { ETimeFilter, ITimeFilter } from "@/components/timeFilter";

@@ -3,7 +3,7 @@ import { from, BehaviorSubject } from "rxjs";
 import WorldMap from "./world";
 import ChinaMap from "./china";
 import useBehaviorSubject from "../hooks/useBehaviorSubject";
-import zh_CN from "@/locale/zh_CN";
+// import zh_CN from "@/locale/zh_CN";
 
 const locale$ = new BehaviorSubject<string | null>(null);
 

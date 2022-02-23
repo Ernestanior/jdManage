@@ -1,12 +1,11 @@
 import { useLoading } from "@/components/loading";
 import { EdgeModal } from "@/components/modal";
-import Tip from "@/components/tip";
 import useUid from "@/hooks/useUid";
 import { firewallApi } from "@/store/api";
 import request from "@/store/request";
 import { Button, Drawer, notification, Switch } from "antd";
 import TextArea from "antd/lib/input/TextArea";
-import { FC, ReactElement, useEffect, useMemo, useState } from "react";
+import { FC, ReactElement, useMemo, useState } from "react";
 import { from } from "rxjs";
 import Loading from "@/components/loading/context";
 import "./index.less";

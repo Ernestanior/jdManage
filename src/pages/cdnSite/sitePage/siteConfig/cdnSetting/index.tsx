@@ -1,10 +1,9 @@
 import { FC, ReactElement } from "react";
-
 import Source from "./source";
 import Ssl from "./ssl";
 import Basic from "./basic";
-
 import { Tabs } from "antd";
+
 const { TabPane } = Tabs;
 
 const Index: FC = (): ReactElement => {

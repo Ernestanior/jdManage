@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { BehaviorSubject } from "rxjs";
 
 const useUid = () => {
   // 获取当前路由路径

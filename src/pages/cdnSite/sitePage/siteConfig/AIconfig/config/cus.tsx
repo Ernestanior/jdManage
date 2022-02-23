@@ -7,7 +7,7 @@ import SupplierService from "@/store/network/supplier/service";
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, Row, Select, TreeSelect } from "antd";
 import { FC, useEffect, useMemo, useState } from "react";
-import { treeData } from "../../../../../../common/data/area_tree";
+import { treeData } from "@/common/data/area_tree";
 import Loading from "@/components/loading/context";
 import EditDrawer from "./cusEditDrawer";
 interface IProps {

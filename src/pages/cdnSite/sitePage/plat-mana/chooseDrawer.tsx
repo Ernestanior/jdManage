@@ -1,4 +1,3 @@
-// import "./index.less";
 import { FC, useEffect, useMemo, useState } from "react";
 import { Drawer, notification } from "antd";
 import { Btn } from "@/components/button";
@@ -45,12 +44,12 @@ const CreateDrawer: FC<IProps> = ({
         });
         onClose();
       } else if (data instanceof Array) {
-        data.map((item: any) => {
+        data.forEach((item: any) =>
           notification.error({
             message: item.code,
             description: item.message,
-          });
-        });
+          })
+        );
       }
       onRefresh();
     });

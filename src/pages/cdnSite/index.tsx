@@ -2,7 +2,7 @@ import { useSiteAll, useSiteInfo } from "@/store/network/site";
 import siteService from "@/store/network/site/service";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Menu } from "antd";
-import React, { FC, ReactElement, useEffect, useMemo } from "react";
+import { FC, ReactElement, useEffect, useMemo } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Loading from "@/components/loading/context";
 const Index: FC = (): ReactElement => {

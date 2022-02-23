@@ -42,19 +42,17 @@ const createOption = (
         radius: ["40%", "65%"],
         center: ["30%", "50%"],
         data: series,
-        itemStyle: {
-          emphasis: {
+        label: {
+          show: false,
+        },
+        labelLine: {
+          show: false,
+        },
+        emphasis: {
+          itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
             shadowColor: "rgba(0, 0, 0, 0.5)",
-          },
-          normal: {
-            label: {
-              show: false,
-            },
-            labelLine: {
-              show: false,
-            },
           },
         },
       },

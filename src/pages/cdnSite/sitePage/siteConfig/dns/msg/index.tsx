@@ -1,5 +1,5 @@
 import { CloseOutlined } from "@ant-design/icons";
-import React, { FC, ReactElement, useState } from "react";
+import { FC, ReactElement, useState } from "react";
 import "./index.less";
 
 const Index: FC = (): ReactElement => {

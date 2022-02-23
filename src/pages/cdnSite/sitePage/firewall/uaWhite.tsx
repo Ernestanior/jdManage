@@ -13,7 +13,7 @@ const UaWhite: FC = (): ReactElement => {
   useEffect(() => {
     firewallService.findWhiteUA(uid);
     firewallService.findBlackUA(uid);
-  }, [refreshFlag]);
+  }, [refreshFlag, uid]);
   return (
     <Firewall
       type="whiteUA"

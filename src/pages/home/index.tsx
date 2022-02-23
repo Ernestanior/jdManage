@@ -7,7 +7,6 @@ import request from "@/store/request";
 import { dnsApi, siteApi } from "@/store/api";
 import "./index.less";
 import { useNewUserLogin } from "@/store/network/user";
-import { use } from "echarts";
 
 export interface IData {
   number: number;
@@ -51,8 +50,7 @@ const Home: FC = () => {
       setcdnLoading(false);
       setCdnData(res);
     });
-  }, [userLogin,cdnPage]);
-
+  }, [userLogin, cdnPage]);
 
   const cdnList = useMemo(
     () => cdnData.content.map((item) => item.name),
@@ -73,7 +71,7 @@ const Home: FC = () => {
       setDnsLoading(false);
       setDnsData(res);
     });
-  }, [dnsPage,userLogin]);
+  }, [dnsPage, userLogin]);
 
   const dnsList = useMemo(
     () => dnsData.content.map((item) => item.displayName),

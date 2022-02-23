@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import "./index.less";
 import { Btn } from "@/components/button";
 import { Pagination } from "antd";
@@ -20,7 +20,6 @@ const MiniTable = ({
   totalElements,
   pageChange,
 }: IProps): ReactElement => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   return (
     <div className="mini-table">
       <div className="mini-table-header">

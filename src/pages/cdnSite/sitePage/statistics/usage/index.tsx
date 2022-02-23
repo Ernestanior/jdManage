@@ -1,8 +1,7 @@
 import useUid from "@/hooks/useUid";
-import { statApi, supplierApi } from "@/store/api";
 import { useStatSiteBandwidth, useStatSiteFlow } from "@/store/network/stat";
 import statService from "@/store/network/stat/service";
-import React, { FC, ReactElement, useEffect, useRef, useState } from "react";
+import { FC, ReactElement, useEffect, useState } from "react";
 import Flow from "./flow";
 import TableComp from "./table";
 import Loading from "@/components/loading/context";

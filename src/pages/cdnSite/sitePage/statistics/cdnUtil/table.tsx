@@ -1,6 +1,6 @@
 import { Table } from "antd";
 import { FC, useMemo } from "react";
-import { colorPalette } from "../../../../../components/charts/flow/flow";
+import { colorPalette } from "@/components/charts/flow/flow";
 interface IProps {
   data: any;
 }

@@ -1,54 +1,39 @@
+import { Btn } from "@/components/button";
 import { Template } from "@/components/template";
+import accountService from "@/store/network/account/service";
+import userService from "@/store/network/user/service";
 import { useUserManage } from "@/store/network/userManage";
 import userManage from "@/store/network/userManage/service";
 import { DownOutlined } from "@ant-design/icons";
-import { Drawer, Dropdown, Menu } from "antd";
-import { FC, useEffect, useState } from "react";
-
-interface props {
-  props: string;
-}
-
-const Index: FC<props> = (props: props) => {
+import { FC, useEffect, useMemo, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import LoginDrawer from "./loginDrawer";
+// interface IProps {
+//   type: "reg" | "sales";
+// }
+const Index: FC = () => {
   const [params, setParams] = useState<any>();
   const [visible, setVisible] = useState<boolean>(false);
+  const [customerUid, setCustomerUid] = useState<string>();
   const customerList = useUserManage();
+  const routerState: any = useLocation().state;
+  const type = useMemo(() => routerState && routerState.cusMana, [routerState]);
   useEffect(() => {
-    if (props.props === "2") {
-      if (params) {
-        if (params.filters === undefined) {
-          userManage?.CustomerList({
-            channel: "sales",
-            searchPage: { desc: 1, page: 1, pageSize: 25, sort: "create_date" },
-            type: "customer",
-          });
-        } else {
-          userManage?.CustomerList({
-            keyword: params.filters.keyword,
-            searchPage: params.searchPage,
-            type: "customer",
-            status: params.filters.status,
-            name: params.filters.name,
-            channel: "sales",
-            email: params.filters.email,
-            probationFlag: params.filters.probationFlag,
-          });
-        }
-      }
-    }
-  }, [params, props]);
-
-  const handleOnclick = (key: any) => {
-    //  platformManage.viewSupplierAccount(key);
-  };
-
-  const showDrawer = () => {
-    setVisible(true);
-  };
+    params &&
+      userManage.CustomerList({
+        keyword: params.filters.keyword || "",
+        searchPage: params.searchPage,
+        type: "customer",
+        status: params.filters.status || "",
+        name: params.filters.name || "",
+        channel: type,
+        email: params.filters.email || "",
+        probationFlag: params.filters.probationFlag || "",
+      });
+  }, [params, type]);
 
   const onClose = () => {
-    setVisible(false);
-    //  setSupplierAccount({});
+    // setSupplierAccount({});
   };
 
   const TempConfig = {
@@ -81,9 +66,24 @@ const Index: FC<props> = (props: props) => {
         onClick: () => true,
       },
     ],
+    optList: [
+      {
+        text: "登入客户账号",
+        event: (data: any) => {
+          setCustomerUid(data.uid);
+          setVisible(true);
+        },
+      },
+      {
+        text: "编辑",
+        event: (data: any) => {},
+      },
+      {
+        text: "删除账户",
+        event: (data: any) => {},
+      },
+    ],
     onSearch: (params: any) => {
-      console.log(params);
-
       setParams(params);
     },
     rowId: "uid",
@@ -128,34 +128,6 @@ const Index: FC<props> = (props: props) => {
           return <div>{key ? `` : `X`}</div>;
         },
       },
-      {
-        title: "操作",
-        dataIndex: "uid",
-        key: "uid",
-        render: (key: any) => {
-          const menu = (
-            <Menu>
-              <Menu.Item
-                key="1"
-                onClick={() => {
-                  handleOnclick(key);
-                  showDrawer();
-                }}
-              >
-                登入客户账号
-              </Menu.Item>
-              <Menu.Item key="2">删除账户</Menu.Item>
-            </Menu>
-          );
-          return (
-            <div>
-              <Dropdown overlay={menu}>
-                <DownOutlined />
-              </Dropdown>
-            </div>
-          );
-        },
-      },
     ],
   };
   return (
@@ -194,14 +166,13 @@ const Index: FC<props> = (props: props) => {
         ]}
         {...TempConfig}
       ></Template>
-      <Drawer
-        title="查看"
-        placement="left"
-        onClose={onClose}
-        visible={visible}
-        width={570}
-        bodyStyle={{ paddingBottom: 80 }}
-      ></Drawer>
+      {customerUid && (
+        <LoginDrawer
+          onClose={() => setVisible(false)}
+          visible={visible}
+          customerUid={customerUid}
+        ></LoginDrawer>
+      )}
     </div>
   );
 };

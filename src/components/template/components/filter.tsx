@@ -1,5 +1,5 @@
 import { Form, Row, Col, Input } from "antd";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { fastRender, IRenderConfig } from "../fastRender";
 import { SearchOutlined, SlidersOutlined } from "@ant-design/icons";
 import { Btn } from "../button";
@@ -13,9 +13,9 @@ interface IProps {
 export const Filter = ({ searchList, onSearch, primarySearch }: IProps) => {
   const [showMal, setModal] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const onFinish = (value: any) => {
-    onSearch(value);
-  };
+  // const onFinish = (value: any) => {
+  //   onSearch(value);
+  // };
   return (
     <div>
       <Input
@@ -46,7 +46,7 @@ export const Filter = ({ searchList, onSearch, primarySearch }: IProps) => {
           )
         }
       ></Input>
-      
+
       <EdgeModal
         visible={showMal}
         onCancel={() => setModal(false)}
@@ -59,7 +59,7 @@ export const Filter = ({ searchList, onSearch, primarySearch }: IProps) => {
             marginBottom: "10px",
             backgroundColor: "#fff",
           }}
-          onFinish={onFinish}
+          onFinish={onSearch}
         >
           {searchList && (
             <Row gutter={20}>

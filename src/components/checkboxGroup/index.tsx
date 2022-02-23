@@ -2,8 +2,6 @@ import "./index.less";
 import { FC, useEffect, useState } from "react";
 import { Checkbox, Col, Row } from "antd";
 
-const CheckGroup = Checkbox.Group;
-
 interface IProps {
   showCheckAll?: boolean;
   //多选项集合

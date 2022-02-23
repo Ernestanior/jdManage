@@ -3,7 +3,7 @@ import { IAiSetting } from "@/store/network/site/interface";
 import { useSiteSupplierList } from "@/store/network/supplier";
 import SupplierService from "@/store/network/supplier/service";
 import { Col, Row, Select } from "antd";
-import React, { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import Loading from "@/components/loading/context";
 import { useLoading } from "@/components/loading";
 

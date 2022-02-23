@@ -1,8 +1,7 @@
 import useUid from "@/hooks/useUid";
-import { statApi } from "@/store/api";
 import { useStatSiteSupplier } from "@/store/network/stat";
 import statService from "@/store/network/stat/service";
-import React, { FC, ReactElement, useEffect, useRef, useState } from "react";
+import { FC, ReactElement, useEffect, useState } from "react";
 import Flow from "@/components/charts/flow/flow";
 import TableComp from "./table";
 import Pie from "./pie";

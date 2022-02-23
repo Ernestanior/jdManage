@@ -3,7 +3,7 @@ import useUid from "@/hooks/useUid";
 import { siteApi } from "@/store/api";
 import request from "@/store/request";
 import { notification, Switch } from "antd";
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import { FC, ReactElement, useEffect, useState } from "react";
 import { from } from "rxjs";
 import Loading from "@/components/loading/context";
 import "./index.less";

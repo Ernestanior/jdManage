@@ -1,10 +1,4 @@
-import React, {
-  FC,
-  HTMLAttributes,
-  ReactElement,
-  useEffect,
-  useState,
-} from "react";
+import React, { HTMLAttributes, ReactElement, useState } from "react";
 import { Button } from "antd";
 import "./index.less";
 export interface IProps extends HTMLAttributes<HTMLButtonElement> {
@@ -16,8 +10,6 @@ export interface IProps extends HTMLAttributes<HTMLButtonElement> {
     | "primary"
     | "dashed"
     | undefined;
-  // backgroundColor?: string;
-  // color?: string;
   size?: "large" | "middle" | "small";
   disabled?: boolean;
   children?: any;

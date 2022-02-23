@@ -1,24 +1,7 @@
-// import React, { FC, ReactElement } from "react";
-// import Msg from "./msg";
-// import RecordList from "./recordList";
-// const Index: FC = (): ReactElement => {
-//   return (
-//     <div>
-//       <Msg></Msg>
-//       <RecordList></RecordList>
-//     </div>
-//   );
-// };
-
-// export default Index;
-import { FC, ReactElement, useEffect, useMemo, useState } from "react";
+import { FC, ReactElement, useMemo, useState } from "react";
 import { Template } from "@/components/template";
 import useEvent from "@/common/hooks/useEvent";
 import dnsService from "@/store/network/dns/service";
-// import CreateDrawer from "./createDrawer";
-// import EditDrawer from "./editDrawer";
-import { useCustomerList } from "@/store/network/customer";
-import customerService from "@/store/network/customer/service";
 import { useNavigate } from "react-router-dom";
 import { EdgeModal } from "@/components/modal";
 import { from } from "rxjs";
@@ -30,34 +13,9 @@ import useUid from "@/hooks/useUid";
 import CreateDrawer from "./createDrawer";
 import Msg from "./msg";
 
-// interface IData {
-//   number: number;
-//   size: number;
-//   totalPages: number;
-//   numberOfElements: number;
-//   totalElements: number;
-//   sort: any;
-//   content: any[];
-// }
-
 const Index: FC = (): ReactElement => {
   const navigator = useNavigate();
-
-  // 获取当前uid
   const uid = useUid();
-  // const customerList = useCustomerList();
-  // useEffect(() => {
-  //   if (!customerList || !customerList.content) {
-  //     customerService.findCustomer({
-  //       searchPage: { page: 1, pageSize: 99999 },
-  //     });
-  //   }
-  // }, [customerList]);
-  // const cusList = useMemo(
-  //   () => (customerList && customerList.content) || [],
-  //   [customerList]
-  // );
-
   const currData = useDomainList();
   // 表格数据
   const currdata = useMemo(() => {
@@ -260,12 +218,12 @@ const Index: FC = (): ReactElement => {
           from(request(siteApi.DeleteSite(selectedRowKeys))).subscribe(
             (data) => {
               if (data.length) {
-                data.map((item: any) => {
+                data.forEach((item: any) =>
                   notification.error({
                     message: "Delete Failed",
                     description: `UID: ${item.uid} ${item.message}`,
-                  });
-                });
+                  })
+                );
               } else {
                 notification.success({
                   message: "Delete Success",
@@ -285,12 +243,12 @@ const Index: FC = (): ReactElement => {
           from(request(siteApi.EnableSite(selectedRowKeys))).subscribe(
             (data) => {
               if (data.length) {
-                data.map((item: any) => {
+                data.forEach((item: any) =>
                   notification.error({
                     message: "Enable Failed",
                     description: `UID: ${item.uid} ${item.message}`,
-                  });
-                });
+                  })
+                );
               } else {
                 notification.success({
                   message: "Enable Success",
@@ -310,12 +268,12 @@ const Index: FC = (): ReactElement => {
           from(request(siteApi.DisableSite(selectedRowKeys))).subscribe(
             (data) => {
               if (data.length) {
-                data.map((item: any) => {
+                data.forEach((item: any) =>
                   notification.error({
                     message: "Disable Failed",
                     description: `UID: ${item.uid} ${item.message}`,
-                  });
-                });
+                  })
+                );
               } else {
                 notification.success({
                   message: "Disable Success",

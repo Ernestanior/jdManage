@@ -1,4 +1,3 @@
-// import "./index.less";
 import { FC, useEffect, useMemo, useState } from "react";
 import {
   useCustomerLineList,
@@ -278,7 +277,7 @@ export default CreateDrawer;
 
 export const getFormattedRecords = (records: any[] = []) => {
   let recs: Record<string, string[]> = {};
-  records.map((rec) => {
+  records.forEach((rec) => {
     const parsedRec: any = psl.parse(rec);
 
     const val = recs[parsedRec.domain];

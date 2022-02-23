@@ -5,22 +5,14 @@ import useUid from "@/hooks/useUid";
 import { useSslList } from "@/store/network/site";
 import siteService from "@/store/network/site/service";
 import { Button } from "antd";
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import { FC, ReactElement, useState } from "react";
 import { NavLink } from "react-router-dom";
 import HttpsDrawer from "./httpsDrawer";
 import "./index.less";
 const Index: FC = (): ReactElement => {
   const uid = useUid();
   const currData = useSslList();
-  console.log(currData);
-  // useEffect(() => {
-  //   siteService.findSsl(uid, {
-  //     searchPage: { page: 1, pageSize: 25 },
-  //     sslDomains: "",
-  //   });
-  // }, []);
   const [httpsFlag, setHttpsFlag] = useState(false);
-
   const [event$, sendMessage] = useEvent();
   const closeEvent = () => {
     setHttpsFlag(false);

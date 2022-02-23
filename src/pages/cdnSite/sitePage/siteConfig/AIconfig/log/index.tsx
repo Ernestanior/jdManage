@@ -1,11 +1,10 @@
 import { Template } from "@/components/template";
 import useUid from "@/hooks/useUid";
 import { siteApi } from "@/store/api";
-import siteService from "@/store/network/site/service";
 import request from "@/store/request";
 import { Tooltip } from "antd";
 import moment from "moment";
-import React, { FC, ReactElement, useState } from "react";
+import { FC, ReactElement, useState } from "react";
 import { from } from "rxjs";
 
 const Index: FC = (): ReactElement => {
@@ -13,13 +12,8 @@ const Index: FC = (): ReactElement => {
   const [currData, setCurrData] = useState({});
   const TempConfig = {
     onSearch: (params: any) => {
-      // console.log(params);
-
       const { searchPage } = params;
       from(request(siteApi.AiLog({ searchPage, uid }))).subscribe((data) => {
-        // setRefresh(!refresh);
-        console.log(data);
-
         data && setCurrData(data);
       });
     },

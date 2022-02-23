@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, ReactElement } from "react";
+import { HTMLAttributes, ReactElement } from "react";
 import { Button } from "antd";
 export interface IProps extends HTMLAttributes<HTMLButtonElement> {
   type?:
@@ -17,7 +17,7 @@ export interface IProps extends HTMLAttributes<HTMLButtonElement> {
   icon?: ReactElement;
   htmlType?: "button" | "submit" | "reset" | undefined;
   padding?: string;
-  marginRight?:string;
+  marginRight?: string;
 }
 
 /** 用于表单提交，增删改查以及页面跳转等操作 */
@@ -33,7 +33,7 @@ export const Btn = ({
   // console.log(props);
 
   return (
-    <Button {...props} style={{ color, backgroundColor, padding,marginRight }}>
+    <Button {...props} style={{ color, backgroundColor, padding, marginRight }}>
       {children}
     </Button>
   );

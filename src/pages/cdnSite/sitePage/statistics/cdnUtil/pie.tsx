@@ -1,16 +1,9 @@
-import { Table } from "antd";
 import { FC, useMemo } from "react";
 import ReactECharts from "echarts-for-react";
 
-import { colorPalette } from "../../../../../components/charts/flow/flow";
+import { colorPalette } from "@/components/charts/flow/flow";
 interface IProps {
   data: any;
-}
-interface ITableData {
-  key: number;
-  color: string;
-  supplier: string;
-  usage: string;
 }
 
 const PieComp: FC<IProps> = ({ data }) => {

@@ -13,7 +13,7 @@ const IpWhite: FC = (): ReactElement => {
   useEffect(() => {
     firewallService.findWhiteIP(uid);
     firewallService.findBlackIP(uid);
-  }, [refreshFlag]);
+  }, [refreshFlag, uid]);
   return (
     <Firewall
       type="whiteIP"

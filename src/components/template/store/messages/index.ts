@@ -3,7 +3,6 @@ import { Subject } from "rxjs";
 import { filter } from "rxjs/operators";
 import tool from "../tools";
 import EInfoType from "./infoType";
-import moment from "moment";
 
 interface IInfo {
   type: EInfoType | number;

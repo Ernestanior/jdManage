@@ -12,13 +12,11 @@ import { Filter } from "./components/filter";
 import {
   ISearchPage,
   IColumnsTypeP,
-  IMapT,
   IOperationConfig,
-  INormalBtn,
   IBatchBtn,
 } from "./interface";
 import { IRenderConfig } from "./fastRender";
-import { BehaviorSubject, from, Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
 import { TablePaginationConfig } from "antd/lib/table";
 import { SorterResult } from "antd/lib/table/interface";
 import { createOptList } from "./components/optList";
@@ -109,7 +107,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   // 如果有强制大小限定
   const rowKey = props.rowId;
   const [selectIds, setSelectIds] = useState<string[]>([]);
-  const [selectRows, setSelectRows] = useState<any[]>([]);
+  // const [selectRows, setSelectRows] = useState<any[]>([]);
   // 表格loading状态
   const loading = useLoading();
 
@@ -123,11 +121,11 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
     sort: "",
   });
   //filter切换
-  const [showFilter, setShowFilter] = useState<boolean>(false);
+  // const [showFilter, setShowFilter] = useState<boolean>(false);
   // 表格数据
-  const [tableData, setTableData] = useState<any[]>([]);
+  // const [tableData, setTableData] = useState<any[]>([]);
   // 表格数据流
-  const tableData$ = useMemo(() => new Subject<any[]>(), []);
+  // const tableData$ = useMemo(() => new Subject<any[]>(), []);
 
   const pagination = useMemo(() => {
     if (props.data) {
@@ -307,7 +305,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
       return {
         onChange: (selectedRowKeys: any, selectedRows: any) => {
           setSelectIds(selectedRowKeys);
-          setSelectRows(selectedRows);
+          // setSelectRows(selectedRows);
         },
       };
     }

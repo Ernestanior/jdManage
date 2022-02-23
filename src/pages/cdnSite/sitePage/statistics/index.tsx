@@ -1,20 +1,14 @@
 import { FC, ReactElement, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-
 import CdnUtil from "./cdnUtil";
 import StatPlatform from "./platform";
 import Usage from "./usage";
 import WebPerform from "./webPerform";
-
 import { Tabs } from "antd";
-import useUid from "@/hooks/useUid";
-import { useLoading } from "@/components/loading";
 
 const { TabPane } = Tabs;
 
 const Index: FC = (): ReactElement => {
-  const uid = useUid();
-  const loading = useLoading();
   const navigator = useNavigate();
   const path: any = useLocation().state;
   const index = useMemo(() => (path && path.siteConfig) || "1", [path]);

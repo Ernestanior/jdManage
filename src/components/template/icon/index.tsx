@@ -1,7 +1,7 @@
 import { createFromIconfontCN } from "@ant-design/icons";
 import { IconFontProps } from "@ant-design/icons/lib/components/IconFont";
 import { Tooltip } from "antd";
-import React, { FC } from "react";
+import { FC } from "react";
 // import useIntlDep from "../intl/useIntlDep";
 
 const IconFontP = createFromIconfontCN({

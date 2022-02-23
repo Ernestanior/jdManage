@@ -1,10 +1,11 @@
 import { FC, ReactElement, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-
 import CacheClear from "./cacheClear";
 import CacheSetting from "./cacheSetting";
 import { Tabs } from "antd";
+
 const { TabPane } = Tabs;
+
 const Index: FC = (): ReactElement => {
   const navigator = useNavigate();
   const path: any = useLocation().state;

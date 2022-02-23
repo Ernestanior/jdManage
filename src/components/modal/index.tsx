@@ -1,6 +1,6 @@
-import React, { FC, ReactElement, useState } from "react";
+import { FC, ReactElement } from "react";
 import "./index.less";
-import { Button, Modal } from "antd";
+import { Modal } from "antd";
 export interface IProps {
   /** 弹窗模块标题 */
   title?: string;

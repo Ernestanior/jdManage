@@ -1,11 +1,7 @@
 import "./index.less";
-import { FC, useEffect, useMemo, useState } from "react";
-import { Drawer, Select, Tabs } from "antd";
-import { useDnsDomainList } from "@/store/network/dns";
+import { FC, useEffect, useState } from "react";
+import { Drawer, Tabs } from "antd";
 import dnsService from "@/store/network/dns/service";
-import DnsSelector from "./components/dnsSelector";
-import { Btn } from "@/components/button";
-import { useSuffix } from "@/store/network/site";
 import siteService from "@/store/network/site/service";
 import useUid from "@/hooks/useUid";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -17,16 +13,13 @@ const { TabPane } = Tabs;
 interface IProps {
   title: string;
   visible: boolean;
-  // cusList: any[];
   onClose: () => void;
 }
-const { Option } = Select;
 const CreateDrawer: FC<IProps> = ({ title, visible, onClose }) => {
   const [index, setIndex] = useState<string>("1");
   const uid = useUid();
   const navigator = useNavigate();
-  const path: any = useLocation().state;
-  // const index = useMemo(() => (path && path.dnsCreate) || "1", [path]);
+  // const path: any = useLocation().state;
 
   useEffect(() => {
     dnsService.findCustomerLineList();

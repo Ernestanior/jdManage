@@ -1,4 +1,3 @@
-// import "./index.less";
 import { FC, useEffect, useState } from "react";
 import { Drawer, Row, Select } from "antd";
 import { Btn } from "@/components/button";
@@ -11,7 +10,7 @@ import {
   numberList,
   percentList,
   speedList,
-} from "../../../../../../common/data/area_tree";
+} from "@/common/data/area_tree";
 
 interface IProps {
   visible: boolean;

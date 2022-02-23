@@ -1,4 +1,3 @@
-import React from "react";
 import { removeEmpty } from "../../utils";
 import { Divider } from "antd";
 

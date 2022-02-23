@@ -1,14 +1,7 @@
-// import "./index.less";
-import { FC, useEffect, useMemo, useState } from "react";
-import { Drawer, Input, Table } from "antd";
-
+import { FC, useMemo } from "react";
+import { Drawer, Table } from "antd";
 import { useLoading } from "@/components/loading";
 
-import { IStatSiteOrigin } from "@/store/network/stat/interface";
-import { from } from "rxjs";
-import request from "@/store/request";
-import { statApi } from "@/store/api";
-const { Search } = Input;
 interface ITableData {
   ip?: string;
   region: string;

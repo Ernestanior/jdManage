@@ -1,6 +1,5 @@
 import { useLoading } from "@/components/loading";
 import useUid from "@/hooks/useUid";
-import cacheService from "@/store/network/cache/service";
 import { Button, notification } from "antd";
 import Loading from "@/components/loading/context";
 import { FC, ReactElement, useState } from "react";
@@ -9,9 +8,7 @@ import { from } from "rxjs";
 import request from "@/store/request";
 import { cacheApi } from "@/store/api";
 
-interface IProps {}
-
-const Index: FC<IProps> = ({}: IProps): ReactElement => {
+const Index: FC = (): ReactElement => {
   const uid = useUid();
   const loading = useLoading();
   const [modal, setModal] = useState<boolean>(false);

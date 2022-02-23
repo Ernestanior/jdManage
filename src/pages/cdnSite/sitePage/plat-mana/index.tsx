@@ -11,7 +11,9 @@ import { ISearchPage } from "@/store/network/site/interface";
 import { IChangeOption } from "@/store/network/supplier/interface";
 import Choose from "./chooseDrawer";
 import Edit from "./editDrawer";
+
 const { Option } = Select;
+
 const Index: FC = (): ReactElement => {
   const uid = useUid();
   const supplierList = useSiteSupplierList$();
@@ -136,7 +138,7 @@ const Index: FC = (): ReactElement => {
         <Edit
           visible={editFlag}
           onClose={() => setEditFlag(false)}
-          onRefresh={() => setRefresh(!refresh)}
+          // onRefresh={() => setRefresh(!refresh)}
           currUid={editingId}
         ></Edit>
       )}

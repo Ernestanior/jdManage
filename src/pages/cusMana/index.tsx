@@ -1,35 +1,34 @@
-import { FC, ReactElement, useMemo, useState } from "react";
-import Customer from "./Customer";
-import Sales from "./Sales";
+import { FC, ReactElement, useMemo } from "react";
+import Content from "./content";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Tabs } from "antd";
 
 const { TabPane } = Tabs;
 
 const Index: FC = (): ReactElement => {
-  const [props, setProps] = useState("1");
+  // console.log(useLocation());
+
   const navigator = useNavigate();
   const path: any = useLocation().state;
-  const index = useMemo(() => (path && path.cusMana) || "1", [path]);
-  const handleOnChange = (e: string) => {
-    console.log(e, "e");
-    setProps(e);
-  };
+  const index = useMemo(() => (path && path.cusMana) || "reg", [path]);
+  // const handleOnChange = (e: string) => {
+  //   setProps(e);
+  // };
   return (
     <Tabs
       style={{ marginBottom: 32 }}
-      //activeKey={index}
+      activeKey={index}
       type="card"
       onChange={(activeKey) => {
         navigator(".", { state: { cusMana: activeKey } });
-        handleOnChange(activeKey);
+        // handleOnChange(activeKey);
       }}
     >
-      <TabPane tab="注册客户" key="1">
-        <Customer props={props} />
+      <TabPane tab="注册客户" key="reg">
+        <Content />
       </TabPane>
-      <TabPane tab="销售客户" key="2">
-        <Sales props={props} />
+      <TabPane tab="销售客户" key="sales">
+        <Content />
       </TabPane>
     </Tabs>
   );

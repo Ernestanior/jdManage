@@ -1,15 +1,9 @@
-import { Dropdown, Menu, Button, Space } from "antd";
-import { Btn } from "../button";
-import IconFont from "../icon";
+import { Dropdown, Menu, Space } from "antd";
 import React, { FC } from "react";
 import { IOperation, IColumnsTypeP, IOperationConfig } from "../interface";
-import {
-  DownOutlined,
-  EllipsisOutlined,
-  MoreOutlined,
-} from "@ant-design/icons";
+import { EllipsisOutlined } from "@ant-design/icons";
 import { XOR } from "ts-xor";
-const isDateFormat = new RegExp(/^[0-9]{4}-[0-9]{2}$/g);
+// const isDateFormat = new RegExp(/^[0-9]{4}-[0-9]{2}$/g);
 /**
  * 构建操作列config,
  * @param optlist 选项
@@ -74,7 +68,7 @@ const OptListComp: FC<IOptProps> = (props) => {
     return (
       <Space key="tb_opt">
         {props.optList.map((opt) => {
-          const title = opt.text;
+          // const title = opt.text;
           // 符合隐藏条件
           if (opt.hide && opt.hide(props.value)) {
             return null;
@@ -111,7 +105,7 @@ const OptListComp: FC<IOptProps> = (props) => {
 
   props.optList.map((optZ, idx1) => {
     if (Array.isArray(optZ)) {
-      let deviderAdded = false;
+      // let deviderAdded = false;
       optZ.map((opt, idx2) => {
         // 符合隐藏条件
         if (opt.hide && opt.hide(props.value)) {

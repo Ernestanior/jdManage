@@ -1,7 +1,6 @@
 import { transformBindWidth, transformFlow } from "@/common/utils/util";
 import { Table } from "antd";
 import { FC, useMemo } from "react";
-import { colorPalette } from "./flow";
 interface IProps {
   bandwidth: any;
   flow: any;

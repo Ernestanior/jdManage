@@ -247,12 +247,12 @@ const Index: FC = (): ReactElement => {
           from(request(siteApi.DeleteSite(selectedRowKeys))).subscribe(
             (data) => {
               if (data.length) {
-                data.map((item: any) => {
+                data.forEach((item: any) =>
                   notification.error({
                     message: "Delete Failed",
                     description: `UID: ${item.uid} ${item.message}`,
-                  });
-                });
+                  })
+                );
               } else {
                 notification.success({
                   message: "Delete Success",
@@ -272,12 +272,12 @@ const Index: FC = (): ReactElement => {
           from(request(siteApi.EnableSite(selectedRowKeys))).subscribe(
             (data) => {
               if (data.length) {
-                data.map((item: any) => {
+                data.forEach((item: any) =>
                   notification.error({
                     message: "Enable Failed",
                     description: `UID: ${item.uid} ${item.message}`,
-                  });
-                });
+                  })
+                );
               } else {
                 notification.success({
                   message: "Enable Success",
@@ -297,12 +297,12 @@ const Index: FC = (): ReactElement => {
           from(request(siteApi.DisableSite(selectedRowKeys))).subscribe(
             (data) => {
               if (data.length) {
-                data.map((item: any) => {
+                data.forEach((item: any) =>
                   notification.error({
                     message: "Disable Failed",
                     description: `UID: ${item.uid} ${item.message}`,
-                  });
-                });
+                  })
+                );
               } else {
                 notification.success({
                   message: "Disable Success",

@@ -1,27 +1,14 @@
 // import "./index.less";
-import { FC, useEffect, useMemo, useState } from "react";
-import {
-  Form,
-  Drawer,
-  Input,
-  Select,
-  Switch,
-  notification,
-  Row,
-  Button,
-} from "antd";
+import { FC, useEffect, useState } from "react";
+import { Input, notification } from "antd";
 import { useDnsDomainList } from "@/store/network/dns";
 import dnsService from "@/store/network/dns/service";
 import DnsSelector from "../components/dnsSelector";
 import { Btn } from "@/components/button";
-import siteService from "@/store/network/site/service";
-import useUid from "@/hooks/useUid";
 import { useLoading } from "@/components/loading";
-import Loading from "@/components/loading/context";
 import _ from "underscore";
-import { Upload, message } from "antd";
+import { Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
-import IconFont from "@/components/icon";
 import "./index.less";
 import psl from "psl";
 const { Dragger } = Upload;
@@ -36,9 +23,7 @@ const CreateDrawer: FC<IProps> = ({ onClose, next }) => {
       searchPage: { page: 1, pageSize: 9999 },
       uid: "",
     });
-    // siteService.getSuffix(uid);
   }, []);
-  const ll = [{ domain: "edgetest.xyz", record: "test" }];
   const [domains, setDomains] = useState<any>([]);
   const [numList, setNumList] = useState<number[]>([]);
   const [input, setInput] = useState<string>();
@@ -46,11 +31,6 @@ const CreateDrawer: FC<IProps> = ({ onClose, next }) => {
 
   const loading = useLoading();
   const showErrorNotification = (errorMsg: string) => {
-    // this.setState({
-    //   allowToProceed: false,
-    //   errorMsg,
-    //   errorDesc: '',
-    // })
     notification.error({ message: errorMsg });
   };
 
@@ -68,7 +48,7 @@ const CreateDrawer: FC<IProps> = ({ onClose, next }) => {
     // 验证空选项的flag, 如果存在空选项则切换为true
     let isEmpty = false;
     // 并合并所有非空选项
-    numList.map((id) => {
+    numList.forEach((id) => {
       if (domains[id]) {
         if (!domains[id].length) {
           isEmpty = true;
@@ -124,7 +104,7 @@ const CreateDrawer: FC<IProps> = ({ onClose, next }) => {
             // onDelete={() => setNumList(numList.filter((v) => v !== id))}
             onDelete={() => setNumList(numList.filter((v) => v !== id))}
             dnsList={dnsList.content}
-            numOfList={numList.length}
+            // numOfList={numList.length}
             onSubmit={(e: any) => {
               // console.log(e);
               // setDomains({ ...domains, ...e });
@@ -133,7 +113,7 @@ const CreateDrawer: FC<IProps> = ({ onClose, next }) => {
               // setDomainList((domainList[index] = e));
             }}
             key={id}
-            id={id}
+            // id={id}
           ></DnsSelector>
         ))}
 

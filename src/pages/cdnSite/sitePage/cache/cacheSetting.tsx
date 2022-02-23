@@ -9,13 +9,12 @@ import { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import { from } from "rxjs";
 import Loading from "@/components/loading/context";
 
-interface IProps {}
 const { Option } = Select;
 const formItemLayout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 20 },
 };
-const Index: FC<IProps> = ({}: IProps): ReactElement => {
+const Index: FC = (): ReactElement => {
   const uid = useUid();
   const loading = useLoading();
   const extensions =
@@ -59,7 +58,7 @@ const Index: FC<IProps> = ({}: IProps): ReactElement => {
 
   useEffect(() => {
     cacheService.findCacheSetting(uid);
-  }, [refresh]);
+  }, [refresh, uid]);
   useEffect(() => {
     onReset();
   }, [cacheSetting]);

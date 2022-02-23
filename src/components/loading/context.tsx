@@ -1,5 +1,5 @@
 import { Layout, Spin } from "antd";
-import React, { FC } from "react";
+import { FC } from "react";
 import "./context.less";
 
 interface IProps {

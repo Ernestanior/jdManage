@@ -1,38 +1,24 @@
-// import "./index.less";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Button, Drawer, Input, notification } from "antd";
-import { Btn } from "@/components/button";
-import CheckboxGroup from "@/components/checkboxGroup";
-import { siteApi, supplierApi } from "@/store/api";
-import { useManagementList } from "@/store/network/supplier";
-import Loading from "@/components/loading/context";
-import { useLoading } from "@/components/loading";
+import { siteApi } from "@/store/api";
 import { from } from "rxjs";
 import request from "@/store/request";
-import useUid from "@/hooks/useUid";
 import { useCNameList } from "@/store/network/site";
 import siteService from "@/store/network/site/service";
 import { Template } from "@/components/template";
 interface IProps {
   visible: boolean;
   onClose: () => void;
-  onRefresh: () => void;
+  // onRefresh: () => void;
   currUid: string;
 }
 
-const EditDrawer: FC<IProps> = ({ visible, onClose, onRefresh, currUid }) => {
+const EditDrawer: FC<IProps> = ({ visible, onClose, currUid }) => {
   const cnameList = useCNameList();
-  const loading = useLoading();
   const [modifyingKey, setModifyingKey] = useState("");
   const [refresh, setRefresh] = useState<boolean>(false);
   const [input, setInput] = useState("");
-  console.log(cnameList);
 
-  const onFinish = () => {
-    // const submitData = { suppliers, uid };
-    // from(request(supplierApi.SaveManagement(submitData))).subscribe((data) => {
-    // });
-  };
   const onConfirm = () => {
     const submitData = {
       cnames: [{ cname: input, name: modifyingKey }],
@@ -46,12 +32,12 @@ const EditDrawer: FC<IProps> = ({ visible, onClose, onRefresh, currUid }) => {
         setRefresh(!refresh);
         setModifyingKey("");
       } else {
-        data.failures.map((item: any) => {
+        data.failures.forEach((item: any) =>
           notification.error({
             message: item.cname,
             description: "Wrong CName Format",
-          });
-        });
+          })
+        );
       }
     });
   };

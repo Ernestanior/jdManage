@@ -1,9 +1,6 @@
-import React from "react";
 import EMap from "./eMap";
 import { getMapLanguage } from "@/locale";
-// import { observer } from "mobx-react";
-// import Spinner from "@/common/Spinner";
-import Loading from "@/components/loading/context";
+
 interface Data {
   name: string;
   value: number;

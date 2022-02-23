@@ -3,7 +3,7 @@ import React, { ReactElement } from "react";
 import { Subject } from "rxjs";
 import { SizeType } from "antd/lib/config-provider/SizeContext";
 // import { AxiosRequestConfig } from "axios";
-import { FC, CSSProperties } from "react";
+import { CSSProperties } from "react";
 
 export type ICallback<T> = (data: T, totalData?: any) => void;
 
@@ -547,5 +547,5 @@ export interface IMultSelectProps extends IFormComponent {
 }
 
 export interface Role {
-  type: string| number;
+  type: string | number;
 }
