@@ -8,7 +8,9 @@ import { ISearchCustomer, ICustomerList } from "./interface";
  */
 class Customer {
   readonly customerList$ = new BehaviorSubject<ICustomerList | null>(null);
-
+  readonly createCustomer$ = new BehaviorSubject<any>(null);
+  readonly deleteCustomer$ = new BehaviorSubject<any>(null);
+  readonly motifyCustomer$ = new BehaviorSubject<any>(null);
   findCustomer(data: ISearchCustomer) {
     from(request(customerApi.FindCustomer(data))).subscribe((data) => {
       if (data) {
@@ -16,6 +18,32 @@ class Customer {
       }
     });
   }
+
+  createCustomer(data: any) {
+    from(request(customerApi.CreateCustomer(data))).subscribe((data) => {
+      if (data) {
+        this.createCustomer$.next(data);
+      }
+    });
+  }
+
+  deleteCustomer( data : any) {
+    from(request(customerApi.DeleteCustomer(data))).subscribe((data)=>{
+      if (data) {
+        this.deleteCustomer$.next(data);
+      }
+    })
+  }
+
+  modifyCustomer(data: any){
+    from(request(customerApi.ModifyCustomer(data))).subscribe((data)=>{
+      if (data) {
+        this.motifyCustomer$.next(data);
+        
+      }
+    })
+  }
+
   // create(params: ICreateUserParams) {
   //     from(request(userApi.CreateUser({
   //         ...params

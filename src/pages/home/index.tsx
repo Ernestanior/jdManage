@@ -37,9 +37,6 @@ const Home: FC = () => {
   const [dnsData, setDnsData] = useState<IData>(initData);
   const [dnsLoading, setDnsLoading] = useState(false);
 
-  useEffect(() => {
-    console.log(userLogin,"userlogin");
-  }, [userLogin]);
   //cdn-list
   useEffect(() => {
     setcdnLoading(true);
@@ -54,10 +51,12 @@ const Home: FC = () => {
       setcdnLoading(false);
       setCdnData(res);
     });
-  }, [cdnPage]);
+  }, [userLogin,cdnPage]);
+
+
   const cdnList = useMemo(
     () => cdnData.content.map((item) => item.name),
-    [cdnData, userLogin]
+    [cdnData]
   );
 
   //dns-list
@@ -74,10 +73,11 @@ const Home: FC = () => {
       setDnsLoading(false);
       setDnsData(res);
     });
-  }, [dnsPage]);
+  }, [dnsPage,userLogin]);
+
   const dnsList = useMemo(
     () => dnsData.content.map((item) => item.displayName),
-    [dnsData, userLogin]
+    [dnsData]
   );
 
   return (

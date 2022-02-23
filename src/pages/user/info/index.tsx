@@ -1,7 +1,7 @@
 //New UI
 import React, { FC, useEffect, useState } from "react";
 import { Btn } from "@/components/button/index";
-import { Form, Input, Select } from "antd";
+import { Form, Input, Select, Spin } from "antd";
 import "./index.less";
 import { Col, Row } from "antd";
 import { useNewUserInfo } from "@/store/network/user";
@@ -47,19 +47,18 @@ const UserInfoForm = [
 ];
 
 export const Index: FC<UserInfoInterFace> = () => {
-  useEffect(() => userService?.UserInfo(), []); //调接口
   const rawInfo = useNewUserInfo(); // 订阅流
+  useEffect(() => userService?.UserInfo(), []); //调接口
+
   const [form] = Form.useForm();
 
   useEffect(() => {
     form.setFieldsValue(rawInfo);
     console.log(rawInfo);
-  }, [form, rawInfo]);
+    
+  }, [rawInfo, form]);
 
   const onFinish = (values: any) => {
-    console.log("Success:", values);
-    console.log(rawInfo?.lang, values.lang);
-
     userService.UserChangeLanguage(rawInfo?.lang, values.lang);
     setOnSetting(!onSetting);
   };
@@ -72,13 +71,14 @@ export const Index: FC<UserInfoInterFace> = () => {
       <Form
         layout="horizontal"
         form={form}
-        initialValues={rawInfo}
+        initialValues={undefined}
         name="userInfo"
         preserve={true}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         labelCol={{ span: 2 }}
         wrapperCol={{ span: 5 }}
+      
       >
         {UserInfoForm.map((item, index) => {
           return (
@@ -99,9 +99,15 @@ export const Index: FC<UserInfoInterFace> = () => {
                   //disabled={!onSetting ? true : false}
                   bordered={onSetting}
                 >
-                  <Option value="en_US" key={"en_US"}>English</Option>
-                  <Option value="zh_TW" key={"zh_TW"}>繁體中文</Option>
-                  <Option value="zh_CN" key={"zh_CN"}>简体中文</Option>
+                  <Option value="en_US" key={"en_US"}>
+                    English
+                  </Option>
+                  <Option value="zh_TW" key={"zh_TW"}>
+                    繁體中文
+                  </Option>
+                  <Option value="zh_CN" key={"zh_CN"}>
+                    简体中文
+                  </Option>
                 </Select>
               ) : item.fieldType === "Date" ? (
                 <div style={{ paddingLeft: 10 }} className={`form`}>
@@ -120,6 +126,7 @@ export const Index: FC<UserInfoInterFace> = () => {
             </Form.Item>
           );
         })}
+        <Form.Item></Form.Item>
 
         <Form.Item style={{ paddingLeft: 20 }}>
           <Row>

@@ -77,7 +77,7 @@ export interface IColumnsTypeP<T = {}> {
   /** 列标题 */
   title: string;
   /** 属性名-不传的话，就是操作列 */
-  dataIndex?: keyof T;
+  dataIndex?: keyof T | string[];
   /** 是否支持排序 */
   sorter?: boolean;
   /** 宽度 */

@@ -15,5 +15,35 @@ class CustomerAPI {
     config.headers = {};
     return config;
   };
+
+  CreateCustomer = (data: {}) => {
+    const config: AxiosRequestConfig = {
+      url: "/customer/create",
+      method: "POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+
+  DeleteCustomer = (data: {}) => {
+    const config: AxiosRequestConfig = {
+      url: "/customer/delete",
+      method: "DELETE",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+
+  ModifyCustomer = (data: {}) => {
+    const config: AxiosRequestConfig = {
+      url: "/customer/modify",
+      method: "POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
 }
 export default CustomerAPI;

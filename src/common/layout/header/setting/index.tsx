@@ -11,23 +11,25 @@ const HeaderPlx: FC = () => {
   const userLogin = useNewUserLogin();
   useEffect(() => {
     accountService.UserInfo();
-  },[userLogin]);
-  
+  }, [userLogin]);
 
-    return (
-      <Popover
-        content={<Content />}
-        title={<Title userName={userInfo?.userName?userInfo?.userName:""} lastLoginTime={userInfo?.lastLoginTime?userInfo?.lastLoginTime:0} />}
-        overlayStyle={{ width: "280px" }}
-      >
-        <span className="pop-over">
-          {userInfo?.userName?userInfo?.userName:""}
-          <DownOutlined style={{ marginLeft: "30px" }} />
-        </span>
-      </Popover>
-    );
-
-
+  return (
+    <Popover
+      content={<Content />}
+      title={
+        <Title
+          userName={userInfo?.userName ? userInfo?.userName : ""}
+          lastLoginTime={userInfo?.lastLoginTime ? userInfo?.lastLoginTime : 0}
+        />
+      }
+      overlayStyle={{ width: "280px" }}
+    >
+      <span className="pop-over">
+        {userInfo?.userName ? userInfo?.userName : ""}
+        <DownOutlined style={{ marginLeft: "30px" }} />
+      </span>
+    </Popover>
+  );
 };
 
 export default HeaderPlx;
