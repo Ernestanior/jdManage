@@ -1,6 +1,0 @@
-projectKey=aaa
-serverUrl=http://124.222.146.155:9000
-serverVersion=8.9.7.52159
-dashboardUrl=http://124.222.146.155:9000/dashboard?id=aaa
-ceTaskId=AX8LjbPyvC7hQ4eXPTUV
-ceTaskUrl=http://124.222.146.155:9000/api/ce/task?id=AX8LjbPyvC7hQ4eXPTUV
