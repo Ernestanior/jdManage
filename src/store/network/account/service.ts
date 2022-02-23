@@ -12,10 +12,9 @@ class Account {
   readonly userInfo$ = new BehaviorSubject<IUserInfo | null>(null);
 
   constructor() {
-    
     const token = getToken();
-    console.log(token,"aaaaa");
-    
+    console.log(token, "aaaaa");
+
     // console.log(token);
     if (token) {
       this.info$.next(token);
@@ -52,8 +51,6 @@ class Account {
   UserInfo() {
     // 登录成功之后将数据设置到info就可以触发登录信息的更新
     from(request(authApi.User({}, {}))).subscribe((data) => {
-      console.log(data, "dataUserInfo");
-      //   console.log(data);
       this.userInfo$.next(data);
     });
   }

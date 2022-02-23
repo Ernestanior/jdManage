@@ -146,8 +146,6 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
     };
   }, [props]);
 
-
-  
   // const { current: initMoreFilters } = useRef(props.moreFilters);
   // const moreFilters = props.moreFilters;
 

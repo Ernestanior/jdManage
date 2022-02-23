@@ -42,7 +42,6 @@ import { useNewUserLogin } from "@/store/network/user";
 const ProjectRouter: FC = () => {
   const accountInfo = useAccountInfo();
   //   console.log(accountInfo);
-
   if (!accountInfo) {
     return <Login />;
   }

@@ -4,15 +4,16 @@ import "./context.less";
 
 interface IProps {
   display: boolean | null;
+  zIndex?: number;
 }
 /**
  * 内容加载中
  */
-const LoadContext: FC<IProps> = ({ display }) => {
+const LoadContext: FC<IProps> = ({ display, zIndex }) => {
   return (
     <div>
       {display ? (
-        <Layout className="comp-load-context">
+        <Layout className="comp-load-context" style={{ zIndex: zIndex }}>
           <Spin />
         </Layout>
       ) : (
