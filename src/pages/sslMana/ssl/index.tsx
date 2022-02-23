@@ -19,7 +19,7 @@ const Index: FC<Role> = (props: Role) => {
   const [newOriginCertDetail, setNewOriginCertDetail] = useState<any>();
   const originCertList = useSslManageOriginCertList();
   const originCertDetail = useViewOriginCert();
-  
+
   useEffect(() => {
     if (props.type === 2) {
       if (params !== undefined) {
@@ -141,6 +141,19 @@ const Index: FC<Role> = (props: Role) => {
   ];
 
   const TempConfig = {
+    optList: [
+      {
+        text: "查看",
+        event: (data: any) => {
+          handleOnclick(data.uid);
+          showDrawer();
+        },
+      },
+      {
+        text: "删除",
+        event: (data: any) => {},
+      },
+    ],
     batchBtns: batchBtns,
     onSearch: (params: any) => setParams(params),
     rowId: "uid",

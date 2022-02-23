@@ -77,6 +77,23 @@ const Index: FC = () => {
   }, [site, customerList?.content]);
 
   const TempConfig = {
+    optList: [
+      {
+        text: "查看客户",
+        event: (data: any) => {
+          console.log(data);
+          handleOnclick(data.customer);
+          showDrawer();
+        },
+      },
+      {
+        text: "进入站点",
+        event: (data: any) => {
+        //  navigator(`/cdn-site/${data.uid}`);
+        },
+      },
+      
+    ],
     onSearch: (params: any) => {
       setParams(params);
     },
@@ -119,35 +136,9 @@ const Index: FC = () => {
           return <div>{key.name}</div>;
         },
       },
-      {
-        title: "操作",
-        dataIndex: "customer",
-        key: "customer",
-        render: (key: any) => {
-          const menu = (
-            <Menu>
-              <Menu.Item
-                key="1"
-                onClick={() => {
-                  handleOnclick(key);
-                  showDrawer();
-                }}
-              >
-                查看
-              </Menu.Item>
-              <Menu.Item key="2">删除账户</Menu.Item>
-            </Menu>
-          );
-          return (
-            <div>
-              <Dropdown overlay={menu}>
-                <DownOutlined />
-              </Dropdown>
-            </div>
-          );
-        },
-      },
+      
     ],
+
   };
 
   return (
@@ -203,38 +194,38 @@ const Index: FC = () => {
           <Col span={16} offset={4}>
             {drawerDetail?.email}
           </Col>
-          <Divider/>
+          <Divider />
           <Col span={4}>使用者名称</Col>
           <Col span={16} offset={4}>
             {drawerDetail?.name}
           </Col>
-          <Divider/>
+          <Divider />
           <Col span={4}>账户类型</Col>
           <Col span={16} offset={4}>
             {drawerDetail?.supportsSupplier === true ? "企业版" : "-"}
           </Col>
-          <Divider/>
+          <Divider />
           <Col span={4}>域名额度</Col>
           <Col span={16} offset={4}>
             {drawerDetail?.domainQuota !== null
               ? drawerDetail?.domainQuota
               : "-"}
           </Col>
-          <Divider/>
+          <Divider />
           <Col span={4}>流量套餐</Col>
           <Col span={16} offset={4}>
             {drawerDetail?.dataAllowance !== null
               ? drawerDetail?.dataAllowance + " GB"
               : "-"}
           </Col>
-          <Divider/>
+          <Divider />
           <Col span={4}>防御（GB）</Col>
           <Col span={16} offset={4}>
             {drawerDetail?.defenceQuota !== null
               ? drawerDetail?.defenceQuota + " GB"
               : "-"}
           </Col>
-          <Divider/>
+          <Divider />
         </Row>
       </Drawer>
     </div>
