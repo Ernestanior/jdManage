@@ -8,9 +8,6 @@ import { Template } from "@/components/template";
 
 const Index: FC = (): ReactElement => {
   const accessLog = useNewUserAccessLog();
-  useEffect(() => {
-    console.log(accessLog);
-  }, [accessLog]);
 
   const TempConfig = {
     onSearch: (params: any) => {

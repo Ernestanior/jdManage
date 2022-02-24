@@ -1,18 +1,12 @@
 import { Template } from "@/components/template";
 import { Role } from "@/components/template/interface";
-import {
-  useCustomerList,
-  useDeleteCustomer,
-  useDisableCustomer,
-  useEnableCustomer,
-  useResetCustomerPassword,
-} from "@/store/network/customer";
+import { customerApi } from "@/store/api";
+import { useCustomerList } from "@/store/network/customer";
 import CustomerService from "@/store/network/customer/service";
-import { useUserManage } from "@/store/network/userManage";
-import userManage from "@/store/network/userManage/service";
-import { DownOutlined } from "@ant-design/icons";
-import { Drawer, Form, Input, Button, Menu, Dropdown, Row, Col } from "antd";
+import request from "@/store/request";
+import { Drawer, Form, Input, Button, Row, Col } from "antd";
 import { FC, useEffect, useState } from "react";
+import { from } from "rxjs";
 
 const Index: FC<Role> = (props: Role) => {
   const [Updateform] = Form.useForm();
@@ -22,21 +16,6 @@ const Index: FC<Role> = (props: Role) => {
   const [editDrawervisible, setEditDrawerVisible] = useState<boolean>(false);
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
   const customerList = useCustomerList();
-  const newPassword = useResetCustomerPassword();
-  const enable = useEnableCustomer();
-  const disable = useDisableCustomer();
-  const deleteCustomer = useDeleteCustomer();
-
-  useEffect(() => {
-    console.log(newPassword);
-
-    if (newPassword === undefined || newPassword === null) {
-    } else {
-      let x = newPassword.password;
-      console.log(x);
-      alert(x);
-    }
-  }, [newPassword]);
 
   useEffect(() => {
     if (props.type === "admin") {
@@ -57,7 +36,7 @@ const Index: FC<Role> = (props: Role) => {
         }
       }
     }
-  }, [params, props.type, visible, disable, enable, deleteCustomer]);
+  }, [params, props.type, visible]);
 
   const showDrawer = () => {
     setVisible(true);
@@ -75,12 +54,20 @@ const Index: FC<Role> = (props: Role) => {
 
   const submitNewAccount = (key: string[]) => {
     let obj = { ...key, type: "admin" };
-    CustomerService.createCustomer(obj);
+    from(request(customerApi.CreateCustomer(obj))).subscribe((data) => {
+      if (data) {
+        alert("Creare Success");
+      }
+    });
   };
 
   const updateDetail = (key: string[]) => {
     let obj = { ...key, uid: selectedCustomer.uid };
-    CustomerService.modifyCustomer(obj);
+    from(request(customerApi.ModifyCustomer(obj))).subscribe((data) => {
+      if (data) {
+        alert("modify Success");
+      }
+    });
   };
 
   const handleOnclick = (data: any) => {
@@ -123,7 +110,13 @@ const Index: FC<Role> = (props: Role) => {
         text: "重置密码",
         event: (data: any) => {
           let uid = { uid: data.uid };
-          CustomerService.resetCustomerPassword(uid, {});
+          from(request(customerApi.ResetPassword(uid, {}))).subscribe(
+            (data) => {
+              if (data) {
+                alert(`is your new password ${data.password}`);
+              }
+            }
+          );
         },
       },
       {
@@ -132,9 +125,17 @@ const Index: FC<Role> = (props: Role) => {
           console.log(data);
           let uid = [data.uid];
           if (data.status === 1) {
-            CustomerService.disableCustomer(uid);
+            from(request(customerApi.Disable(uid))).subscribe((data) => {
+              if (data) {
+                alert("Success");
+              }
+            });
           } else {
-            CustomerService.enableCustomer(uid);
+            from(request(customerApi.Enable(uid))).subscribe((data) => {
+              if (data) {
+                alert("Success");
+              }
+            });
           }
         },
       },
@@ -142,7 +143,11 @@ const Index: FC<Role> = (props: Role) => {
         text: "删除",
         event: (data: any) => {
           let uid = [data.uid];
-          CustomerService.deleteCustomer(uid);
+          from(request(customerApi.DeleteCustomer(uid))).subscribe((data) => {
+            if (data) {
+              alert("Delete Success");
+            }
+          });
         },
       },
     ],
@@ -150,22 +155,34 @@ const Index: FC<Role> = (props: Role) => {
       {
         text: "批量删除",
         onClick: (value: any) => {
-          // setDeleteFlag(true);
-          // setSelectedKey(value);
+          console.log(value);
+          from(request(customerApi.DeleteCustomer(value))).subscribe((data) => {
+            if (data) {
+              alert("Delete Success");
+            }
+          });
         },
       },
       {
         text: "批量启用",
         onClick: (value: any) => {
-          // setEnableFlag(true);
-          // setSelectedKey(value);
+          console.log(value);
+          from(request(customerApi.Enable(value))).subscribe((data) => {
+            if (data) {
+              alert("Enable Success");
+            }
+          });
         },
       },
       {
         text: "批量禁用",
         onClick: (value: any) => {
-          // setDisableFlag(true);
-          // setSelectedKey(value);
+          console.log(value);
+          from(request(customerApi.Disable(value))).subscribe((data) => {
+            if (data) {
+              alert("Disable Success");
+            }
+          });
         },
       },
     ],

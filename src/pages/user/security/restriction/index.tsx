@@ -1,8 +1,8 @@
-import { Button, Col, Drawer, Form, Input, Table } from "antd";
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import { Button, Drawer, Form, Input, Table } from "antd";
+import { FC, ReactElement, useEffect, useState } from "react";
 import "./index.less";
 import IconFont from "@/components/icon";
-import { DeleteFilled, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import userService from "@/store/network/user/service";
 import { useNewUserWhiteList } from "@/store/network/user";
 interface IData {
@@ -63,7 +63,7 @@ const Index: FC = (): ReactElement => {
   return (
     <div className="restriction-Container">
       <div className="restriction-AddBtn">
-        <Button type="primary"  >
+        <Button type="primary">
           <PlusOutlined />
           新增白名单
         </Button>

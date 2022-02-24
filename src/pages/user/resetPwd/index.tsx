@@ -1,11 +1,12 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import "./index.less";
 import Tip from "@/components/tip/index";
 import { TipInfo } from "./msg";
 import { Form, Input } from "antd";
 import { Btn } from "@/components/button/index";
-import userService from "@/store/network/user/service";
-import { useNewChangePassword } from "@/store/network/user";
+import { from } from "rxjs";
+import request from "@/store/request";
+import { userApi } from "@/store/api";
 
 interface userPassword {
   userID?: string;
@@ -32,20 +33,21 @@ const Index: FC<userPassword> = () => {
   const onFinish = (values: any) => {
     if (values.oldPwd && values.newPwd && values.comfirmPwd !== null) {
       if (values.newPwd === values.confirmPwd) {
-        userService.UserChangePassword(values);
+        from(request(userApi.UserChangePassword(values), true)).subscribe(
+          (data) => {
+            if (data) {
+              alert("change password success")
+            }
+          }
+        );
       }
       console.log("Comfirm Password and New Password must be same");
     } else console.log("Cannot Be Empty");
   };
 
-  const changepassword = useNewChangePassword();
 
-  useEffect(() => {
-    if (changepassword?.response === "success") {
-      alert("success");
-      form.resetFields();
-    }
-  }, [changepassword]);
+
+
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);

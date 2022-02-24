@@ -343,7 +343,7 @@ const Index: FC<Role> = (props: Role) => {
         )}
       </Drawer>
       <Drawer
-        title="查看证书"
+        title="上传证书"
         placement="left"
         onClose={onUploadClose}
         visible={uploadDrawer}

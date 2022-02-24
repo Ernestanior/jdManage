@@ -7,6 +7,9 @@ import { Col, Row } from "antd";
 import { useNewUserInfo } from "@/store/network/user";
 import userService from "@/store/network/user/service";
 import moment from "moment";
+import { from } from "rxjs";
+import { userApi } from "@/store/api";
+import request from "@/store/request";
 const { Option } = Select;
 
 interface UserInfoInterFace {
@@ -59,7 +62,12 @@ export const Index: FC<UserInfoInterFace> = () => {
   }, [rawInfo, form]);
 
   const onFinish = (values: any) => {
-    userService.UserChangeLanguage(rawInfo?.lang, values.lang);
+    from(request(userApi.UserChangeLanguage(rawInfo?.lang, values.lang))).subscribe((data)=>{
+      if (data) {
+        alert("change success")
+      }
+    })
+   // userService.UserChangeLanguage(rawInfo?.lang, values.lang);
     setOnSetting(!onSetting);
   };
   const onFinishFailed = (errorInfo: any) => {

@@ -44,6 +44,48 @@ class DnsManageAPI {
     config.headers = {};
     return config;
   }
+
+  CreateDomain = (data:any)=>{
+    const config:AxiosRequestConfig={
+      url:"/dns/domain/create",
+      method:"POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  }
+  
+  Disable = (data:any)=>{
+    const config: AxiosRequestConfig={
+      url:"/dns/domain/disable",
+      method:"PUT",
+      data,
+    };
+    config.headers={};
+    return config;
+  }
+
+  Enable = (data:any)=>{
+    const config: AxiosRequestConfig={
+      url:"/dns/domain/enable",
+      method:"PUT",
+      data,
+    };
+    config.headers={};
+    return config;
+  }
+
+  CertRequest = (data:any)=>{
+    const config: AxiosRequestConfig={
+      url:"/dns/cert/certgen/request",
+      method:"POST",
+      data,
+    };
+    config.headers={};
+    return config;
+  }
+
+
 }
 
 export default DnsManageAPI;

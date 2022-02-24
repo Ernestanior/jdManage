@@ -1,14 +1,22 @@
 import { Template } from "@/components/template";
+import { dnsManageApi } from "@/store/api";
 import { useDomainList } from "@/store/network/dnsManage";
 import { useDnsCustomerList } from "@/store/network/dnsManage";
 import dnsManage from "@/store/network/dnsManage/service";
+import request from "@/store/request";
+import { Form, Drawer, Input, Select, Button } from "antd";
+import TextArea from "antd/lib/input/TextArea";
 import { FC, useEffect, useState } from "react";
+import { from } from "rxjs";
 
 const Index: FC = () => {
-  const [params, setParams] = useState<any>();
+  const [AddForm] = Form.useForm();
   const domainList = useDomainList();
   const customerList = useDnsCustomerList();
+  const [params, setParams] = useState<any>();
   const [option, setOption] = useState<Object[]>([]);
+  const [addDomainOption, setAddDomainOption] = useState<Object[]>([]);
+  const [addDrawer, setAddDrawer] = useState<boolean>(false);
   useEffect(() => {
     if (params) {
       if (params.filters !== undefined) {
@@ -26,6 +34,14 @@ const Index: FC = () => {
     }
   }, [params]);
 
+  const showAddDrawer = () => {
+    setAddDrawer(true);
+  };
+
+  const closeAddDrawer = () => {
+    setAddDrawer(false);
+  };
+
   useEffect(() => {
     dnsManage?.customerList({
       searchPage: { page: 1, pageSize: 99999 },
@@ -36,16 +52,61 @@ const Index: FC = () => {
   useEffect(() => {
     if (customerList) {
       let dnsOption: object[] = [];
+      let adddomainOption: object[] = [];
       Object.entries(customerList?.content).forEach((item: any) => {
         let a = item[1];
         dnsOption.push({ uid: a.uid, name: a.name });
+        adddomainOption.push({ value: a.uid, label: a.name });
       });
+      setAddDomainOption(adddomainOption);
       setOption(dnsOption);
     }
   }, [customerList]);
 
   const TempConfig = {
-    
+    optList: [
+      {
+        text: "记录管理",
+        event: (data: any) => {},
+      },
+      {
+        text: "申请证书",
+        event: (data: any) => {
+          console.log(data.uid);
+          let uid = {domainUid: data.uid, records:[data.name]}
+          from(request(dnsManageApi.CertRequest(uid))).subscribe((data)=>{
+            console.log(data);
+            
+          })
+        },
+      },
+      {
+        text: "克隆",
+        event: (data: any) => {},
+      },
+      {
+        text: "状态",
+        event: (data: any) => {
+          console.log(data);
+          let uid = [data.uid];
+          if (data.status === "enabled") {
+            from(request(dnsManageApi.Disable(uid))).subscribe((data) => {
+              if (data) {
+              }
+            });
+          } else {
+            from(request(dnsManageApi.Enable(uid))).subscribe((data) => {
+              if (data) {
+              }
+            });
+          }
+        },
+      },
+      {
+        text: "删除",
+        event: (data: any) => {},
+      },
+    ],
     batchBtns: [
       {
         text: "批量删除",
@@ -72,7 +133,9 @@ const Index: FC = () => {
     normalBtns: [
       {
         text: "新增站点",
-        onClick: () => true,
+        onClick: () => {
+          showAddDrawer();
+        },
       },
     ],
     onSearch: (params: any) => {
@@ -107,9 +170,15 @@ const Index: FC = () => {
     ],
   };
 
+  const AddNewDomain = (key: string[]) => {
+    from(request(dnsManageApi.CreateDomain(key))).subscribe((data) => {
+      if (data) {
+      }
+    });
+  };
+
   return (
     <div>
-      {" "}
       <Template
         primarySearch={"keyword"}
         searchList={[
@@ -136,6 +205,37 @@ const Index: FC = () => {
         ]}
         {...TempConfig}
       ></Template>
+      <Drawer
+        title="添加"
+        placement="left"
+        onClose={closeAddDrawer}
+        visible={addDrawer}
+        width={570}
+        bodyStyle={{ paddingBottom: 80 }}
+      >
+        <Form
+          form={AddForm}
+          layout="horizontal"
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 14 }}
+          onFinish={AddNewDomain}
+        >
+          <Form.Item label="域名" name="name">
+            <Input />
+          </Form.Item>
+          <Form.Item label="选择用户" name="customerUid">
+            <Select options={addDomainOption}></Select>
+          </Form.Item>
+          <Form.Item label="备注" name="remark">
+            <TextArea />
+          </Form.Item>
+          <Form.Item label="备注" name="remark">
+            <Button type="primary" htmlType="submit">
+              提交
+            </Button>
+          </Form.Item>
+        </Form>
+      </Drawer>
     </div>
   );
 };

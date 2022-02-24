@@ -1,11 +1,14 @@
 import IconFont from "@/components/icon";
 import { Template } from "@/components/template";
+import { userApi } from "@/store/api";
 import { worklogDetail } from "@/store/api/user";
 import { useCodeList, useEventList, useNewDeleteWorklog, useWorkLog } from "@/store/network/user";
 import userService from "@/store/network/user/service";
-import { Col, Input, message, Popconfirm, Row } from "antd";
+import request from "@/store/request";
+import { Col, Input, Popconfirm, Row } from "antd";
 import moment from "moment";
 import { FC, useEffect, useState } from "react";
+import { from } from "rxjs";
 
 interface Role {
   type: number;
@@ -72,8 +75,11 @@ const Index: FC<Role> = (props: Role) => {
   }, [params, props.type, deletelog]);
 
   const confirm = () => {
-
-    userService.UserDeleteWorkLog([deleteId]);
+    from(request(userApi.UserDeleteWorkLog([deleteId]))).subscribe((data)=>{
+      if (data) {
+        alert("delete Log Success");
+      }
+    })
   };
   const cancel = () => {};
 

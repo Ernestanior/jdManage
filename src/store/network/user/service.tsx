@@ -49,15 +49,7 @@ class User {
     });
   }
 
-  UserChangeLanguage(params: {}, data: any) {
-    from(request(userApi.UserChangeLanguage(params, data))).subscribe(
-      (data) => {
-        if (data) {
-          this.userChangeLanguage$.next(data);
-        }
-      }
-    );
-  }
+
 
   UserServiceWorkLogCodeList() {
     from(request(userApi.UserAPIWorklogCodeList())).subscribe((data) => {
