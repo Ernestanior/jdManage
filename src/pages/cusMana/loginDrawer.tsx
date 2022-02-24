@@ -11,7 +11,7 @@ interface IProps {
   customerUid: string;
 }
 
-const Index: FC<IProps> = ({ visible, customerUid, onClose }) => {
+const LoginDrawer: FC<IProps> = ({ visible, customerUid, onClose }) => {
   const navigator = useNavigate();
   return (
     <Drawer
@@ -51,4 +51,4 @@ const Index: FC<IProps> = ({ visible, customerUid, onClose }) => {
   );
 };
 
-export default Index;
+export default LoginDrawer;

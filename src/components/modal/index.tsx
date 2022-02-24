@@ -14,6 +14,7 @@ export interface IProps {
   onCancel: () => void;
   onOk: () => void;
   footer?: boolean;
+  loading?: boolean;
 }
 /** 弹窗模块 */
 export const EdgeModal: FC<IProps> = ({
@@ -24,6 +25,7 @@ export const EdgeModal: FC<IProps> = ({
   onOk,
   onCancel,
   footer,
+  loading,
 }): ReactElement => {
   return (
     <Modal
@@ -33,6 +35,7 @@ export const EdgeModal: FC<IProps> = ({
       onOk={onOk}
       onCancel={onCancel}
       footer={footer}
+      confirmLoading={loading}
     >
       {children}
     </Modal>

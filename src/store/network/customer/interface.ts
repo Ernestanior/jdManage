@@ -22,3 +22,10 @@ export interface ISearchPage {
   pageSize: number;
   sort?: string;
 }
+export interface IDefenceQuota {
+  value: number;
+}
+export interface IServiceDomain {
+  name: string;
+  uid: string;
+}
