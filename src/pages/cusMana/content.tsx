@@ -1,10 +1,12 @@
 import { Btn } from "@/components/button";
+import IconFont from "@/components/icon";
 import { Template } from "@/components/template";
 import accountService from "@/store/network/account/service";
 import userService from "@/store/network/user/service";
 import { useUserManage } from "@/store/network/userManage";
 import userManage from "@/store/network/userManage/service";
 import { DownOutlined } from "@ant-design/icons";
+import { Button } from "antd";
 import { FC, useEffect, useMemo, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import LoginDrawer from "./loginDrawer";
@@ -80,7 +82,9 @@ const Index: FC = () => {
       },
       {
         text: "删除账户",
-        event: (data: any) => {},
+        event: (data: any) => {
+          console.log(data);
+        },
       },
     ],
     onSearch: (params: any) => {

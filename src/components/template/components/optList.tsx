@@ -67,7 +67,7 @@ const OptListComp: FC<IOptProps> = (props) => {
   if (props.type === "horizontal") {
     return (
       <Space key="tb_opt">
-        {props.optList.map((opt) => {
+        {props.optList.map((opt, i) => {
           // const title = opt.text;
           // 符合隐藏条件
           if (opt.hide && opt.hide(props.value)) {
@@ -75,6 +75,7 @@ const OptListComp: FC<IOptProps> = (props) => {
           }
           return (
             <div
+              key={i}
               onClick={() => {
                 opt.event(props.value);
               }}
