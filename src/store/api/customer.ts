@@ -5,7 +5,7 @@ class CustomerAPI {
   FindCustomer = (data: ISearchCustomer) => {
     const config: AxiosRequestConfig = {
       url: "/customer/list",
-      method: "post",
+      method: "POST",
       data,
     };
     config.headers = {};

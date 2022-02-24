@@ -1,5 +1,12 @@
 import { Template } from "@/components/template";
 import { Role } from "@/components/template/interface";
+import {
+  useCustomerList,
+  useDeleteCustomer,
+  useDisableCustomer,
+  useEnableCustomer,
+  useResetCustomerPassword,
+} from "@/store/network/customer";
 import CustomerService from "@/store/network/customer/service";
 import { useUserManage } from "@/store/network/userManage";
 import userManage from "@/store/network/userManage/service";
@@ -14,13 +21,28 @@ const Index: FC<Role> = (props: Role) => {
   const [visible, setVisible] = useState<boolean>(false);
   const [editDrawervisible, setEditDrawerVisible] = useState<boolean>(false);
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
-  const customerList = useUserManage();
+  const customerList = useCustomerList();
+  const newPassword = useResetCustomerPassword();
+  const enable = useEnableCustomer();
+  const disable = useDisableCustomer();
+  const deleteCustomer = useDeleteCustomer();
+
+  useEffect(() => {
+    console.log(newPassword);
+
+    if (newPassword === undefined || newPassword === null) {
+    } else {
+      let x = newPassword.password;
+      console.log(x);
+      alert(x);
+    }
+  }, [newPassword]);
 
   useEffect(() => {
     if (props.type === "admin") {
       if (params !== undefined) {
         if (params.filters !== undefined) {
-          userManage?.CustomerList({
+          CustomerService?.CustomerList({
             keyword: params.filters.keyword,
             searchPage: params.searchPage,
             type: "admin",
@@ -28,14 +50,14 @@ const Index: FC<Role> = (props: Role) => {
             name: params.filters.name,
           });
         } else {
-          userManage?.CustomerList({
+          CustomerService?.CustomerList({
             type: "admin",
             searchPage: { desc: 1, page: 1, pageSize: 25, sort: "create_Date" },
           });
         }
       }
     }
-  }, [params, props.type, visible]);
+  }, [params, props.type, visible, disable, enable, deleteCustomer]);
 
   const showDrawer = () => {
     setVisible(true);
@@ -99,15 +121,29 @@ const Index: FC<Role> = (props: Role) => {
       },
       {
         text: "重置密码",
-        event: (data: any) => {},
+        event: (data: any) => {
+          let uid = { uid: data.uid };
+          CustomerService.resetCustomerPassword(uid, {});
+        },
       },
       {
-        text: "启用｜｜ 禁用",
-        event: (data: any) => {},
+        text: "状态",
+        event: (data: any) => {
+          console.log(data);
+          let uid = [data.uid];
+          if (data.status === 1) {
+            CustomerService.disableCustomer(uid);
+          } else {
+            CustomerService.enableCustomer(uid);
+          }
+        },
       },
       {
         text: "删除",
-        event: (data: any) => {},
+        event: (data: any) => {
+          let uid = [data.uid];
+          CustomerService.deleteCustomer(uid);
+        },
       },
     ],
     batchBtns: [

@@ -12,10 +12,10 @@ import {
  * 用户相关功能
  */
 class Customer {
-  readonly customerList$ = new BehaviorSubject<ICustomerList | null>(null);
   readonly createCustomer$ = new BehaviorSubject<any>(null);
   readonly deleteCustomer$ = new BehaviorSubject<any>(null);
   readonly motifyCustomer$ = new BehaviorSubject<any>(null);
+  readonly customerList$ = new BehaviorSubject<any>(null);
   readonly defenceQuotaList$ = new BehaviorSubject<IDefenceQuota[] | null>(
     null
   );

@@ -93,7 +93,6 @@ class User {
       from(request(userApi.UserDeleteWorkLog(eventId))).subscribe((data) => {
         if (data) {
           this.userDeleteWorkLog$.next(data);
-          this.UserServiceWorkLogEventList(data);
         }
       });
     }

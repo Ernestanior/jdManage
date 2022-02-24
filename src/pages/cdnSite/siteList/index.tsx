@@ -38,7 +38,7 @@ const Index: FC = (): ReactElement => {
   const customerList = useCustomerList();
   useEffect(() => {
     if (!customerList || !customerList.content) {
-      customerService.findCustomer({
+      customerService.CustomerList({
         searchPage: { page: 1, pageSize: 99999 },
       });
     }
