@@ -6,8 +6,6 @@ export const useCustomerList = () => {
   return useBehaviorSubject<ICustomerList>(CustomerService.customerList$);
 };
 
-
-
 export const useModifyCustomer = () => {
   return useBehaviorSubject<any>(CustomerService.motifyCustomer$);
 };

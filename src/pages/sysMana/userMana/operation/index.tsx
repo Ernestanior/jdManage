@@ -21,15 +21,15 @@ const Index: FC<Role> = (props: Role) => {
     if (props.type === "operation") {
       if (params !== undefined) {
         if (params.filters !== undefined) {
-          CustomerService?.CustomerList({
-            keyword: params.filters.keyword,
+          CustomerService?.findCustomer({
+            keyWord: params.filters.keyword,
             searchPage: params.searchPage,
             type: "operation",
             status: params.filters.status,
             name: params.filters.name,
           });
         } else {
-          CustomerService?.CustomerList({
+          CustomerService?.findCustomer({
             type: "operation",
             searchPage: { desc: 1, page: 1, pageSize: 25, sort: "create_Date" },
           });
@@ -121,14 +121,14 @@ const Index: FC<Role> = (props: Role) => {
           console.log(data);
           let uid = [data.uid];
           if (data.status === 1) {
-            from(request(customerApi.Disable(uid))).subscribe((data) => {
+            from(request(customerApi.DisableCustomer(uid))).subscribe((data) => {
               if (data) {
                 alert("Success");
               }
             });
             // CustomerService.disableCustomer();
           } else {
-            from(request(customerApi.Enable(uid))).subscribe((data) => {
+            from(request(customerApi.EnableCustomer(uid))).subscribe((data) => {
               if (data) {
                 alert("Success");
               }
@@ -164,7 +164,7 @@ const Index: FC<Role> = (props: Role) => {
         text: "批量启用",
         onClick: (value: any) => {
           console.log(value);
-          from(request(customerApi.Enable(value))).subscribe((data) => {
+          from(request(customerApi.EnableCustomer(value))).subscribe((data) => {
             if (data) {
               alert("Enable Success");
             }
@@ -175,7 +175,7 @@ const Index: FC<Role> = (props: Role) => {
         text: "批量禁用",
         onClick: (value: any) => {
           console.log(value);
-          from(request(customerApi.Disable(value))).subscribe((data) => {
+          from(request(customerApi.DisableCustomer(value))).subscribe((data) => {
             if (data) {
               alert("Disable Success");
             }
