@@ -18,6 +18,7 @@ export interface IProps extends HTMLAttributes<HTMLButtonElement> {
   htmlType?: "button" | "submit" | "reset" | undefined;
   padding?: string;
   marginRight?: string;
+  loading?: boolean;
 }
 
 /** 用于表单提交，增删改查以及页面跳转等操作 */
@@ -27,13 +28,18 @@ export const Btn = ({
   children,
   padding,
   marginRight,
+  loading,
   ...props
 }: IProps) => {
   // console.log(children);
   // console.log(props);
 
   return (
-    <Button {...props} style={{ color, backgroundColor, padding, marginRight }}>
+    <Button
+      {...props}
+      loading={loading}
+      style={{ color, backgroundColor, padding, marginRight }}
+    >
       {children}
     </Button>
   );

@@ -244,7 +244,7 @@ const CreateDrawer: FC<IProps> = ({ title, visible, cusList, onClose }) => {
           <Btn type="primary" htmlType="submit" boxShadow>
             确定
           </Btn>
-          <Btn htmlType="reset" boxShadow onClick={() => onClose()}>
+          <Btn htmlType="reset" boxShadow onClick={onClose}>
             取消
           </Btn>
         </div>

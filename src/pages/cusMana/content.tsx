@@ -6,20 +6,64 @@ import userService from "@/store/network/user/service";
 import { useUserManage } from "@/store/network/userManage";
 import userManage from "@/store/network/userManage/service";
 import { DownOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, notification } from "antd";
 import { FC, useEffect, useMemo, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import LoginDrawer from "./loginDrawer";
+import CreateDrawer from "./createDrawer";
+import { useLoading } from "@/components/loading";
+import { from } from "rxjs";
+import request from "@/store/request";
+import { customerApi } from "@/store/api";
+import { EdgeModal } from "@/components/modal";
 // interface IProps {
 //   type: "reg" | "sales";
 // }
 const Index: FC = () => {
   const [params, setParams] = useState<any>();
-  const [visible, setVisible] = useState<boolean>(false);
+  const [loginFlag, setLoginFlag] = useState<boolean>(false);
+  const [createFlag, setCreateFlag] = useState<boolean>(false);
+  const [deleteFlag, setDeleteFlag] = useState<boolean>(false);
+  const [enableFlag, setEnableFlag] = useState<boolean>(false);
+  const [disableFlag, setDisableFlag] = useState<boolean>(false);
+  const [selected, setSelected] = useState<string[]>([]);
   const [customerUid, setCustomerUid] = useState<string>();
+  const [refresh, setRefresh] = useState<boolean>(false);
+  // const [loading$,setLoading] = useState<boolean>(false)
   const customerList = useUserManage();
+  const loading = useLoading();
   const routerState: any = useLocation().state;
   const type = useMemo(() => routerState && routerState.cusMana, [routerState]);
+  const deleteCustomer = (data: string[]) => {
+    from(request(customerApi.DeleteCustomer(data))).subscribe((data) => {
+      data instanceof Object
+        ? notification.success({ message: "Delete Success" })
+        : notification.error({ message: "Delete failed", description: data });
+      setRefresh(!refresh);
+      setDeleteFlag(false);
+      setSelected([]);
+    });
+  };
+  const disableCustomer = (data: string[]) => {
+    from(request(customerApi.DisableCustomer(data))).subscribe((data) => {
+      data instanceof Object
+        ? notification.success({ message: "Disable Success" })
+        : notification.error({ message: "Disable failed", description: data });
+      setRefresh(!refresh);
+      setDisableFlag(false);
+      setSelected([]);
+    });
+  };
+  const enableCustomer = (data: string[]) => {
+    from(request(customerApi.EnableCustomer(data))).subscribe((data) => {
+      data instanceof Object
+        ? notification.success({ message: "Enable Success" })
+        : notification.error({ message: "Enable failed", description: data });
+      setRefresh(!refresh);
+      setEnableFlag(false);
+      setSelected([]);
+    });
+  };
   useEffect(() => {
     params &&
       userManage.CustomerList({
@@ -28,11 +72,11 @@ const Index: FC = () => {
         type: "customer",
         status: params.filters.status || "",
         name: params.filters.name || "",
-        channel: type,
+        channel: type || "reg",
         email: params.filters.email || "",
         probationFlag: params.filters.probationFlag || "",
       });
-  }, [params, type]);
+  }, [params, type, refresh]);
 
   const onClose = () => {
     // setSupplierAccount({});
@@ -43,29 +87,30 @@ const Index: FC = () => {
       {
         text: "批量删除",
         onClick: (value: any) => {
-          // setDeleteFlag(true);
-          // setSelectedKey(value);
+          setDeleteFlag(true);
+          setSelected(value);
         },
       },
       {
         text: "批量启用",
         onClick: (value: any) => {
-          // setEnableFlag(true);
-          // setSelectedKey(value);
+          setEnableFlag(true);
+          setSelected(value);
         },
       },
       {
         text: "批量禁用",
         onClick: (value: any) => {
-          // setDisableFlag(true);
-          // setSelectedKey(value);
+          setDisableFlag(true);
+          setSelected(value);
         },
       },
     ],
     normalBtns: [
       {
-        text: "新增站点",
-        onClick: () => true,
+        text: "新增客户",
+        onClick: () => setCreateFlag(true),
+        loading: loading,
       },
     ],
     optList: [
@@ -73,7 +118,7 @@ const Index: FC = () => {
         text: "登入客户账号",
         event: (data: any) => {
           setCustomerUid(data.uid);
-          setVisible(true);
+          setLoginFlag(true);
         },
       },
       {
@@ -82,8 +127,9 @@ const Index: FC = () => {
       },
       {
         text: "删除账户",
-        event: (data: any) => {
-          console.log(data);
+        event: (data: string[]) => {
+          setSelected(data);
+          setDeleteFlag(true);
         },
       },
     ],
@@ -107,6 +153,12 @@ const Index: FC = () => {
         title: "状态",
         dataIndex: "status",
         key: "status",
+        render: (status: any) =>
+          status === 1 ? (
+            <div className={`${"status-box"} ${"status-normal"}`}>正常</div>
+          ) : (
+            <div className={`${"status-box"} ${"status-error"}`}>故障</div>
+          ),
       },
       {
         title: "账户类型",
@@ -121,7 +173,11 @@ const Index: FC = () => {
         dataIndex: "supportsSupplier",
         key: "supportsSupplier",
         render: (key: any) => {
-          return <div>{key ? `企业版` : `个人版`}</div>;
+          return key ? (
+            <div className="mini-box-blue">企业版</div>
+          ) : (
+            <div className="mini-box-yellow">个人版</div>
+          );
         },
       },
       {
@@ -129,7 +185,15 @@ const Index: FC = () => {
         dataIndex: "hasLoggedIn",
         key: "hasLoggedIn",
         render: (key: any) => {
-          return <div>{key ? `` : `X`}</div>;
+          return (
+            <div>
+              {key ? (
+                <IconFont type="icon-check-green" />
+              ) : (
+                <IconFont type="icon-fail" />
+              )}
+            </div>
+          );
         },
       },
     ],
@@ -172,11 +236,48 @@ const Index: FC = () => {
       ></Template>
       {customerUid && (
         <LoginDrawer
-          onClose={() => setVisible(false)}
-          visible={visible}
+          onClose={() => setLoginFlag(false)}
+          visible={loginFlag}
           customerUid={customerUid}
         ></LoginDrawer>
       )}
+      <CreateDrawer
+        onClose={() => setCreateFlag(false)}
+        reload={() => setRefresh(!refresh)}
+        visible={createFlag}
+        loading={loading}
+      ></CreateDrawer>
+      <EdgeModal
+        visible={deleteFlag}
+        onCancel={() => setDeleteFlag(false)}
+        onOk={() => deleteCustomer(selected)}
+        title="删除"
+        loading={loading}
+      >
+        你确定删除此账户？
+      </EdgeModal>
+      <EdgeModal
+        visible={enableFlag}
+        onCancel={() => setEnableFlag(false)}
+        onOk={() => {
+          enableCustomer(selected);
+        }}
+        title="启用"
+        loading={loading}
+      >
+        你确定启用此账户？
+      </EdgeModal>
+      <EdgeModal
+        visible={disableFlag}
+        onCancel={() => setDisableFlag(false)}
+        onOk={() => {
+          disableCustomer(selected);
+        }}
+        title="禁用"
+        loading={loading}
+      >
+        你确定禁用此账户？
+      </EdgeModal>
     </div>
   );
 };

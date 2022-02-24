@@ -2,10 +2,6 @@ import { AxiosRequestConfig } from "axios";
 import { ISearchCustomer } from "@/store/network/customer/interface";
 
 class CustomerAPI {
-  /**
-   * findDomain
-   * 生成请求参数
-   */
   FindCustomer = (data: ISearchCustomer) => {
     const config: AxiosRequestConfig = {
       url: "/customer/list",
@@ -26,7 +22,7 @@ class CustomerAPI {
     return config;
   };
 
-  DeleteCustomer = (data: {}) => {
+  DeleteCustomer = (data: string[]) => {
     const config: AxiosRequestConfig = {
       url: "/customer/delete",
       method: "DELETE",
@@ -40,6 +36,41 @@ class CustomerAPI {
     const config: AxiosRequestConfig = {
       url: "/customer/modify",
       method: "POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  FindDefenceQuota = () => {
+    const config: AxiosRequestConfig = {
+      url: "/customer/defence-quota/list",
+      method: "get",
+    };
+    config.headers = {};
+    return config;
+  };
+  FindServiceDomain = () => {
+    const config: AxiosRequestConfig = {
+      url: "/service-domain/list",
+      method: "post",
+      data: {},
+    };
+    config.headers = {};
+    return config;
+  };
+  EnableCustomer = (data: string[]) => {
+    const config: AxiosRequestConfig = {
+      url: "/customer/enable",
+      method: "put",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  DisableCustomer = (data: string[]) => {
+    const config: AxiosRequestConfig = {
+      url: "/customer/disable",
+      method: "put",
       data,
     };
     config.headers = {};

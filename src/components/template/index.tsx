@@ -354,6 +354,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
           type="primary"
           padding="5px 20px"
           onClick={() => btn.onClick()}
+          loading={btn.loading}
         >
           {btn.text}
         </Btn>

@@ -42,3 +42,6 @@ export default IconFont;
 export const tipIcon = (
   <IconFont type="icon-wenti" style={{ color: "#ef8f35" }} />
 );
+export const warnIcon = (
+  <IconFont type="icon-tips" style={{ color: "#ef8f35" }} />
+);

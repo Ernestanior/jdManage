@@ -141,6 +141,7 @@ export interface INormalEvent extends IText {
 export interface INormalBtn {
   text: string;
   icon?: ReactElement;
+  loading?: boolean;
 }
 export interface IBatchBtn extends INormalBtn {
   onClick: any;
