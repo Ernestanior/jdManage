@@ -1,6 +1,7 @@
 import { Template } from "@/components/template";
 import { IRenderConfig } from "@/components/template/fastRender";
 import { Role } from "@/components/template/interface";
+import { useResetCustomerPassword, useEnableCustomer, useDisableCustomer, useDeleteCustomer } from "@/store/network/customer";
 import CustomerService from "@/store/network/customer/service";
 import { useUserManage } from "@/store/network/userManage";
 import userManage from "@/store/network/userManage/service";
@@ -16,6 +17,22 @@ const Index: FC<Role> = (props: Role) => {
   const [editDrawervisible, setEditDrawerVisible] = useState<boolean>(false);
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
   const customerList = useUserManage();
+  const newPassword = useResetCustomerPassword();
+  const enable = useEnableCustomer();
+  const disable = useDisableCustomer();
+  const deleteCustomer = useDeleteCustomer();
+
+  useEffect(() => {
+    console.log(newPassword);
+
+    if (newPassword === undefined || newPassword === null) {
+    } else {
+      let x = newPassword.password;
+      console.log(x);
+      alert(x);
+    }
+  }, [newPassword]);
+
   useEffect(() => {
     if (props.type === "sales") {
       if (params !== undefined) {
@@ -35,7 +52,7 @@ const Index: FC<Role> = (props: Role) => {
         }
       }
     }
-  }, [params, props.type]);
+  }, [params, props.type,visible, disable, enable, deleteCustomer]);
 
   const showDrawer = () => {
     setVisible(true);
@@ -102,15 +119,29 @@ const Index: FC<Role> = (props: Role) => {
       },
       {
         text: "重置密码",
-        event: (data: any) => {},
+        event: (data: any) => {
+          let uid = { uid: data.uid };
+          CustomerService.resetCustomerPassword(uid, {});
+        },
       },
       {
-        text: "启用｜｜ 禁用",
-        event: (data: any) => {},
+        text: "状态",
+        event: (data: any) => {
+          console.log(data);
+          let uid = [data.uid];
+          if (data.status === 1) {
+            CustomerService.disableCustomer(uid);
+          } else {
+            CustomerService.enableCustomer(uid);
+          }
+        },
       },
       {
         text: "删除",
-        event: (data: any) => {},
+        event: (data: any) => {
+          let uid = [data.uid];
+          CustomerService.deleteCustomer(uid);
+        },
       },
     ],
     batchBtns: [

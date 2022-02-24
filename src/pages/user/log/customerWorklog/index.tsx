@@ -1,7 +1,7 @@
 import IconFont from "@/components/icon";
 import { Template } from "@/components/template";
 import { worklogDetail } from "@/store/api/user";
-import { useCodeList, useEventList, useWorkLog } from "@/store/network/user";
+import { useCodeList, useEventList, useNewDeleteWorklog, useWorkLog } from "@/store/network/user";
 import userService from "@/store/network/user/service";
 import { Col, Input, message, Popconfirm, Row } from "antd";
 import moment from "moment";
@@ -16,11 +16,13 @@ const Index: FC<Role> = (props: Role) => {
   const codelist = useCodeList();
   const worklog = useEventList();
   const LogDetail = useWorkLog();
+  const deletelog = useNewDeleteWorklog();
   const [handleExpand, setHandleExpand] = useState(true);
   const [eventID, seteventID] = useState<string>("");
   const [eventType, setEventType] = useState<object[]>([]);
   const [eventService, setEventService] = useState<object[]>([]);
   const [params, setparams] = useState<any>();
+  const [deleteId, setDeleteId] = useState<any>();
   useEffect(() => userService?.UserServiceWorkLogCodeList(), []);
 
   useEffect(() => {
@@ -48,7 +50,7 @@ const Index: FC<Role> = (props: Role) => {
 
   useEffect(() => {
     if (props.type === 2) {
-      if(params){
+      if (params) {
         if (params.filters !== undefined) {
           userService?.UserServiceWorkLogEventList({
             keyword: params.filters.keyword,
@@ -66,12 +68,45 @@ const Index: FC<Role> = (props: Role) => {
           });
         }
       }
-      }
-      
-   
-  }, [params, props.type]);
+    }
+  }, [params, props.type, deletelog]);
+
+  const confirm = () => {
+
+    userService.UserDeleteWorkLog([deleteId]);
+  };
+  const cancel = () => {};
 
   const TempConfig = {
+    optList: [
+      {
+        icon: (
+          <div>
+            <Popconfirm
+              title="Are you sure delete this task?"
+              //visible={this.state.visible}
+              //onVisibleChange={this.handleVisibleChange}
+              onConfirm={() => confirm()}
+              onCancel={() => cancel()}
+              okText="Yes"
+              cancelText="No"
+              trigger={"click"}
+            >
+              <div>
+                <IconFont
+                  type="icon-shanchu"
+                  className="DeleteBtn"
+                  style={{ fontSize: 17, color: "#FF8900" }}
+                ></IconFont>
+              </div>
+            </Popconfirm>
+          </div>
+        ),
+        event: (data: any) => {
+          setDeleteId(data.eventId);
+        },
+      },
+    ],
 
     onSearch: (params: any) => {
       setparams(params);
@@ -105,48 +140,31 @@ const Index: FC<Role> = (props: Role) => {
         key: "eventDate",
         render: (text: number) => moment(text).format("YYYY/MM/DD h:mm:ss"),
       },
-      {
-        title: "操作",
-        dataIndex: "",
-        key: "",
-        render: (key: any) => (
-          <div>
-            <Popconfirm
-              title="Are you sure delete this task?"
-              //visible={this.state.visible}
-              //onVisibleChange={this.handleVisibleChange}
-              onConfirm={() => confirm(key)}
-              onCancel={cancel}
-              okText="Yes"
-              cancelText="No"
-            >
-              <IconFont
-                type="icon-shanchu"
-                className="DeleteBtn"
-                style={{ fontSize: 17, color: "#FF8900" }}
-              ></IconFont>
-            </Popconfirm>
-          </div>
-        ),
-      },
+      
     ],
     expandedRowRender: () => {
       return (
         <div>
           {expandaRowDetail.map((item, index) => {
             return (
-              <Row key={index} style={{paddingBottom: 15}}>
-              <Col span={4}>{item.name}</Col>
-              <Col span={16}>
-                {item.name === "oldData" || item.name === "newData" ? (
-                  <div>
-                    <TextArea style={{width:500,height:190}} value={item.data} allowClear={false}></TextArea>
-                  </div>
-                ) : (
-                  item.data?item.data:"-"
-                )}
-              </Col>
-            </Row>
+              <Row key={index} style={{ paddingBottom: 15 }}>
+                <Col span={4}>{item.name}</Col>
+                <Col span={16}>
+                  {item.name === "oldData" || item.name === "newData" ? (
+                    <div>
+                      <TextArea
+                        style={{ width: 500, height: 190 }}
+                        value={item.data}
+                        allowClear={false}
+                      ></TextArea>
+                    </div>
+                  ) : item.data ? (
+                    item.data
+                  ) : (
+                    "-"
+                  )}
+                </Col>
+              </Row>
             );
           })}
         </div>
@@ -174,13 +192,6 @@ const Index: FC<Role> = (props: Role) => {
     { name: "oldData", data: LogDetail?.oldData },
     { name: "newData", data: LogDetail?.newData },
   ];
-  const confirm = (key: { eventId: any }) => {
-    const eventId = key.eventId;
-    console.log(eventId);
-    userService.UserDeleteWorkLog([eventId]);
-    message.success("Delete Success");
-  };
-  const cancel = () => {};
 
   return (
     <div>

@@ -1,5 +1,5 @@
 import { Dropdown, Menu, Space } from "antd";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { IOperation, IColumnsTypeP, IOperationConfig } from "../interface";
 import { EllipsisOutlined } from "@ant-design/icons";
 import { XOR } from "ts-xor";
@@ -146,9 +146,14 @@ const OptListComp: FC<IOptProps> = (props) => {
       const elo = (
         <Menu.Item key={idx1}>
           {/* <IntlDep id={optZ.text} values={optZ.textValue} /> */}
-          {optZ.text}
+          {optZ.text !== "状态"
+            ? optZ.text
+            : props.value.status === 1
+            ? "禁用"
+            : "启用"}
         </Menu.Item>
       );
+
       // const el = roleAuth(elo, optZ.role);
       // if (el) {
       // menulist.push(

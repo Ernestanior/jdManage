@@ -3,6 +3,8 @@ import { IRenderConfig } from "@/components/template/fastRender";
 import { Role } from "@/components/template/interface";
 import { useDnsCertList, useDnsCustomerList } from "@/store/network/dnsManage";
 import dnsManage from "@/store/network/dnsManage/service";
+import IconFont from "@/components/icon";
+import Popconfirm from "antd/lib/popconfirm";
 import moment from "moment";
 import { FC, useEffect, useState } from "react";
 
@@ -102,12 +104,34 @@ const Index: FC<Role> = (props: Role) => {
   ];
 
   const TempConfig = {
-    optList: [{
-      text:"删除",
+    optList: [ {
+      icon: (
+        <div>
+          <Popconfirm
+            title="Are you sure delete this task?"
+            //visible={this.state.visible}
+            //onVisibleChange={this.handleVisibleChange}
+            //onConfirm={() => confirm()}
+            //onCancel={() => cancel()}
+            okText="Yes"
+            cancelText="No"
+            trigger={"click"}
+          >
+            <div>
+              <IconFont
+                type="icon-shanchu"
+                className="DeleteBtn"
+                style={{ fontSize: 17, color: "#FF8900" }}
+              ></IconFont>
+            </div>
+          </Popconfirm>
+        </div>
+      ),
       event: (data: any) => {
-       
+       // setDeleteId(data.eventId);
       },
-    },{text:"",event:()=>{}}
+    },
+    
   ],
     onSearch: (params: any) => setParams(params),
     rowId: "uid",

@@ -6,10 +6,12 @@ class CustomerAPI {
    * findDomain
    * 生成请求参数
    */
-  FindCustomer = (data: ISearchCustomer) => {
+
+ CustomerList = (params: any, data: any) => {
     const config: AxiosRequestConfig = {
       url: "/customer/list",
-      method: "post",
+      method: "POST",
+      params,
       data,
     };
     config.headers = {};
@@ -45,5 +47,39 @@ class CustomerAPI {
     config.headers = {};
     return config;
   };
+
+  ResetPassword = (params:{},data:{})=>{
+    const config: AxiosRequestConfig = {
+      url: "/customer/reset-password",
+      method:"POST",
+      params,
+      data,
+    };
+    config.headers = {};
+    return config;
+  }
+
+  Disable = (data:{})=>{
+    const config: AxiosRequestConfig ={
+      url:"/customer/disable",
+      method:"PUT",
+      data,
+    };
+    config.headers={};
+    return config;
+
+  }
+
+  Enable = (data:{})=>{
+    const config: AxiosRequestConfig ={
+      url:"/customer/enable",
+      method:"PUT",
+      data,
+    };
+    config.headers={};
+    return config;
+
+  }
+  
 }
 export default CustomerAPI;
