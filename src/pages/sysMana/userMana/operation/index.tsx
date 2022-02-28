@@ -106,7 +106,7 @@ const Index: FC<Role> = (props: Role) => {
         text: "重置密码",
         event: (data: any) => {
           let uid = { uid: data.uid };
-          from(request(customerApi.ResetPassword(uid, {}))).subscribe(
+          from(request(customerApi.ResetPassword({}, uid))).subscribe(
             (data) => {
               if (data) {
                 alert(`is your new password ${data.password}`);
@@ -121,11 +121,13 @@ const Index: FC<Role> = (props: Role) => {
           console.log(data);
           let uid = [data.uid];
           if (data.status === 1) {
-            from(request(customerApi.DisableCustomer(uid))).subscribe((data) => {
-              if (data) {
-                alert("Success");
+            from(request(customerApi.DisableCustomer(uid))).subscribe(
+              (data) => {
+                if (data) {
+                  alert("Success");
+                }
               }
-            });
+            );
             // CustomerService.disableCustomer();
           } else {
             from(request(customerApi.EnableCustomer(uid))).subscribe((data) => {
@@ -175,11 +177,13 @@ const Index: FC<Role> = (props: Role) => {
         text: "批量禁用",
         onClick: (value: any) => {
           console.log(value);
-          from(request(customerApi.DisableCustomer(value))).subscribe((data) => {
-            if (data) {
-              alert("Disable Success");
+          from(request(customerApi.DisableCustomer(value))).subscribe(
+            (data) => {
+              if (data) {
+                alert("Disable Success");
+              }
             }
-          });
+          );
         },
       },
     ],

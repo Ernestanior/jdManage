@@ -17,8 +17,6 @@ const Index: FC<Role> = (props: Role) => {
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
   const customerList = useCustomerList();
 
-
-
   useEffect(() => {
     if (props.type === "agent") {
       if (params !== undefined) {
@@ -38,7 +36,7 @@ const Index: FC<Role> = (props: Role) => {
         }
       }
     }
-  }, [params, props.type,visible]);
+  }, [params, props.type, visible]);
 
   const showDrawer = () => {
     setVisible(true);
@@ -54,20 +52,20 @@ const Index: FC<Role> = (props: Role) => {
 
   const submitNewAccount = (key: string[]) => {
     let obj = { ...key, type: "agent" };
-    from(request(customerApi.CreateCustomer(obj))).subscribe((data)=>{
+    from(request(customerApi.CreateCustomer(obj))).subscribe((data) => {
       if (data) {
-        alert("modify Success")
+        alert("modify Success");
       }
-    })
+    });
   };
 
   const updateDetail = (key: string[]) => {
     let obj = { ...key, uid: selectedCustomer.uid };
-    from(request(customerApi.ModifyCustomer(obj))).subscribe((data)=>{
+    from(request(customerApi.ModifyCustomer(obj))).subscribe((data) => {
       if (data) {
-        alert("modify Success")
+        alert("modify Success");
       }
-    })
+    });
   };
 
   const handleOnclick = (data: any) => {
@@ -100,7 +98,6 @@ const Index: FC<Role> = (props: Role) => {
       dataIndex: "probationFlag",
       key: "probationFlag",
     },
-   
   ];
 
   const TempConfig = {
@@ -116,7 +113,7 @@ const Index: FC<Role> = (props: Role) => {
         text: "重置密码",
         event: (data: any) => {
           let uid = { uid: data.uid };
-          from(request(customerApi.ResetPassword(uid, {}))).subscribe(
+          from(request(customerApi.ResetPassword({}, uid))).subscribe(
             (data) => {
               if (data) {
                 alert(`is your new password ${data.password}`);
@@ -131,11 +128,13 @@ const Index: FC<Role> = (props: Role) => {
           console.log(data);
           let uid = [data.uid];
           if (data.status === 1) {
-            from(request(customerApi.DisableCustomer(uid))).subscribe((data) => {
-              if (data) {
-                alert("Success");
+            from(request(customerApi.DisableCustomer(uid))).subscribe(
+              (data) => {
+                if (data) {
+                  alert("Success");
+                }
               }
-            });
+            );
             // CustomerService.disableCustomer();
           } else {
             from(request(customerApi.EnableCustomer(uid))).subscribe((data) => {
@@ -185,11 +184,13 @@ const Index: FC<Role> = (props: Role) => {
         text: "批量禁用",
         onClick: (value: any) => {
           console.log(value);
-          from(request(customerApi.DisableCustomer(value))).subscribe((data) => {
-            if (data) {
-              alert("Disable Success");
+          from(request(customerApi.DisableCustomer(value))).subscribe(
+            (data) => {
+              if (data) {
+                alert("Disable Success");
+              }
             }
-          });
+          );
         },
       },
     ],
