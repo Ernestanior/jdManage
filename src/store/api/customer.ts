@@ -77,14 +77,23 @@ class CustomerAPI {
     return config;
   };
 
-  ResetPassword = (data:{}, params:{}) =>{
-    const config: AxiosRequestConfig ={
-      url:"/customer/reset-password",
-      method:"POST",
+  ResetPassword = (data: {}, params: {}) => {
+    const config: AxiosRequestConfig = {
+      url: "/customer/reset-password",
+      method: "POST",
       data,
     };
-    config.headers ={};
+    config.headers = {};
     return config;
-  }
+  };
+  ChannelUpdate = (channel: string, uid: string) => {
+    const config: AxiosRequestConfig = {
+      url: "/customer/channel/update",
+      method: "PUT",
+      data: { channel, uid },
+    };
+    config.headers = {};
+    return config;
+  };
 }
 export default CustomerAPI;

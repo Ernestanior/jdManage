@@ -85,5 +85,14 @@ class DnsAPI {
     config.headers = {};
     return config;
   };
+  FindDomainCount = (customerUid: string) => {
+    const config: AxiosRequestConfig = {
+      url: "/domain/count",
+      method: "get",
+      params: { customerUid },
+    };
+    config.headers = {};
+    return config;
+  };
 }
 export default DnsAPI;

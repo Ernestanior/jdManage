@@ -20,3 +20,9 @@ interface ISupplier {
   code: string;
   isEnabled: boolean;
 }
+export interface ICustomerSupplier {
+  code: string;
+  displayName: string;
+  name: string;
+  value: number;
+}

@@ -12,6 +12,7 @@ import {
   IBatchRecordsResult,
   IValidateCName,
   IValidateCNameResult,
+  IDomainCount,
 } from "./interface";
 import _ from "underscore";
 import { findNestedObj } from "@/common/utils/util";
@@ -27,6 +28,7 @@ class Dns {
   public createBatchRecordsResult$: IBatchRecordsResult[] = [];
   readonly cNameValidatedResult$ =
     new BehaviorSubject<IValidateCNameResult | null>(null);
+  readonly domainCountList$ = new BehaviorSubject<IDomainCount | null>(null);
 
   // readonly createBatchRecordsResult$ = new BehaviorSubject<IBatchRecordsResult[] | null>(null);
 
@@ -128,17 +130,13 @@ class Dns {
       }
     });
   }
-  // create(params: ICreateUserParams) {
-  //     from(request(userApi.CreateUser({
-  //         ...params
-  //     }, {}))
-  //     ).subscribe(data => {
-  //         if (data) {
-  //             this.userList$.next(data)
-  //         }
-  //     }
-  //     )
-  // }
+  findDomainCount(customerUid: string) {
+    from(request(dnsApi.FindDomainCount(customerUid))).subscribe((data) => {
+      if (data) {
+        this.domainCountList$.next(data);
+      }
+    });
+  }
 }
 
 const dnsService = new Dns();
