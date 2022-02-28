@@ -46,15 +46,52 @@ class SslManageAPI {
     return config;
   };
 
-  viewOriginCert = (params:any)=>{
-    const config: AxiosRequestConfig={
-      url:`/ssl/origin-cert/view?uid=${params.data}`,
-      method:"GET",
+  viewOriginCert = (params: any) => {
+    const config: AxiosRequestConfig = {
+      url: `/ssl/origin-cert/view?uid=${params.data}`,
+      method: "GET",
     };
-    config.headers={};
+    config.headers = {};
     return config;
-  }
+  };
 
+  requestOriginalCert = (data: RequestOriginalCert) => {
+    const config: AxiosRequestConfig = {
+      url: "/ssl/origin-cert/request",
+      method: "POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+
+  originalCertOption = () => {
+    const config: AxiosRequestConfig = {
+      url: "/ssl/origin-cert/option/list",
+      method: "GET",
+    };
+    config.headers = {};
+    return config;
+  };
+
+  certDelete = (data:string[]) => {
+    const config: AxiosRequestConfig = {
+      url: "/ssl/origin-cert/delete",
+      method: "DELETE",
+      data:data,
+    };
+    config.headers = {};
+    return config;
+  };
 }
 
 export default SslManageAPI;
+
+export type RequestOriginalCert = {
+  domains: [] | string[];
+  privateKeyType: string;
+  usesOwnPrivateKey: boolean;
+  validity: number;
+};
+
+

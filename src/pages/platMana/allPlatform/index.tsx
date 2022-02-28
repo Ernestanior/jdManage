@@ -7,18 +7,33 @@ import {
 } from "@/store/network/platformMange";
 import platformManage from "@/store/network/platformMange/service";
 import { DownOutlined } from "@ant-design/icons";
-import { Col, Divider, Drawer, Dropdown, Menu, Row } from "antd";
+import {
+  Col,
+  Divider,
+  Drawer,
+  Dropdown,
+  Menu,
+  Row,
+  Form,
+  Input,
+  Button,
+  Select,
+} from "antd";
 import { FC, useEffect, useState } from "react";
 
 const Index: FC<Role> = (props: Role) => {
+  const [form] = Form.useForm();
   const [params, setParams] = useState<any>();
   const supplierList = usePlatformManage();
   const supplierInfo = useSupplierInfo();
   const [option, setOption] = useState<Object[]>([]);
+  const [addAccountOption, setAddAccountOption] = useState<Object[]>([]);
   const [visible, setVisible] = useState<boolean>(false);
+  const [domainDrawer, setDomainDrawer] = useState<boolean>(false);
   const [supplierAccount, setSupplierAccount] = useState<any>();
   const supplierDetail = useViewSupplierAccount();
-
+  const [selectedOption, setSelectedOption] = useState<string>();
+  const [fieldData, setFieldData] = useState<any>();
   useEffect(() => {
     if (props.type === "") {
       platformManage?.SupplierInfo("");
@@ -26,12 +41,27 @@ const Index: FC<Role> = (props: Role) => {
   }, [props.type]);
 
   useEffect(() => {
+    if (selectedOption !== undefined || selectedOption !== null) {
+      let fieldData = supplierInfo?.find(
+        (item: any) => item.code === selectedOption
+      );
+      console.log(fieldData, "aaaaaa");
+      setFieldData(fieldData);
+    }
+  }, [selectedOption]);
+
+  useEffect(() => {
+    console.log(supplierInfo);
+
     if (supplierInfo) {
       let platformOption: object[] = [];
+      let addAccountOption: object[] = [];
       Object.entries(supplierInfo).forEach((item: any) => {
         let a = item[1];
         platformOption.push({ uid: a.code, name: a.displayName });
+        addAccountOption.push({ value: a.code, label: a.displayName });
       });
+      setAddAccountOption(addAccountOption);
       setOption(platformOption);
     }
   }, [supplierInfo]);
@@ -72,10 +102,20 @@ const Index: FC<Role> = (props: Role) => {
     setVisible(true);
   };
 
+  const shoDomainDrawer = () => {
+    setDomainDrawer(true);
+  };
+
   const onClose = () => {
     setVisible(false);
+    setDomainDrawer(false);
     setSupplierAccount({});
   };
+
+  const submintNewDomain = (data: any)=>{
+    console.log(data);
+    
+  }
 
   const TempConfig = {
     optList: [
@@ -102,7 +142,9 @@ const Index: FC<Role> = (props: Role) => {
     normalBtns: [
       {
         text: "新增站点",
-        onClick: () => true,
+        onClick: () => {
+          shoDomainDrawer();
+        },
       },
     ],
     onSearch: (params: any) => {
@@ -214,6 +256,73 @@ const Index: FC<Role> = (props: Role) => {
           </Col>
           <Divider />
         </Row>
+      </Drawer>
+      <Drawer
+        title="新增账号"
+        placement="left"
+        onClose={onClose}
+        visible={domainDrawer}
+        width={570}
+        bodyStyle={{ paddingBottom: 80 }}
+      >
+        <Form
+          form={form}
+          layout="horizontal"
+          labelAlign={"left"}
+          labelCol={{ span: 24 }}
+          wrapperCol={{ span: 24}}
+           onFinish={submintNewDomain}
+        >
+          <Form.Item label="平台配置名称" name="a">
+            <Input />
+          </Form.Item>
+          <Form.Item label="使用者名" name="code">
+            <Select
+              options={addAccountOption}
+              onChange={(e) => setSelectedOption(e)}
+            ></Select>
+          </Form.Item>
+          {fieldData !== undefined ? (
+            fieldData.supportsMultiAccount === true ? (
+              <Form.Item label="总域名额度" name="">
+                <Input defaultValue={1} />
+              </Form.Item>
+            ) : (
+              ""
+            )
+          ) : (
+            ""
+          )}
+
+          {fieldData !== undefined ? (
+            fieldData.description !== "" ? (
+              <div>{fieldData.description}</div>
+            ) : (
+              ""
+            )
+          ) : (
+            ""
+          )}
+
+          {fieldData !== undefined
+            ? fieldData.tokenFields.map((item: any) => {
+                return (
+                  <Form.Item
+                    label={item.displayName}
+                    name={item.name}
+                    key={item.name}
+                  >
+                    <Input />
+                  </Form.Item>
+                );
+              })
+            : ""}
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
       </Drawer>
     </div>
   );

@@ -110,7 +110,7 @@ const Index: FC<Role> = (props: Role) => {
         text: "重置密码",
         event: (data: any) => {
           let uid = { uid: data.uid };
-          from(request(customerApi.ResetPassword(uid, {}))).subscribe(
+          from(request(customerApi.ResetPassword({},uid))).subscribe(
             (data) => {
               if (data) {
                 alert(`is your new password ${data.password}`);

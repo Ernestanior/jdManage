@@ -1,5 +1,6 @@
 import { Template } from "@/components/template";
 import { dnsManageApi } from "@/store/api";
+import DnsManageAPI from "@/store/api/dnsManage";
 import { useDomainList } from "@/store/network/dnsManage";
 import { useDnsCustomerList } from "@/store/network/dnsManage";
 import dnsManage from "@/store/network/dnsManage/service";
@@ -11,12 +12,15 @@ import { from } from "rxjs";
 
 const Index: FC = () => {
   const [AddForm] = Form.useForm();
+  const [CloneForm] = Form.useForm();
   const domainList = useDomainList();
   const customerList = useDnsCustomerList();
   const [params, setParams] = useState<any>();
   const [option, setOption] = useState<Object[]>([]);
   const [addDomainOption, setAddDomainOption] = useState<Object[]>([]);
   const [addDrawer, setAddDrawer] = useState<boolean>(false);
+  const [cloneDrawer, setCloneDrawer] = useState<boolean>(false);
+  const [cloneData, setCloneData] = useState<any>(false);
   useEffect(() => {
     if (params) {
       if (params.filters !== undefined) {
@@ -40,6 +44,14 @@ const Index: FC = () => {
 
   const closeAddDrawer = () => {
     setAddDrawer(false);
+  };
+
+  const showCloneDrawer = () => {
+    setCloneDrawer(true);
+  };
+
+  const closeCLoneDrawer = () => {
+    setCloneDrawer(false);
   };
 
   useEffect(() => {
@@ -73,16 +85,20 @@ const Index: FC = () => {
         text: "申请证书",
         event: (data: any) => {
           console.log(data.uid);
-          let uid = {domainUid: data.uid, records:[data.name]}
-          from(request(dnsManageApi.CertRequest(uid))).subscribe((data)=>{
+          let uid = { domainUid: data.uid, records: [data.name] };
+          from(request(dnsManageApi.CertRequest(uid))).subscribe((data) => {
             console.log(data);
-            
-          })
+          });
         },
       },
       {
         text: "克隆",
-        event: (data: any) => {},
+        event: (data: any) => {
+          console.log(data);
+
+          setCloneData(data);
+          showCloneDrawer();
+        },
       },
       {
         text: "状态",
@@ -104,29 +120,41 @@ const Index: FC = () => {
       },
       {
         text: "删除",
-        event: (data: any) => {},
+        event: (data: any) => {
+          let uid = [data.uid];
+          from(request(dnsManageApi.DomainDelete(uid))).subscribe((data) => {
+            if (data) {
+            }
+          });
+        },
       },
     ],
     batchBtns: [
       {
         text: "批量删除",
         onClick: (value: any) => {
-          // setDeleteFlag(true);
-          // setSelectedKey(value);
+          from(request(dnsManageApi.DomainDelete(value))).subscribe((data) => {
+            if (data) {
+            }
+          });
         },
       },
       {
         text: "批量启用",
         onClick: (value: any) => {
-          // setEnableFlag(true);
-          // setSelectedKey(value);
-        },
+          from(request(dnsManageApi.Enable(value))).subscribe((data) => {
+            if (data) {
+            }
+          });
+        }
       },
       {
         text: "批量禁用",
         onClick: (value: any) => {
-          // setDisableFlag(true);
-          // setSelectedKey(value);
+          from(request(dnsManageApi.Disable(value))).subscribe((data) => {
+            if (data) {
+            }
+          });
         },
       },
     ],
@@ -172,6 +200,16 @@ const Index: FC = () => {
 
   const AddNewDomain = (key: string[]) => {
     from(request(dnsManageApi.CreateDomain(key))).subscribe((data) => {
+      if (data) {
+      }
+    });
+  };
+
+  const clone = (data: any) => {
+    console.log(data.names.replace(/\n/g, ",").split(","));
+    let cloneNameArr = data.names.replace(/\n/g, ",").split(",");
+    let cloneValue = { names: cloneNameArr, uid: data.uid };
+    from(request(dnsManageApi.CloneDomain(cloneValue))).subscribe((data) => {
       if (data) {
       }
     });
@@ -233,6 +271,32 @@ const Index: FC = () => {
             <Button type="primary" htmlType="submit">
               提交
             </Button>
+          </Form.Item>
+        </Form>
+      </Drawer>
+      <Drawer
+        title="添加"
+        placement="left"
+        onClose={closeCLoneDrawer}
+        visible={cloneDrawer}
+        width={570}
+        bodyStyle={{ paddingBottom: 80 }}
+      >
+        <Form
+          form={CloneForm}
+          layout="horizontal"
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 14 }}
+          onFinish={clone}
+        >
+          <Form.Item label="已选域名" name="uid" initialValue={cloneData?.uid}>
+            <label>{cloneData?.name}</label>
+          </Form.Item>
+          <Form.Item label="新域名" name="names">
+            <TextArea />
+          </Form.Item>
+          <Form.Item>
+            <Button htmlType="submit">确认</Button>
           </Form.Item>
         </Form>
       </Drawer>

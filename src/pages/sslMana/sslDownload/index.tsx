@@ -7,10 +7,14 @@ import IconFont from "@/components/icon";
 import Popconfirm from "antd/lib/popconfirm";
 import moment from "moment";
 import { FC, useEffect, useState } from "react";
+import { from } from "rxjs";
+import { dnsApi } from "@/store/api";
+import request from "@/store/request";
 
 const Index: FC<Role> = (props: Role) => {
   const [params, setParams] = useState<any>();
   const [filterOption, setfilterOption] = useState<any>();
+  const [deleteUid, setDeleteUid] = useState<any>();
   const dnsCustomerList = useDnsCustomerList();
   const dnsCertList = useDnsCertList();
 
@@ -102,7 +106,12 @@ const Index: FC<Role> = (props: Role) => {
       type: "select",
     },
   ];
+  const confirm =()=>{
+    // from(request(dnsApi.CertDelete(deleteUid))).subscribe((data)=>{
 
+    // })
+
+  }
   const TempConfig = {
     optList: [ {
       icon: (
@@ -111,7 +120,7 @@ const Index: FC<Role> = (props: Role) => {
             title="Are you sure delete this task?"
             //visible={this.state.visible}
             //onVisibleChange={this.handleVisibleChange}
-            //onConfirm={() => confirm()}
+            onConfirm={() => confirm()}
             //onCancel={() => cancel()}
             okText="Yes"
             cancelText="No"
@@ -128,7 +137,8 @@ const Index: FC<Role> = (props: Role) => {
         </div>
       ),
       event: (data: any) => {
-       // setDeleteId(data.eventId);
+      console.log(data.uid);
+        setDeleteUid(data.uid);
       },
     },
     

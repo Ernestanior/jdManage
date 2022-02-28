@@ -26,14 +26,23 @@ class PlatformManageAPI {
     return config;
   };
 
-  PlatformManageSupplierAccountView = (params:any) =>{
-    const config: AxiosRequestConfig={
+  PlatformManageSupplierAccountView = (params: any) => {
+    const config: AxiosRequestConfig = {
       url: `supplier-account/view?uid=${params.data}`,
-      method:"GET",
+      method: "GET",
     };
-    config.headers ={};
+    config.headers = {};
     return config;
-  }
+  };
+
+  PlatformManageSupplierAccountValidate = (data: any) => {
+    const config: AxiosRequestConfig = {
+      url: `/supplier-account/validate`,
+      method: "POST",
+    };
+    config.headers = {};
+    return config;
+  };
 }
 
 export default PlatformManageAPI;

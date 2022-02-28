@@ -81,7 +81,7 @@ class CustomerAPI {
     const config: AxiosRequestConfig ={
       url:"/customer/reset-password",
       method:"POST",
-      data,
+      params,
     };
     config.headers ={};
     return config;

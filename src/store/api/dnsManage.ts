@@ -35,57 +35,85 @@ class DnsManageAPI {
     return config;
   };
 
-  DnsCertList = (data: any)=>{
-    const config: AxiosRequestConfig ={
-      url:"/dns/cert/list",
-      method:"POST",
+  DnsCertList = (data: any) => {
+    const config: AxiosRequestConfig = {
+      url: "/dns/cert/list",
+      method: "POST",
       data,
     };
     config.headers = {};
     return config;
-  }
+  };
 
-  CreateDomain = (data:any)=>{
-    const config:AxiosRequestConfig={
-      url:"/dns/domain/create",
-      method:"POST",
+  CreateDomain = (data: any) => {
+    const config: AxiosRequestConfig = {
+      url: "/dns/domain/create",
+      method: "POST",
       data,
     };
     config.headers = {};
     return config;
-  }
-  
-  Disable = (data:any)=>{
-    const config: AxiosRequestConfig={
-      url:"/dns/domain/disable",
-      method:"PUT",
+  };
+
+  Disable = (data: any) => {
+    const config: AxiosRequestConfig = {
+      url: "/dns/domain/disable",
+      method: "PUT",
       data,
     };
-    config.headers={};
+    config.headers = {};
     return config;
-  }
+  };
 
-  Enable = (data:any)=>{
-    const config: AxiosRequestConfig={
-      url:"/dns/domain/enable",
-      method:"PUT",
+  Enable = (data: any) => {
+    const config: AxiosRequestConfig = {
+      url: "/dns/domain/enable",
+      method: "PUT",
       data,
     };
-    config.headers={};
+    config.headers = {};
     return config;
-  }
+  };
 
-  CertRequest = (data:any)=>{
-    const config: AxiosRequestConfig={
-      url:"/dns/cert/certgen/request",
-      method:"POST",
+  CertRequest = (data: any) => {
+    const config: AxiosRequestConfig = {
+      url: "/dns/cert/certgen/request",
+      method: "POST",
       data,
     };
-    config.headers={};
+    config.headers = {};
     return config;
-  }
+  };
 
+  CloneDomain = (data: { names: []; uid: string }) => {
+    const config: AxiosRequestConfig = {
+      url: "/dns/domain/clone",
+      method: "POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
 
+  DomainDelete = (data: string[]) => {
+    const config: AxiosRequestConfig = {
+      url: "/dns/domain/delete",
+      method: "DELETE",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+
+  CertDelete = (data: string[]) => {
+    const config: AxiosRequestConfig = {
+      url: "/dns/cert/delete",
+      method: "DELETE",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
 }
 
 export default DnsManageAPI;

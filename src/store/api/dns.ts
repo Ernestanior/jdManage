@@ -85,5 +85,7 @@ class DnsAPI {
     config.headers = {};
     return config;
   };
+
+
 }
 export default DnsAPI;
