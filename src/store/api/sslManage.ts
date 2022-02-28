@@ -36,7 +36,6 @@ class SslManageAPI {
   };
 
   viewCert = (params: any) => {
-    console.log(params, "uidudid");
 
     const config: AxiosRequestConfig = {
       url: `/ssl/view-cert?uid=${params.data}`,

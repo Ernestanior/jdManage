@@ -192,34 +192,6 @@ const Index: FC<Role> = (props: Role) => {
         }
       },
     },
-    {
-      title: "操作",
-      dataIndex: "uid",
-      key: "uid",
-      render: (key: any) => {
-        const menu = (
-          <Menu>
-            <Menu.Item
-              key="1"
-              onClick={() => {
-                handleOnclick(key);
-                showDrawer();
-              }}
-            >
-              查看
-            </Menu.Item>
-            <Menu.Item key="2">删除账户</Menu.Item>
-          </Menu>
-        );
-        return (
-          <div>
-            <Dropdown overlay={menu}>
-              <DownOutlined />
-            </Dropdown>
-          </div>
-        );
-      },
-    },
   ];
 
   const batchBtns = [
@@ -257,8 +229,8 @@ const Index: FC<Role> = (props: Role) => {
       },
       {
         text: "删除",
-        event: (data:any) => {
-          let deleteId = [data.uid]
+        event: (data: any) => {
+          let deleteId = [data.uid];
           from(request(sslManageApi.certDelete(deleteId))).subscribe((data) => {
             if (data) {
             }

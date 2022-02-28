@@ -64,8 +64,8 @@ const Index: FC<Role> = (props: Role) => {
     console.log(supplierDetail);
   }, [supplierDetail]);
 
-  const handleOnclick = (key: any) => {
-    platformManage.viewSupplierAccount(key);
+  const handleOnclick = (uid: string) => {
+    platformManage.viewSupplierAccount(uid);
   };
 
   const showDrawer = () => {

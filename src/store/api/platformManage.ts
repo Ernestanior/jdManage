@@ -1,23 +1,24 @@
 import { AxiosRequestConfig } from "axios";
 import { methods } from "underscore";
+import { IAccountList } from "../network/platformMange/service";
 /**
  * @class UserAPI
  * @description 用户管理API
  * @return 返回request的config
  */
 class PlatformManageAPI {
-  PlatformManageSupplierList = (params: any, data: any) => {
+  PlatformManageSupplierList = (data: IAccountList) => {
+    console.log(data,"dataaaaa");
     const config: AxiosRequestConfig = {
       url: "/supplier-account/list",
       method: "POST",
-      params,
       data,
     };
     config.headers = {};
     return config;
   };
 
-  PlatformManageSupplierInfo = (type: any) => {
+  PlatformManageSupplierInfo = (type: string) => {
     const config: AxiosRequestConfig = {
       url: `/supplier/info/all?${type ? "type=" : ""}${type ? type : ""}`,
       method: "GET",
@@ -26,9 +27,9 @@ class PlatformManageAPI {
     return config;
   };
 
-  PlatformManageSupplierAccountView = (params: any) => {
+  PlatformManageSupplierAccountView = (uid: string) => {
     const config: AxiosRequestConfig = {
-      url: `supplier-account/view?uid=${params.data}`,
+      url: `supplier-account/view?uid=${uid}`,
       method: "GET",
     };
     config.headers = {};

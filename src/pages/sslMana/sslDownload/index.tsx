@@ -8,7 +8,7 @@ import Popconfirm from "antd/lib/popconfirm";
 import moment from "moment";
 import { FC, useEffect, useState } from "react";
 import { from } from "rxjs";
-import { dnsApi } from "@/store/api";
+import { dnsApi, dnsManageApi } from "@/store/api";
 import request from "@/store/request";
 
 const Index: FC<Role> = (props: Role) => {
@@ -107,10 +107,11 @@ const Index: FC<Role> = (props: Role) => {
     },
   ];
   const confirm =()=>{
-    // from(request(dnsApi.CertDelete(deleteUid))).subscribe((data)=>{
-
-    // })
-
+    from(request(dnsManageApi.CertDelete([deleteUid]))).subscribe((data)=>{
+      if (data) {
+        
+      }
+    })
   }
   const TempConfig = {
     optList: [ {
