@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import MiniTable from "@/components/miniTable";
 import IconFont from "@/components/icon";
-import PieChart from "@/components/echart-dns/pie";
+// import PieChart from "@/components/echart-dns/pie";
 import LineChart from "./lineChart";
 import request from "@/store/request";
 import { dnsApi, siteApi } from "@/store/api";
@@ -108,7 +108,7 @@ const Home: FC = () => {
         </div>
       </div>
       <div className="mini-table">
-        <PieChart
+        {/* <PieChart
           className="pie"
           data={[
             ["Greypanel", 5],
@@ -117,7 +117,7 @@ const Home: FC = () => {
             ["Alibaba Cloud", 3],
           ]}
           title="流量使用比"
-        ></PieChart>
+        ></PieChart> */}
       </div>
       <div className="line-table">
         <div>带宽统计</div>

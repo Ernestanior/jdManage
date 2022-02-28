@@ -29,3 +29,18 @@ export interface IServiceDomain {
   name: string;
   uid: string;
 }
+export interface ICustomerCreate {
+  cdnEnabled: boolean;
+  dataAllowance: number;
+  defenceEnabled: boolean;
+  defenceQuota: string;
+  dnsConfig: { domainQuota: number };
+  dnsEnabled: boolean;
+  domainQuota: number;
+  emaul: string;
+  name: string;
+  password: string;
+  serviceDomain: string;
+  supportsSupplier: boolean;
+  type: string;
+}

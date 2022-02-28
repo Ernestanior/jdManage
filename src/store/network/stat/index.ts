@@ -1,4 +1,5 @@
 import useBehaviorSubject from "@/hooks/useBehaviorSubject";
+import { ICustomerSupplier } from "../supplier/interface";
 import statService from "./service";
 
 export const useStatSiteSupplier = () => {
@@ -24,4 +25,12 @@ export const useStatSupplierAvail = () => {
 };
 export const useStatSupplierResTime = () => {
   return useBehaviorSubject<any>(statService.statSupplierResTimeList$);
+};
+export const useStatCusOverview = () => {
+  return useBehaviorSubject<any>(statService.statCustomerOverview$);
+};
+export const useStatCusSupplier = () => {
+  return useBehaviorSubject<ICustomerSupplier[]>(
+    statService.statCustomerSupplier$
+  );
 };

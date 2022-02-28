@@ -2,14 +2,14 @@ import { FC, useMemo } from "react";
 import ReactECharts from "echarts-for-react";
 
 import { colorPalette } from "@/components/charts/flow/flow";
+export interface IPieData {
+  [T: string]: number | string;
+}
 interface IProps {
-  data: any;
-  // data: {[T:string]:{[R:string]:number}};
+  data: IPieData;
 }
 
 const PieComp: FC<IProps> = ({ data }) => {
-  console.log(data);
-
   const pieData = useMemo(
     () =>
       data &&
@@ -17,17 +17,15 @@ const PieComp: FC<IProps> = ({ data }) => {
         key: i,
         displayName: key,
         name: key,
-        value: data[key].avg,
+        value: data[key] === "NaN" ? 0 : data[key],
         label: {
           fontSize: 18,
           color: "#434343",
           padding: [12, 24],
           borderRadius: 6,
         },
-        emphasis: {
-          itemStyle: {
-            color: colorPalette[i] || colorPalette[colorPalette.length - i],
-          },
+        itemStyle: {
+          color: colorPalette[i] || colorPalette[colorPalette.length - i],
         },
       })),
     [data]
@@ -46,7 +44,7 @@ const PieComp: FC<IProps> = ({ data }) => {
         itemWidth: 15,
         itemHeight: 10,
       },
-      series: [createLabel("cdnUtil", pieData)],
+      series: [createLabel("使用情况", pieData)],
     }),
     [pieData]
   );
@@ -63,7 +61,7 @@ const createLabel = (name: string, data: any[]) => {
     name,
     type: "pie",
     radius: ["35%", "80%"],
-    center: ["45%", "50%"],
+    center: ["30%", "50%"],
     itemStyle: {
       emphasis: {
         shadowBlur: 10,
@@ -71,9 +69,7 @@ const createLabel = (name: string, data: any[]) => {
         shadowColor: "rgba(0, 0, 0, 0.5)",
       },
     },
-    label: {
-      formatter: "{d} %",
-    },
+    label: false,
     data,
   };
 };

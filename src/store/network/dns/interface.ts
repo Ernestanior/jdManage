@@ -76,3 +76,7 @@ export interface IValidateCName {
 export interface IValidateCNameResult {
   [name: string]: boolean;
 }
+export interface IDomainCount {
+  domainCount: number;
+  recordCount: number;
+}

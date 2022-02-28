@@ -11,6 +11,9 @@ import { FC, useEffect, useMemo, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import LoginDrawer from "./loginDrawer";
 import CreateDrawer from "./createDrawer";
+import EditDrawer from "./editDrawer";
+import StatDrawer from "./statDrawer";
+import InterDataDrawer from "./interDataDrawer";
 import { useLoading } from "@/components/loading";
 import { from } from "rxjs";
 import request from "@/store/request";
@@ -21,13 +24,22 @@ import { EdgeModal } from "@/components/modal";
 // }
 const Index: FC = () => {
   const [params, setParams] = useState<any>();
+
   const [loginFlag, setLoginFlag] = useState<boolean>(false);
   const [createFlag, setCreateFlag] = useState<boolean>(false);
+  const [editFlag, setEditFlag] = useState<boolean>(false);
   const [deleteFlag, setDeleteFlag] = useState<boolean>(false);
   const [enableFlag, setEnableFlag] = useState<boolean>(false);
   const [disableFlag, setDisableFlag] = useState<boolean>(false);
+  const [statFlag, setStatFlag] = useState<boolean>(false);
+  const [interDataFlag, setInterDataFlag] = useState<boolean>(false);
+  const [convertFlag, setConvertFlag] = useState<boolean>(false);
+
+  // const [convertType, setConvertType] = useState<string>("");
   const [selected, setSelected] = useState<string[]>([]);
+  const [editData, setEditData] = useState<any>({});
   const [customerUid, setCustomerUid] = useState<string>();
+  const [supSupplier, setSupSupplier] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
   // const [loading$,setLoading] = useState<boolean>(false)
   const customerList = useUserManage();
@@ -64,6 +76,23 @@ const Index: FC = () => {
       setSelected([]);
     });
   };
+  const ChannelUpdate = () => {
+    customerUid &&
+      from(
+        request(
+          customerApi.ChannelUpdate(
+            type === "reg" ? "sales" : "reg",
+            customerUid
+          )
+        )
+      ).subscribe((data) => {
+        setConvertFlag(false);
+        setRefresh(!refresh);
+        if (data instanceof Object) {
+          notification.success({ message: "Update Success" });
+        }
+      });
+  };
   useEffect(() => {
     params &&
       userManage.CustomerList({
@@ -77,10 +106,6 @@ const Index: FC = () => {
         probationFlag: params.filters.probationFlag || "",
       });
   }, [params, type, refresh]);
-
-  const onClose = () => {
-    // setSupplierAccount({});
-  };
 
   const TempConfig = {
     batchBtns: [
@@ -122,8 +147,33 @@ const Index: FC = () => {
         },
       },
       {
+        text: "数据统计",
+        event: (data: any) => {
+          setSupSupplier(!!data.supportsSupplier);
+          setCustomerUid(data.uid);
+          setStatFlag(true);
+        },
+      },
+      {
+        text: `转换为${type === "sales" ? "注册" : "销售"}客户`,
+        event: (data: any) => {
+          setCustomerUid(data.uid);
+          setConvertFlag(true);
+        },
+      },
+      {
+        text: "内部数据",
+        event: (data: any) => {
+          setCustomerUid(data.uid);
+          setInterDataFlag(true);
+        },
+      },
+      {
         text: "编辑",
-        event: (data: any) => {},
+        event: (data: any) => {
+          setEditData(data);
+          setEditFlag(true);
+        },
       },
       {
         text: "删除账户",
@@ -235,11 +285,24 @@ const Index: FC = () => {
         {...TempConfig}
       ></Template>
       {customerUid && (
-        <LoginDrawer
-          onClose={() => setLoginFlag(false)}
-          visible={loginFlag}
-          customerUid={customerUid}
-        ></LoginDrawer>
+        <>
+          <LoginDrawer
+            onClose={() => setLoginFlag(false)}
+            visible={loginFlag}
+            customerUid={customerUid}
+          ></LoginDrawer>
+          <StatDrawer
+            onClose={() => setStatFlag(false)}
+            visible={statFlag}
+            customerUid={customerUid}
+            supSupplier={supSupplier}
+          ></StatDrawer>
+          <InterDataDrawer
+            onClose={() => setInterDataFlag(false)}
+            visible={interDataFlag}
+            customerUid={customerUid}
+          ></InterDataDrawer>
+        </>
       )}
       <CreateDrawer
         onClose={() => setCreateFlag(false)}
@@ -247,6 +310,13 @@ const Index: FC = () => {
         visible={createFlag}
         loading={loading}
       ></CreateDrawer>
+      <EditDrawer
+        onClose={() => setEditFlag(false)}
+        reload={() => setRefresh(!refresh)}
+        data={editData}
+        visible={editFlag}
+        loading={loading}
+      ></EditDrawer>
       <EdgeModal
         visible={deleteFlag}
         onCancel={() => setDeleteFlag(false)}
@@ -277,6 +347,15 @@ const Index: FC = () => {
         loading={loading}
       >
         你确定禁用此账户？
+      </EdgeModal>
+      <EdgeModal
+        visible={convertFlag}
+        onCancel={() => setConvertFlag(false)}
+        onOk={ChannelUpdate}
+        title="转换客户"
+        loading={loading}
+      >
+        你确定要转换为{type === "sales" ? "注册" : "销售"}客户？
       </EdgeModal>
     </div>
   );

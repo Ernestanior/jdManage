@@ -1,4 +1,3 @@
-import { Btn } from "@/components/button";
 import { warnIcon } from "@/components/icon";
 import Tip from "@/components/tip";
 import { customerApi } from "@/store/api";
@@ -18,6 +17,7 @@ import { FC, useEffect, useState } from "react";
 import { from } from "rxjs";
 
 interface IProps {
+  data: any;
   visible: boolean;
   onClose: () => void;
   reload: () => void;
@@ -28,20 +28,38 @@ const formItemLayout = {
   labelCol: { span: 24 },
   wrapperCol: { span: 24 },
 };
-const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
+const EditDrawer: FC<IProps> = ({
+  data,
+  visible,
+  onClose,
+  reload,
+  loading,
+}) => {
   const [form] = Form.useForm();
   const defenceQuota = useDefenceQuota();
   const serviceDomain = useServiceDomain();
   const [cdnEnabled, setCdnEnabled] = useState<boolean>(false);
   const [dnsEnabled, setDnsEnabled] = useState<boolean>(true);
   const [defenceEnabled, setDefenceEnabled] = useState<boolean>(true);
-  const [supSupplier, setSupsSupplier] = useState<boolean>(false);
+  // const [supSupplier, setSupsSupplier] = useState<boolean>(false);
   useEffect(() => {
     !defenceQuota && customerService.findDefenceQuota();
   }, []);
   useEffect(() => {
     !serviceDomain && customerService.findServiceDomain();
   }, []);
+  useEffect(() => {
+    if (data.uid) {
+      const currData = {
+        ...data,
+        dnsConfig: data.dnsConfig ? data.dnsConfig.domainQuota : "",
+      };
+      form.setFieldsValue(currData);
+      setCdnEnabled(!!data.cdnEnabled);
+      setDnsEnabled(!!data.dnsEnabled);
+      setDefenceEnabled(!!defenceEnabled);
+    }
+  }, [data]);
   useEffect(() => {
     if (!cdnEnabled && !dnsEnabled) {
       notification.warn({ message: "CDN和DNS不能同时关闭" });
@@ -50,6 +68,7 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
   }, [cdnEnabled, dnsEnabled]);
   const onFinish = (e: any) => {
     const payload = {
+      ...data,
       cdnEnabled,
       dnsEnabled,
       defenceEnabled,
@@ -59,12 +78,15 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
       dataAllowance: parseInt(e.dataAllowance) || 0,
       domainQuota: parseInt(e.domainQuota) || 0,
     };
-    from(request(customerApi.CreateCustomer(payload))).subscribe((data) => {
+
+    from(request(customerApi.ModifyCustomer(payload))).subscribe((data) => {
       if (data) {
         form.resetFields();
         onClose();
         reload();
-        // notification.success({ message: "success" });
+      }
+      if (data instanceof Object) {
+        notification.success({ message: "Edit Success" });
       }
     });
   };
@@ -105,19 +127,6 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
           <Input placeholder="请输入你的用户名" />
         </Form.Item>
         <Form.Item
-          {...formItemLayout}
-          name="password"
-          label="密码"
-          rules={[
-            {
-              required: true,
-              message: "密码不能为空!",
-            },
-          ]}
-        >
-          <Input placeholder="请输入你的密码" />
-        </Form.Item>
-        <Form.Item
           wrapperCol={{ offset: 2 }}
           style={{ borderTop: "1px dashed #eee", paddingTop: 15 }}
           // name="cdnEnabled"
@@ -136,16 +145,8 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
         </Form.Item>
         {cdnEnabled && (
           <>
-            <Form.Item
-              {...formItemLayout}
-              name="supportsSupplier"
-              label="用户类型"
-              initialValue={supSupplier}
-            >
-              <Select onChange={setSupsSupplier}>
-                <Option value={false}>个人版</Option>
-                <Option value={true}>企业版</Option>
-              </Select>
+            <Form.Item wrapperCol={{ offset: 2 }} label="用户类型">
+              {data && data.supportsSupplier ? "企业版" : "个人版"}
             </Form.Item>
             <Form.Item {...formItemLayout} name="domainQuota" label="域名额度">
               <Input type="number" />
@@ -173,7 +174,7 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
                   ))}
               </Select>
             </Form.Item>
-            {supSupplier ? (
+            {true ? (
               <Tip>请在分配平台设套餐流量</Tip>
             ) : (
               <Form.Item
@@ -244,4 +245,4 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
   );
 };
 
-export default CreateDrawer;
+export default EditDrawer;

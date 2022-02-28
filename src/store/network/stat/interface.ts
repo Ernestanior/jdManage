@@ -48,3 +48,7 @@ export interface IStatSiteOrigin {
   lines: string[];
   scope: string;
 }
+export interface IStatSiteAvail extends IStatSiteFlow {
+  lines: string[];
+  scope: string;
+}

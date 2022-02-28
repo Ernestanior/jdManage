@@ -1,3 +1,4 @@
+import { ITimeFilter } from "@/components/timeFilter";
 import { BehaviorSubject, from } from "rxjs";
 import request from "@/store/request";
 import { statApi } from "@/store/api";
@@ -8,6 +9,7 @@ import {
   IStatSiteSupplier,
   IStatSupplierAvail,
 } from "./interface";
+import { ICustomerSupplier } from "../supplier/interface";
 
 /**
  * 用户相关功能
@@ -21,6 +23,13 @@ class Stat {
   readonly statSiteOriginList$ = new BehaviorSubject<any | null>(null);
   readonly statSupplierAvailList$ = new BehaviorSubject<any | null>(null);
   readonly statSupplierResTimeList$ = new BehaviorSubject<any | null>(null);
+  readonly statCustomerOverview$ = new BehaviorSubject<any | null>(null);
+  readonly statCustomerSupplier$ = new BehaviorSubject<
+    ICustomerSupplier[] | null
+  >(null);
+  readonly statTraControlCurrMonth$ = new BehaviorSubject<any | null>(null);
+  readonly statTraControlCurrDay$ = new BehaviorSubject<any | null>(null);
+  readonly statTraControlLastHour$ = new BehaviorSubject<any | null>(null);
 
   statSiteSupplier(data: IStatSiteSupplier) {
     from(request(statApi.StatSiteSupplier(data))).subscribe((data) => {
@@ -77,6 +86,49 @@ class Stat {
         this.statSupplierResTimeList$.next(data);
       }
     });
+  }
+  statCusOverview(customerUid: string, data: ITimeFilter) {
+    from(request(statApi.StatCusOverview(customerUid, data))).subscribe(
+      (data) => {
+        if (data) {
+          this.statCustomerOverview$.next(data);
+        }
+      }
+    );
+  }
+  statCusSupplier(customerUid: string) {
+    from(request(statApi.StatCusSupplier(customerUid))).subscribe((data) => {
+      if (data) {
+        this.statCustomerSupplier$.next(data);
+      }
+    });
+  }
+  statTraControlCurrMonth(customerUid: string) {
+    from(request(statApi.StatTraControlCurrMonth(customerUid))).subscribe(
+      (data) => {
+        if (data) {
+          this.statTraControlCurrMonth$.next(data);
+        }
+      }
+    );
+  }
+  statTraControlCurrDay(customerUid: string) {
+    from(request(statApi.StatTraControlCurrDay(customerUid))).subscribe(
+      (data) => {
+        if (data) {
+          this.statTraControlCurrDay$.next(data);
+        }
+      }
+    );
+  }
+  statTraControlLastHour(customerUid: string) {
+    from(request(statApi.StatTraControlLastHour(customerUid))).subscribe(
+      (data) => {
+        if (data) {
+          this.statTraControlLastHour$.next(data);
+        }
+      }
+    );
   }
 }
 

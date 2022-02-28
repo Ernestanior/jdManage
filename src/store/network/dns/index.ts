@@ -3,6 +3,7 @@ import DnsService from "./service";
 import {
   IBatchRecordsResult,
   IDnsCname,
+  IDomainCount,
   IDomainLine,
   IDomainList,
   IValidateCNameResult,
@@ -32,4 +33,7 @@ export const useCNameValidated = () => {
   return useBehaviorSubject<IValidateCNameResult>(
     DnsService.cNameValidatedResult$
   );
+};
+export const useDomainCount = () => {
+  return useBehaviorSubject<IDomainCount>(DnsService.domainCountList$);
 };
