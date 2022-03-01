@@ -21,8 +21,8 @@ const Index: FC = (): ReactElement => {
       type="card"
       onChange={(activeKey) => {
         navigator(".", { state: { cusMana: activeKey } });
-        // handleOnChange(activeKey);
       }}
+      destroyInactiveTabPane
     >
       <TabPane tab="注册客户" key="reg">
         <Content />

@@ -1,56 +1,42 @@
-import { Btn } from "@/components/button";
-import IconFont from "@/components/icon";
 import { Template } from "@/components/template";
-import accountService from "@/store/network/account/service";
-import userService from "@/store/network/user/service";
-import { useUserManage } from "@/store/network/userManage";
-import userManage from "@/store/network/userManage/service";
-import { DownOutlined } from "@ant-design/icons";
-import { Button, notification } from "antd";
+import { notification } from "antd";
 import { FC, useEffect, useMemo, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import LoginDrawer from "./loginDrawer";
+import { useLocation } from "react-router-dom";
 import CreateDrawer from "./createDrawer";
 import EditDrawer from "./editDrawer";
-import StatDrawer from "./statDrawer";
-import InterDataDrawer from "./interDataDrawer";
+import customerService from "@/store/network/customer/service";
 import { useLoading } from "@/components/loading";
 import { from } from "rxjs";
 import request from "@/store/request";
 import { customerApi } from "@/store/api";
 import { EdgeModal } from "@/components/modal";
-import { useDefenceQuota, useServiceDomain } from "@/store/network/customer";
-import customerService from "@/store/network/customer/service";
-// interface IProps {
-//   type: "reg" | "sales";
-// }
-const Index: FC = () => {
+import { useCustomerList } from "@/store/network/customer";
+import { DEFAULT_SEARCHPAGE } from "@/common/utils/constants";
+import useEvent from "@/common/hooks/useEvent";
+import useType from "@/hooks/useType";
+// import { debounce } from "@/common/utils/util";
+
+const Content: FC = () => {
   const [params, setParams] = useState<any>();
 
-  const [loginFlag, setLoginFlag] = useState<boolean>(false);
   const [createFlag, setCreateFlag] = useState<boolean>(false);
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [deleteFlag, setDeleteFlag] = useState<boolean>(false);
   const [enableFlag, setEnableFlag] = useState<boolean>(false);
   const [disableFlag, setDisableFlag] = useState<boolean>(false);
-  const [statFlag, setStatFlag] = useState<boolean>(false);
-  const [interDataFlag, setInterDataFlag] = useState<boolean>(false);
-  const [convertFlag, setConvertFlag] = useState<boolean>(false);
   const [resetPwdFlag, setPwdFlag] = useState<boolean>(false);
 
-  // const [convertType, setConvertType] = useState<string>("");
   const [selected, setSelected] = useState<string[]>([]);
   const [editData, setEditData] = useState<any>({});
   const [customerUid, setCustomerUid] = useState<string>();
-  const [supSupplier, setSupSupplier] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
-  // const [loading$,setLoading] = useState<boolean>(false)
-  const customerList = useUserManage();
+  const customerList = useCustomerList();
   const loading = useLoading();
-
   const routerState: any = useLocation().state;
+  const type = useMemo(() => {
+    return routerState && routerState.userMana;
+  }, [routerState]);
 
-  const type = useMemo(() => routerState && routerState.cusMana, [routerState]);
   const deleteCustomer = (data: string[]) => {
     from(request(customerApi.DeleteCustomer(data))).subscribe((data) => {
       data instanceof Object
@@ -81,23 +67,6 @@ const Index: FC = () => {
       setSelected([]);
     });
   };
-  const ChannelUpdate = () => {
-    customerUid &&
-      from(
-        request(
-          customerApi.ChannelUpdate(
-            type === "reg" ? "sales" : "reg",
-            customerUid
-          )
-        )
-      ).subscribe((data) => {
-        setConvertFlag(false);
-        setRefresh(!refresh);
-        data instanceof Object
-          ? notification.success({ message: "Update Success" })
-          : notification.error({ message: "Update failed", description: data });
-      });
-  };
   const resetPwd = () => {
     customerUid &&
       from(request(customerApi.ResetPassword(customerUid))).subscribe(
@@ -120,15 +89,13 @@ const Index: FC = () => {
   };
   useEffect(() => {
     params &&
-      userManage.CustomerList({
+      customerService.findCustomer({
         keyword: params.filters.keyword || "",
         searchPage: params.searchPage,
-        type: "customer",
+        email: params.filters.email,
         status: params.filters.status,
         name: params.filters.name || "",
-        channel: type || "reg",
-        email: params.filters.email || "",
-        probationFlag: params.filters.probationFlag,
+        type: type || "admin",
       });
   }, [params, refresh]);
 
@@ -165,25 +132,10 @@ const Index: FC = () => {
     ],
     optList: [
       {
-        text: "登入客户账号",
+        text: "编辑",
         event: (data: any) => {
-          setCustomerUid(data.uid);
-          setLoginFlag(true);
-        },
-      },
-      {
-        text: "数据统计",
-        event: (data: any) => {
-          setSupSupplier(!!data.supportsSupplier);
-          setCustomerUid(data.uid);
-          setStatFlag(true);
-        },
-      },
-      {
-        text: `转换为${type === "sales" ? "注册" : "销售"}客户`,
-        event: (data: any) => {
-          setCustomerUid(data.uid);
-          setConvertFlag(true);
+          setEditData(data);
+          setEditFlag(true);
         },
       },
       {
@@ -193,20 +145,7 @@ const Index: FC = () => {
           setPwdFlag(true);
         },
       },
-      {
-        text: "内部数据",
-        event: (data: any) => {
-          setCustomerUid(data.uid);
-          setInterDataFlag(true);
-        },
-      },
-      {
-        text: "编辑",
-        event: (data: any) => {
-          setEditData(data);
-          setEditFlag(true);
-        },
-      },
+
       {
         text: "删除",
         event: (data: any) => {
@@ -222,12 +161,12 @@ const Index: FC = () => {
     data: customerList,
     config: [
       {
-        title: "客户名称",
+        title: "用户名称",
         dataIndex: "name",
         key: "name",
       },
       {
-        title: "登入电邮",
+        title: "邮箱",
         dataIndex: "email",
         key: "email",
       },
@@ -242,42 +181,6 @@ const Index: FC = () => {
             <div className={`${"status-box"} ${"status-error"}`}>故障</div>
           ),
       },
-      {
-        title: "账户类型",
-        dataIndex: "probationFlag",
-        key: "probationFlag",
-        render: (key: any) => {
-          return <div>{key > 0 ? ` 试用` : `正式`}</div>;
-        },
-      },
-      {
-        title: "使用者类型",
-        dataIndex: "supportsSupplier",
-        key: "supportsSupplier",
-        render: (key: any) => {
-          return key ? (
-            <div className="mini-box-blue">企业版</div>
-          ) : (
-            <div className="mini-box-yellow">个人版</div>
-          );
-        },
-      },
-      {
-        title: "已登入",
-        dataIndex: "hasLoggedIn",
-        key: "hasLoggedIn",
-        render: (key: any) => {
-          return (
-            <div>
-              {key ? (
-                <IconFont type="icon-check-green" />
-              ) : (
-                <IconFont type="icon-fail" />
-              )}
-            </div>
-          );
-        },
-      },
     ],
   };
   return (
@@ -286,12 +189,12 @@ const Index: FC = () => {
         primarySearch={"keyword"}
         searchList={[
           {
-            text: "客户名称",
+            text: "使用者名称",
             name: "name",
             type: "input",
           },
           {
-            text: "登入电邮",
+            text: "邮箱",
             name: "email",
             type: "input",
           },
@@ -304,43 +207,15 @@ const Index: FC = () => {
             ],
             type: "select",
           },
-          {
-            text: "账户类型",
-            name: "probationFlag",
-            data: [
-              { uid: 0, name: "正式" },
-              { uid: 1, name: "试用" },
-            ],
-            type: "select",
-          },
         ]}
         {...TempConfig}
       ></Template>
-      {customerUid && (
-        <>
-          <LoginDrawer
-            onClose={() => setLoginFlag(false)}
-            visible={loginFlag}
-            customerUid={customerUid}
-          ></LoginDrawer>
-          <StatDrawer
-            onClose={() => setStatFlag(false)}
-            visible={statFlag}
-            customerUid={customerUid}
-            supSupplier={supSupplier}
-          ></StatDrawer>
-          <InterDataDrawer
-            onClose={() => setInterDataFlag(false)}
-            visible={interDataFlag}
-            customerUid={customerUid}
-          ></InterDataDrawer>
-        </>
-      )}
       <CreateDrawer
         onClose={() => setCreateFlag(false)}
         reload={() => setRefresh(!refresh)}
         visible={createFlag}
         loading={loading}
+        type={type}
       ></CreateDrawer>
       <EditDrawer
         onClose={() => setEditFlag(false)}
@@ -381,15 +256,6 @@ const Index: FC = () => {
         你确定禁用此账户？
       </EdgeModal>
       <EdgeModal
-        visible={convertFlag}
-        onCancel={() => setConvertFlag(false)}
-        onOk={ChannelUpdate}
-        title="转换客户"
-        loading={loading}
-      >
-        你确定要转换为{type === "sales" ? "注册" : "销售"}客户？
-      </EdgeModal>
-      <EdgeModal
         visible={resetPwdFlag}
         onCancel={() => setPwdFlag(false)}
         onOk={resetPwd}
@@ -402,4 +268,4 @@ const Index: FC = () => {
   );
 };
 
-export default Index;
+export default Content;

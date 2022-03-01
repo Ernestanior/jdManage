@@ -148,7 +148,7 @@ const OptListComp: FC<IOptProps> = (props) => {
           {/* <IntlDep id={optZ.text} values={optZ.textValue} /> */}
           {optZ.text !== "状态"
             ? optZ.text
-            : props.value.status === 1||props.value.status === "enabled"
+            : props.value.status === 1 || props.value.status === "enabled"
             ? "禁用"
             : "启用"}
         </Menu.Item>

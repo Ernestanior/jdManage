@@ -7,7 +7,7 @@ const Index: FC = (): ReactElement => {
   const { TabPane } = Tabs;
   const navigator = useNavigate();
   const path: any = useLocation().state;
-  const index = useMemo(() => (path && path.sysMana) || "1", [path]);
+  const index = useMemo(() => (path && path.sysMana) || "user", [path]);
   return (
     <Tabs
       activeKey={index}
@@ -16,7 +16,7 @@ const Index: FC = (): ReactElement => {
         navigator(".", { state: { sysMana: activeKey } })
       }
     >
-      <TabPane tab="用户管理" key="1">
+      <TabPane tab="用户管理" key="user">
         <User />
       </TabPane>
     </Tabs>

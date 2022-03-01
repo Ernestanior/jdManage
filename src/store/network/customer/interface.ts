@@ -8,8 +8,9 @@ export interface ICustomerList {
   content: any[];
 }
 export interface ISearchCustomer {
-  keyWord?: string;
+  keyword?: string;
   name?: string;
+  email?: string;
   probationFlag?: any;
   status?: string;
   searchPage: ISearchPage;

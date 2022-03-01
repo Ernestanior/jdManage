@@ -134,6 +134,26 @@ export const xAxisFormatterGenerate = (data: number[][]) => {
     return moment(value).format("MM-DD");
   };
 };
+const debounce = (
+  func: any,
+  delay: number = 500,
+  immediate: boolean = false
+): Function => {
+  let timer: any;
+
+  return function (this: unknown, ...args: any[]) {
+    let that = this;
+    if (immediate) {
+      func.apply(that, args); // 确保引用函数的指向正确，并且函数的参数也不变
+      immediate = false;
+      return;
+    }
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(that, args);
+    }, delay);
+  };
+};
 
 export {
   fastCreateArray,
@@ -145,5 +165,6 @@ export {
   transformFlow,
   transformBindWidth,
   ipRegExp,
+  debounce,
   // downloadCertFile,
 };

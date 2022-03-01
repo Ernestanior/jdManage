@@ -8,44 +8,26 @@ const Index: FC = () => {
   const [params, setParams] = useState<any>();
   const domainList = useDomainList();
   const recordList = useRecordList();
-  const [option, setOption] = useState<Object[]>([]);
-  
+
   useEffect(() => {
-    if (params) {
-      if (params.filters !== undefined) {
-        dnsManage?.recordList({
-          keyword: params.filters.keyword,
-          searchPage: params.searchPage,
-          domainUid: params.filters.domainUid,
-          status: params.filters.status,
-          value: params.filters.value,
-          name: params.filters.name,
-        });
-      } else {
-        dnsManage?.recordList({
-          searchPage: { desc: 0, page: 1, pageSize: 25, sort: "create_date" },
-        });
-      }
-    }
+    params &&
+      dnsManage.recordList({
+        keyword: params.filters.keyword,
+        searchPage: params.searchPage,
+        domainUid: params.filters.domainUid,
+        status: params.filters.status,
+        value: params.filters.value,
+        name: params.filters.name,
+      });
   }, [params]);
 
   useEffect(() => {
-    dnsManage?.domainList({
-      searchPage: { page: 1, pageSize: 99999 },
-      uid: "",
-    });
-  }, []);
-
-  useEffect(() => {
-    if (domainList) {
-      let dnsOption: object[] = [];
-      Object.entries(domainList?.content).forEach((item: any) => {
-        let a = item[1];
-        dnsOption.push({ uid: a.uid, name: a.name });
+    !domainList &&
+      dnsManage.domainList({
+        searchPage: { page: 1, pageSize: 99999 },
+        uid: "",
       });
-      setOption(dnsOption);
-    }
-  }, [domainList]);
+  }, []);
 
   const TempConfig = {
     onSearch: (params: any) => {
@@ -55,7 +37,7 @@ const Index: FC = () => {
     data: recordList,
     config: [
       {
-        title: "功能变数名称",
+        title: "主机记录值",
         dataIndex: "displayName",
         key: "displayName",
       },
@@ -109,6 +91,22 @@ const Index: FC = () => {
         title: "状态",
         dataIndex: "status",
         key: "status",
+        render: (status: any) =>
+          status === "enabled" ? (
+            <div
+              className={`${"status-box"} ${"status-normal"}`}
+              style={{ fontSize: 12 }}
+            >
+              已启用
+            </div>
+          ) : (
+            <div
+              className={`${"status-box"} ${"status-error"}`}
+              style={{ fontSize: 12 }}
+            >
+              未启用
+            </div>
+          ),
       },
     ],
   };
@@ -130,13 +128,18 @@ const Index: FC = () => {
             type: "input",
           },
           {
-            text: "功能變數名稱",
+            text: "域名",
             name: "domainUid",
-            data: option,
+            data: domainList
+              ? domainList.content.map((item: any) => ({
+                  uid: item.uid,
+                  name: item.name,
+                }))
+              : [],
             type: "select",
           },
           {
-            text: "狀態",
+            text: "状态 ",
             name: "status",
             data: [
               { uid: "enabled", name: "已启用" },

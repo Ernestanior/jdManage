@@ -71,4 +71,19 @@ const IS_DEV =
   window.location.hostname === "console-stg.edgejoint.com" ||
   window.location.hostname === "localhost";
 
-export { GBYTES, MBYTES, KBYTES, DNS_TYPES, TTL, CHART_COLOUR, IS_DEV };
+const DEFAULT_SEARCHPAGE = {
+  desc: 1,
+  page: 1,
+  pageSize: 20,
+  sort: "create_date",
+};
+export {
+  GBYTES,
+  MBYTES,
+  KBYTES,
+  DNS_TYPES,
+  TTL,
+  CHART_COLOUR,
+  IS_DEV,
+  DEFAULT_SEARCHPAGE,
+};

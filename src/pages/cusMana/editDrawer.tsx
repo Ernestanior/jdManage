@@ -41,13 +41,7 @@ const EditDrawer: FC<IProps> = ({
   const [cdnEnabled, setCdnEnabled] = useState<boolean>(false);
   const [dnsEnabled, setDnsEnabled] = useState<boolean>(true);
   const [defenceEnabled, setDefenceEnabled] = useState<boolean>(true);
-  // const [supSupplier, setSupsSupplier] = useState<boolean>(false);
-  useEffect(() => {
-    !defenceQuota && customerService.findDefenceQuota();
-  }, []);
-  useEffect(() => {
-    !serviceDomain && customerService.findServiceDomain();
-  }, []);
+
   useEffect(() => {
     if (data.uid) {
       const currData = {

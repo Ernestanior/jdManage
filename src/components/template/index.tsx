@@ -117,8 +117,8 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   const [searchPage, setSearchPage] = useState<ISearchPage>({
     desc: 1,
     page: (props.data && props.data.number) || 1,
-    pageSize: (props.data && props.data.size) || 10,
-    sort: "",
+    pageSize: (props.data && props.data.size) || 20,
+    sort: "create_date",
   });
   //filter切换
   // const [showFilter, setShowFilter] = useState<boolean>(false);
@@ -172,7 +172,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
       end: mul > _total ? `${total}` : `${mul}`,
       total: `${total}`,
       hide: _total <= 0,
-      size: (props.data && props.data.size) || 10,
+      size: (props.data && props.data.size) || 20,
     };
   }, [pagination]);
 
