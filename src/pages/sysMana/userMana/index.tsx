@@ -1,43 +1,33 @@
 import { FC, ReactElement, useMemo, useState } from "react";
-import Admin from "./admin";
-import Agent from "./agent";
-import Sales from "./sales";
-import Operation from "./operation";
+import { useNavigate, useLocation } from "react-router-dom";
+import Content from "./content";
 import { Tabs } from "antd";
 const { TabPane } = Tabs;
 const Index: FC = (): ReactElement => {
-  const [role, setRole] = useState<string>("admin");
-  
-  const handleOnchange = (e: string) => {
-    if (e === "1") {
-      setRole("admin");
-    } else if (e === "2") {
-      setRole("operation");
-    } else if (e === "3") {
-      setRole("sales");
-    } else if (e === "4") {
-      setRole("agent");
-    }
-  };
+  const navigator = useNavigate();
+  const path: any = useLocation().state;
+  const index = useMemo(() => (path && path.userMana) || "admin", [path]);
 
   return (
     <Tabs
-    type="card"
-      defaultActiveKey="1"
       style={{ marginBottom: 32 }}
-      onChange={(e: string) => handleOnchange(e)}
+      activeKey={index}
+      onChange={(activeKey: string) =>
+        navigator(".", { state: { userMana: activeKey } })
+      }
+      destroyInactiveTabPane
     >
-      <TabPane tab="管理员" key="1">
-        <Admin type={role} key="1" />
+      <TabPane tab="管理员" key="admin">
+        <Content />
       </TabPane>
-      <TabPane tab="运维" key="2">
-        <Operation type={role} key="2" />
+      <TabPane tab="运维" key="operation">
+        <Content />
       </TabPane>
-      <TabPane tab="销售" key="3">
-        <Sales type={role} key="3" />
+      <TabPane tab="销售" key="sales">
+        <Content />
       </TabPane>
-      <TabPane tab="代理" key="4">
-        <Agent type={role} key="4" />
+      <TabPane tab="代理" key="agent">
+        <Content />
       </TabPane>
     </Tabs>
   );

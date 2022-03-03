@@ -67,7 +67,7 @@ const Index: FC = () => {
     data: recordList,
     config: [
       {
-        title: "功能变数名称",
+        title: "主机记录值",
         dataIndex: "displayName",
         key: "displayName",
       },
@@ -121,6 +121,22 @@ const Index: FC = () => {
         title: "状态",
         dataIndex: "status",
         key: "status",
+        render: (status: any) =>
+          status === "enabled" ? (
+            <div
+              className={`${"status-box"} ${"status-normal"}`}
+              style={{ fontSize: 12 }}
+            >
+              已启用
+            </div>
+          ) : (
+            <div
+              className={`${"status-box"} ${"status-error"}`}
+              style={{ fontSize: 12 }}
+            >
+              未启用
+            </div>
+          ),
       },
     ],
   };
@@ -148,7 +164,7 @@ const Index: FC = () => {
             type: "select",
           },
           {
-            text: "狀態",
+            text: "状态 ",
             name: "status",
             data: [
               { uid: "enabled", name: "已启用" },

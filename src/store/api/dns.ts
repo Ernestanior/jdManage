@@ -89,7 +89,7 @@ class DnsAPI {
     const config: AxiosRequestConfig = {
       url: "/domain/count",
       method: "get",
-      params: { customerUid },
+      params: { customerUid},
     };
     config.headers = {};
     return config;
