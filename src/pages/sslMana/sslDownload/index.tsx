@@ -1,28 +1,39 @@
 import { Template } from "@/components/template";
 import { IRenderConfig } from "@/components/template/fastRender";
 import { Role } from "@/components/template/interface";
-import { useDnsCertList, useDnsCustomerList } from "@/store/network/dnsManage";
-import dnsManage from "@/store/network/dnsManage/service";
 import IconFont from "@/components/icon";
 import Popconfirm from "antd/lib/popconfirm";
 import moment from "moment";
 import { FC, useEffect, useState } from "react";
 import { from } from "rxjs";
-import { dnsApi, dnsManageApi } from "@/store/api";
+import { dnsApi } from "@/store/api";
 import request from "@/store/request";
 
 const Index: FC<Role> = (props: Role) => {
   const [params, setParams] = useState<any>();
   const [filterOption, setfilterOption] = useState<any>();
   const [deleteUid, setDeleteUid] = useState<any>();
-  const dnsCustomerList = useDnsCustomerList();
-  const dnsCertList = useDnsCertList();
+  const [dnsCertList, setDnsCertList] = useState();
 
   useEffect(() => {
     if (props.type === 3) {
       if (params !== undefined) {
         if (params.filters !== undefined) {
-          dnsManage?.certList({
+          from(
+            request(
+              dnsApi.DnsCertList({
+                keyword: params.filters.keyword,
+                searchPage: params.searchPage,
+                customerUid: params.filters.customerUid,
+                sslDomains: params.filters.sslDomains,
+              })
+            )
+          ).subscribe((data) => {
+            if (data) {
+              setDnsCertList(data);
+            }
+          });
+          dnsApi.DnsCertList({
             keyword: params.filters.keyword,
             searchPage: params.searchPage,
             customerUid: params.filters.customerUid,
@@ -34,22 +45,24 @@ const Index: FC<Role> = (props: Role) => {
   }, [params, props.type]);
 
   useEffect(() => {
-    if (props.type === 3) {
-      dnsManage.customerList({ searchPage: { page: 1, pageSize: 99999 } });
-    }
-  }, [props.type]);
-
-  useEffect(() => {
-    if (props.type === 3) {
-      let filterOption: object[] = [];
-      dnsCustomerList?.content &&
-        Object.entries(dnsCustomerList?.content).forEach((item: any) => {
+    const handleDnsDomainList = async () => {
+      const result = await request(
+        dnsApi.FindCustomerList({
+          searchPage: { page: 1, pageSize: 99999 },
+          uid: "",
+        })
+      );
+      if (result) {
+        let dnsOption: object[] = [];
+        Object.entries(result.content).forEach((item: any) => {
           let a = item[1];
-          filterOption.push({ uid: a.uid, name: a.name });
+          dnsOption.push({ uid: a.uid, name: a.name });
         });
-      setfilterOption(filterOption);
-    }
-  }, [dnsCustomerList, dnsCustomerList?.content, props.type]);
+        setfilterOption(dnsOption);
+      }
+    };
+    handleDnsDomainList();
+  }, []);
 
   const config = [
     {
@@ -106,44 +119,43 @@ const Index: FC<Role> = (props: Role) => {
       type: "select",
     },
   ];
-  const confirm =()=>{
-    from(request(dnsManageApi.CertDelete([deleteUid]))).subscribe((data)=>{
+  const confirm = () => {
+    from(request(dnsApi.DnsCertDelete(deleteUid))).subscribe((data) => {
       if (data) {
-        
       }
-    })
-  }
+    });
+  };
   const TempConfig = {
-    optList: [ {
-      icon: (
-        <div>
-          <Popconfirm
-            title="Are you sure delete this task?"
-            //visible={this.state.visible}
-            //onVisibleChange={this.handleVisibleChange}
-            onConfirm={() => confirm()}
-            //onCancel={() => cancel()}
-            okText="Yes"
-            cancelText="No"
-            trigger={"click"}
-          >
-            <div>
-              <IconFont
-                type="icon-shanchu"
-                className="DeleteBtn"
-                style={{ fontSize: 17, color: "#FF8900" }}
-              ></IconFont>
-            </div>
-          </Popconfirm>
-        </div>
-      ),
-      event: (data: any) => {
-      console.log(data.uid);
-        setDeleteUid(data.uid);
+    optList: [
+      {
+        icon: (
+          <div>
+            <Popconfirm
+              title="Are you sure delete this task?"
+              //visible={this.state.visible}
+              //onVisibleChange={this.handleVisibleChange}
+              onConfirm={() => confirm()}
+              //onCancel={() => cancel()}
+              okText="Yes"
+              cancelText="No"
+              trigger={"click"}
+            >
+              <div>
+                <IconFont
+                  type="icon-shanchu"
+                  className="DeleteBtn"
+                  style={{ fontSize: 17, color: "#FF8900" }}
+                ></IconFont>
+              </div>
+            </Popconfirm>
+          </div>
+        ),
+        event: (data: any) => {
+          console.log(data.uid);
+          setDeleteUid(data.uid);
+        },
       },
-    },
-    
-  ],
+    ],
     onSearch: (params: any) => setParams(params),
     rowId: "uid",
     data: dnsCertList,

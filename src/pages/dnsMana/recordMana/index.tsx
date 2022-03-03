@@ -1,51 +1,63 @@
 import { Template } from "@/components/template";
-import { useDomainList } from "@/store/network/dnsManage";
-import { useRecordList } from "@/store/network/dnsManage";
-import dnsManage from "@/store/network/dnsManage/service";
+import { dnsApi } from "@/store/api";
+import { useDnsDomainList } from "@/store/network/dns";
+import request from "@/store/request";
 import { FC, useEffect, useState } from "react";
+import { from } from "rxjs";
 
 const Index: FC = () => {
   const [params, setParams] = useState<any>();
-  const domainList = useDomainList();
-  const recordList = useRecordList();
+  const [recordList, setRecordList] = useState();
   const [option, setOption] = useState<Object[]>([]);
-  
+
   useEffect(() => {
     if (params) {
       if (params.filters !== undefined) {
-        dnsManage?.recordList({
-          keyword: params.filters.keyword,
+        let searchDetail = {
+          keyWord: params.filters.keyword,
           searchPage: params.searchPage,
           domainUid: params.filters.domainUid,
           status: params.filters.status,
           value: params.filters.value,
           name: params.filters.name,
+        };
+        from(request(dnsApi.FindDnsRecord(searchDetail))).subscribe((data) => {
+          console.log(data);
+          setRecordList(data);
         });
       } else {
-        dnsManage?.recordList({
+        let searchDetail = {
           searchPage: { desc: 0, page: 1, pageSize: 25, sort: "create_date" },
+        };
+        from(request(dnsApi.FindDnsRecord(searchDetail))).subscribe((data) => {
+          console.log(data);
+          setRecordList(data);
         });
       }
     }
   }, [params]);
 
-  useEffect(() => {
-    dnsManage?.domainList({
-      searchPage: { page: 1, pageSize: 99999 },
-      uid: "",
-    });
-  }, []);
 
   useEffect(() => {
-    if (domainList) {
-      let dnsOption: object[] = [];
-      Object.entries(domainList?.content).forEach((item: any) => {
-        let a = item[1];
-        dnsOption.push({ uid: a.uid, name: a.name });
-      });
-      setOption(dnsOption);
-    }
-  }, [domainList]);
+    const handleDnsDomainList = async () => {
+      const result = await request(
+        dnsApi.FindDnsDomain({
+          searchPage: { page: 1, pageSize: 99999 },
+          uid: "",
+        })
+      );
+      if (result) {
+        let dnsOption: object[] = [];
+        Object.entries(result.content).forEach((item: any) => {
+          let a = item[1];
+          dnsOption.push({ uid: a.uid, name: a.name });
+        });
+        setOption(dnsOption);
+      }
+    };
+    handleDnsDomainList();
+  }, []);
+
 
   const TempConfig = {
     onSearch: (params: any) => {
@@ -130,7 +142,7 @@ const Index: FC = () => {
             type: "input",
           },
           {
-            text: "功能變數名稱",
+            text: " 域名",
             name: "domainUid",
             data: option,
             type: "select",

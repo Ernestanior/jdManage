@@ -14,3 +14,12 @@ export const useSiteSupplierList$ = () => {
 export const useManagementList = () => {
   return useBehaviorSubject<any>(SupplierService.managementList$);
 };
+export const useSupplierAccountList = () => {
+  return useBehaviorSubject<any>(SupplierService.supplierAccountList$);
+};
+export const useSupplierInfo = () => {
+  return useBehaviorSubject<any>(SupplierService.supplierInfo$);
+};
+export const useSupplierAccountView = () => {
+  return useBehaviorSubject<any>(SupplierService.supplierAccountView$);
+};

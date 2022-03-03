@@ -8,7 +8,6 @@ import { IAccountList } from "../network/platformMange/service";
  */
 class PlatformManageAPI {
   PlatformManageSupplierList = (data: IAccountList) => {
-    console.log(data,"dataaaaa");
     const config: AxiosRequestConfig = {
       url: "/supplier-account/list",
       method: "POST",
@@ -36,14 +35,49 @@ class PlatformManageAPI {
     return config;
   };
 
-  PlatformManageSupplierAccountValidate = (data: any) => {
+  PlatformManageSupplierAccountValidate = (data: IValidate) => {
     const config: AxiosRequestConfig = {
       url: `/supplier-account/validate`,
       method: "POST",
+      data,
     };
     config.headers = {};
     return config;
   };
+
+  PlatformManageCreateAccount = (data: IcreateAccount)=>{
+    const config: AxiosRequestConfig={
+      url:"/supplier-account/create",
+      method:"POST",
+      data,
+    };
+    config.headers={};
+    return config;
+  }
 }
 
 export default PlatformManageAPI;
+
+type IValidate = {
+  supplier: {
+    code: string;
+    tokenValue: object;
+  };
+};
+
+export type IcreateAccount={
+  name: string,
+  quota:{
+    domain:{
+      capacity: number,
+    }
+  }
+  remark: string,
+  status:string,
+  supplier:{
+    code:string,
+    tokenValue:object
+  },
+  
+
+}
