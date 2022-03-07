@@ -89,7 +89,25 @@ class DnsAPI {
     const config: AxiosRequestConfig = {
       url: "/domain/count",
       method: "get",
-      params: { customerUid},
+      params: { customerUid },
+    };
+    config.headers = {};
+    return config;
+  };
+  DnsCertList = (data: any) => {
+    const config: AxiosRequestConfig = {
+      url: "/dns/cert/list",
+      method: "POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  DnsCertDelete = (data: string[]) => {
+    const config: AxiosRequestConfig = {
+      url: "/dns/cert/delete",
+      method: "DELETE",
+      data,
     };
     config.headers = {};
     return config;

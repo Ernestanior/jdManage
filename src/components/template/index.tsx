@@ -91,6 +91,7 @@ interface ITemplateProps {
   data: any;
   /* 传递事件 **/
   event$?: Subject<IEvent>;
+  loading?: boolean;
 }
 
 interface IPageParams {
@@ -109,7 +110,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   const [selectIds, setSelectIds] = useState<string[]>([]);
   // const [selectRows, setSelectRows] = useState<any[]>([]);
   // 表格loading状态
-  const loading = useLoading();
+  const loading$ = useLoading();
 
   //搜索过滤条件汇总
   const [searchCondition, setSearchCondition] = useState({});
@@ -428,7 +429,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
           columns={tableRowConfig}
           dataSource={props.data && props.data.content}
           // 实时刷新禁用loading图标
-          loading={loading}
+          loading={props.loading || loading$}
           rowKey={rowKey || "row_key"}
           rowSelection={rowSelection}
           expandable={expandable}

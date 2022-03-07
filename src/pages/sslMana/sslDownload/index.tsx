@@ -1,55 +1,49 @@
 import { Template } from "@/components/template";
 import { IRenderConfig } from "@/components/template/fastRender";
-import { Role } from "@/components/template/interface";
-import { useDnsCertList, useDnsCustomerList } from "@/store/network/dnsManage";
+import { useDnsCustomerList } from "@/store/network/dnsManage";
 import dnsManage from "@/store/network/dnsManage/service";
 import IconFont from "@/components/icon";
-import Popconfirm from "antd/lib/popconfirm";
 import moment from "moment";
-import { FC, useEffect, useState } from "react";
-import { from } from "rxjs";
+import { FC, useEffect, useMemo, useState } from "react";
 import { dnsApi } from "@/store/api";
 import request from "@/store/request";
-
-const Index: FC<Role> = (props: Role) => {
-  const [params, setParams] = useState<any>();
-  const [filterOption, setfilterOption] = useState<any>();
+import { EdgeModal } from "@/components/modal";
+import { useLoading } from "@/components/loading";
+import useEvent from "@/common/hooks/useEvent";
+import { notification } from "antd";
+const Index: FC = () => {
+  const [deleteFlag, setDeleteFlag] = useState<boolean>(false);
+  const loading$ = useLoading();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [event$, sendMessage] = useEvent();
   const [deleteUid, setDeleteUid] = useState<any>();
+  const [dnsCertList, setDnsCertList] = useState<string>();
   const dnsCustomerList = useDnsCustomerList();
-  const dnsCertList = useDnsCertList();
 
   useEffect(() => {
-    if (props.type === 3) {
-      if (params !== undefined) {
-        if (params.filters !== undefined) {
-          dnsManage?.certList({
-            keyword: params.filters.keyword,
-            searchPage: params.searchPage,
-            customerUid: params.filters.customerUid,
-            sslDomains: params.filters.sslDomains,
-          });
-        }
-      }
-    }
-  }, [params, props.type]);
+    !dnsCustomerList &&
+      dnsManage.customerList({ searchPage: { page: 1, pageSize: 9999 } });
+  }, []);
 
-  useEffect(() => {
-    if (props.type === 3) {
-      dnsManage.customerList({ searchPage: { page: 1, pageSize: 99999 } });
-    }
-  }, [props.type]);
+  const customerList = useMemo(
+    () =>
+      dnsCustomerList &&
+      dnsCustomerList.content &&
+      dnsCustomerList.content.map((item: any) => ({
+        uid: item.uid,
+        name: item.name,
+      })),
 
-  useEffect(() => {
-    if (props.type === 3) {
-      let filterOption: object[] = [];
-      dnsCustomerList?.content &&
-        Object.entries(dnsCustomerList?.content).forEach((item: any) => {
-          let a = item[1];
-          filterOption.push({ uid: a.uid, name: a.name });
-        });
-      setfilterOption(filterOption);
-    }
-  }, [dnsCustomerList, dnsCustomerList?.content, props.type]);
+    [dnsCustomerList]
+  );
+  const deleteCustomer = async (data: string[]) => {
+    const res = await request(dnsApi.DnsCertDelete(deleteUid));
+    res instanceof Object
+      ? notification.success({ message: "Delete Success" })
+      : notification.error({ message: "Delete failed", description: data });
+    sendMessage("reload");
+    setDeleteFlag(false);
+  };
 
   const config = [
     {
@@ -102,61 +96,61 @@ const Index: FC<Role> = (props: Role) => {
     {
       text: "客户",
       name: "customerUid",
-      data: filterOption,
+      data: customerList || [],
       type: "select",
     },
   ];
-  const confirm =()=>{
-    // from(request(dnsApi.CertDelete(deleteUid))).subscribe((data)=>{
-
-    // })
-
-  }
   const TempConfig = {
-    optList: [ {
-      icon: (
-        <div>
-          <Popconfirm
-            title="Are you sure delete this task?"
-            //visible={this.state.visible}
-            //onVisibleChange={this.handleVisibleChange}
-            onConfirm={() => confirm()}
-            //onCancel={() => cancel()}
-            okText="Yes"
-            cancelText="No"
-            trigger={"click"}
-          >
-            <div>
-              <IconFont
-                type="icon-shanchu"
-                className="DeleteBtn"
-                style={{ fontSize: 17, color: "#FF8900" }}
-              ></IconFont>
-            </div>
-          </Popconfirm>
-        </div>
-      ),
-      event: (data: any) => {
-      console.log(data.uid);
-        setDeleteUid(data.uid);
+    optList: [
+      {
+        icon: (
+          <IconFont
+            type="icon-shanchu"
+            style={{ fontSize: 18, color: "#FF8900" }}
+          ></IconFont>
+        ),
+        event: (data: any) => {
+          setDeleteUid(data.uid);
+        },
       },
+    ],
+    onSearch: async (params: any) => {
+      setLoading(true);
+      const res = await request(
+        dnsApi.DnsCertList({
+          keyword: params.filters.keyword,
+          searchPage: params.searchPage,
+          customerUid: params.filters.customerUid,
+          sslDomains: params.filters.sslDomains,
+        })
+      );
+      setLoading(false);
+      setDnsCertList(res);
     },
-    
-  ],
-    onSearch: (params: any) => setParams(params),
     rowId: "uid",
     data: dnsCertList,
     config: config,
   };
 
   return (
-    <div>
+    <>
       <Template
         primarySearch={"keyword"}
         searchList={option}
         {...TempConfig}
+        event$={event$}
+        loading={loading}
       ></Template>
-    </div>
+      <EdgeModal
+        visible={deleteFlag}
+        onCancel={() => setDeleteFlag(false)}
+        onOk={() => deleteCustomer(deleteUid)}
+        title="删除"
+        loading={loading$}
+      >
+        你确定删除此账户？
+      </EdgeModal>
+    </>
   );
 };
 

@@ -1,34 +1,33 @@
-import { FC, ReactElement, useState } from "react";
+import { FC, ReactElement, useMemo, useState } from "react";
 import CusSsl from "./cusSsl";
-import Ssl from "./ssl";
+import Ssl from "./oriSsl";
 import SslDownload from "./sslDownload";
 import { Tabs } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Index: FC = (): ReactElement => {
   const { TabPane } = Tabs;
-  const [role, setRole] = useState<number>(1);
-  const handleOnchange = (e: string) => {
-    if (e === "1") {
-      setRole(1);
-    } else if (e === "2") {
-      setRole(2);
-    } else if (e === "3") {
-      setRole(3);
-    }
-  };
-  // const navigator = useNavigate();
-  // const path: any = useLocation().state;
-  // const index = useMemo(() => (path && path.sslMana) || "1", [path]);
+
+  const navigator = useNavigate();
+  const path: any = useLocation().state;
+  const index = useMemo(() => (path && path.sslMana) || "cusSsl", [path]);
   return (
-    <Tabs defaultActiveKey="1" type="card" onChange={(e) => handleOnchange(e)}>
-      <TabPane tab="客户端证书" key="1">
-        <CusSsl type={role} />
+    <Tabs
+      destroyInactiveTabPane
+      activeKey={index}
+      type="card"
+      onChange={(activeKey) =>
+        navigator(".", { state: { sslMana: activeKey } })
+      }
+    >
+      <TabPane tab="客户端证书" key="cusSsl">
+        <CusSsl />
       </TabPane>
-      <TabPane tab="源证书" key="2">
-        <Ssl type={role} />
+      <TabPane tab="源证书" key="oriSsl">
+        <Ssl />
       </TabPane>
-      <TabPane tab="证书下载" key="3">
-        <SslDownload type={role} />
+      <TabPane tab="证书下载" key="sslDownload">
+        <SslDownload />
       </TabPane>
     </Tabs>
   );

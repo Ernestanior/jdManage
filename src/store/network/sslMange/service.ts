@@ -32,24 +32,20 @@ class SslManage {
     });
   }
 
-  viewCert(data: string) {
-    if (data !== "") {
-      from(request(sslManageApi.viewCert({ data }))).subscribe((data) => {
-        if (data) {
-          this.sslViewCert$.next(data);
-        }
-      });
-    }
+  viewCert(uid: string) {
+    from(request(sslManageApi.viewCert(uid))).subscribe((data) => {
+      if (data) {
+        this.sslViewCert$.next(data);
+      }
+    });
   }
 
-  viewOriginCert(data: string) {
-    if (data !== "") {
-      from(request(sslManageApi.viewOriginCert({ data }))).subscribe((data) => {
-        if (data) {
-          this.sslViewOriginCert$.next(data);
-        }
-      });
-    }
+  viewOriginCert(uid: string) {
+    from(request(sslManageApi.viewOriginCert(uid))).subscribe((data) => {
+      if (data) {
+        this.sslViewOriginCert$.next(data);
+      }
+    });
   }
 }
 

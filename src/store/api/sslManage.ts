@@ -1,4 +1,8 @@
 import { AxiosRequestConfig } from "axios";
+import {
+  IUploadCert,
+  RequestOriginalCert,
+} from "../network/sslMange/interface";
 /**
  * @class UserAPI
  * @description 用户管理API
@@ -25,6 +29,25 @@ class SslManageAPI {
     return config;
   };
 
+  uploadCert = (data: IUploadCert) => {
+    const config: AxiosRequestConfig = {
+      url: "/ssl/customer/upload-cert",
+      method: "POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+
+  deleteCert = (data: string[]) => {
+    const config: AxiosRequestConfig = {
+      url: "ssl/delete-cert",
+      method: "DELETE",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
   originCertList = (data: any) => {
     const config: AxiosRequestConfig = {
       url: "/ssl/origin-cert/list",
@@ -35,21 +58,21 @@ class SslManageAPI {
     return config;
   };
 
-  viewCert = (params: any) => {
-    console.log(params, "uidudid");
-
+  viewCert = (uid: string) => {
     const config: AxiosRequestConfig = {
-      url: `/ssl/view-cert?uid=${params.data}`,
+      url: "/ssl/view-cert",
       method: "GET",
+      params: { uid },
     };
     config.headers = {};
     return config;
   };
 
-  viewOriginCert = (params: any) => {
+  viewOriginCert = (uid: string) => {
     const config: AxiosRequestConfig = {
-      url: `/ssl/origin-cert/view?uid=${params.data}`,
+      url: "/ssl/origin-cert/view",
       method: "GET",
+      params: { uid },
     };
     config.headers = {};
     return config;
@@ -65,7 +88,7 @@ class SslManageAPI {
     return config;
   };
 
-  originalCertOption = () => {
+  originCertOption = () => {
     const config: AxiosRequestConfig = {
       url: "/ssl/origin-cert/option/list",
       method: "GET",
@@ -74,11 +97,11 @@ class SslManageAPI {
     return config;
   };
 
-  certDelete = (data:string[]) => {
+  originCertDelete = (data: string[]) => {
     const config: AxiosRequestConfig = {
       url: "/ssl/origin-cert/delete",
       method: "DELETE",
-      data:data,
+      data: data,
     };
     config.headers = {};
     return config;
@@ -86,12 +109,3 @@ class SslManageAPI {
 }
 
 export default SslManageAPI;
-
-export type RequestOriginalCert = {
-  domains: [] | string[];
-  privateKeyType: string;
-  usesOwnPrivateKey: boolean;
-  validity: number;
-};
-
-
