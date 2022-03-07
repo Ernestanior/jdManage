@@ -185,24 +185,12 @@ const Index: FC = () => {
   };
 
   const ModifyDomain = async (data: any) => {
-    console.log(data);
-    let modifyValue: IAccountUpdate;
-    let name = data.name;
-    let remark = data.remark;
-    let code = data.code;
-    let uid = supplierDetail?.uid;
-    const tokenValue = Object.keys(data).reduce((tokenValue: any, key) => {
-      // Copy all except emoji
-      if (key !== "name" && key !== "code" && key !== "remark") {
-        tokenValue[key] = data[key];
-      }
-      return tokenValue;
-    }, {});
-    console.log(tokenValue);
-    modifyValue = {
-      name,
-      remark,
-      uid,
+    const {name,code,remark, ...tokenValue} = data;
+    console.log(tokenValue,"rest");
+    const modifyValue: IAccountUpdate = {
+      name: data.name,
+      remark: data.remark,
+      uid: supplierDetail?.uid,
       status: "enabled",
       supplier: { code, tokenValue: { ...tokenValue } },
     };
@@ -210,7 +198,6 @@ const Index: FC = () => {
     const sumbitUpdate = await request(supplierApi.UpdateAccount(modifyValue));
     console.log(sumbitUpdate);
   };
-
   const OptionOnchage = (selectedOption: string) => {
     if (selectedOption !== undefined || selectedOption !== null) {
       let fieldData = supplierInfo?.find(
