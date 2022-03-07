@@ -139,6 +139,16 @@ class SupplierAPI {
     config.headers = {};
     return config;
   };
+
+  UpdateAccount = (data: IAccountUpdate) => {
+    const config: AxiosRequestConfig = {
+      url: "/supplier-account/update",
+      method: "POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
 }
 
 export default SupplierAPI;
@@ -177,5 +187,16 @@ export type IcreateAccount = {
   supplier: {
     code: string;
     tokenValue: object;
+  };
+};
+
+export type IAccountUpdate = {
+  name: string;
+  uid: string;
+  remark: string;
+  status: string;
+  supplier: {
+    code: string;
+    tokenValue: any;
   };
 };

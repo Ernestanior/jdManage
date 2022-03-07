@@ -54,6 +54,10 @@ class PlatformManageAPI {
     config.headers={};
     return config;
   }
+
+
+
+
 }
 
 export default PlatformManageAPI;
