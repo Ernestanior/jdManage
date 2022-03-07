@@ -1,15 +1,13 @@
 import { Template } from "@/components/template";
-import { useSslManageCerList } from "@/store/network/sslMange";
-import sslManage from "@/store/network/sslMange/service";
-import UploadDrawer from "./uploadDrawer";
-import DetailDrawer from "./detailDrawer";
-import { FC, useMemo, useState } from "react";
-import { useLoading } from "@/components/loading";
-import request from "@/store/request";
 import { sslManageApi } from "@/store/api";
-import { EdgeModal } from "@/components/modal";
+import request from "@/store/request";
 import { notification } from "antd";
+import ApplyDrawer from "./applyDrawer";
+import DetailDrawer from "./detailDrawer";
+import { FC, useState } from "react";
+import { useLoading } from "@/components/loading";
 import useEvent from "@/common/hooks/useEvent";
+import { EdgeModal } from "@/components/modal";
 
 const Index: FC = () => {
   const loading = useLoading();
@@ -17,25 +15,14 @@ const Index: FC = () => {
 
   const [detailFlag, setDetailFlag] = useState<boolean>(false);
   const [deleteFlag, setDeleteFlag] = useState<boolean>(false);
-  const [uploadFlag, setUploadFlag] = useState<boolean>(false);
+  const [applyFlag, setApplyFlag] = useState<boolean>(false);
 
-  const [certDetail, setCertDetail] = useState<any>();
   const [selected, setSelected] = useState<string[]>([]);
+  const [originDetail, setOriDetail] = useState<any>();
   const [certList, setCertList] = useState<any>();
 
-  //Add new Key for the list due to no uniqueKey
-  // const newCertList = useMemo(() => {
-  //   return {
-  //     ...certList,
-  //     content: certList?.content.map((item: any, key: number) => ({
-  //       ...item,
-  //       key: key,
-  //     })),
-  //   };
-  // }, [certList]);
-
   const deleteCustomer = async (data: string[]) => {
-    const res = await request(sslManageApi.deleteCert(data));
+    const res = await request(sslManageApi.originCertDelete(data));
     res instanceof Object
       ? notification.success({ message: "Delete Success" })
       : notification.error({ message: "Delete failed", description: data });
@@ -43,14 +30,13 @@ const Index: FC = () => {
     setDeleteFlag(false);
   };
 
-  //TemplateConfig
   const TempConfig = {
     optList: [
       {
         text: "查看",
         event: async (data: any) => {
-          const res = await request(sslManageApi.viewCert(data.uid));
-          setCertDetail(res);
+          const res = await request(sslManageApi.viewOriginCert(data.uid));
+          setOriDetail(res);
           setDetailFlag(true);
         },
       },
@@ -72,17 +58,14 @@ const Index: FC = () => {
       },
     ],
     onSearch: async (params: any) => {
-      if (params) {
-        const payload = {
-          sslDomains: params.filters.sslDomains,
-          searchPage: params.searchPage,
-          keyword: params.filters.keyword,
-          site: { name: params.filters.site },
-          customer: { name: params.filters.customer },
-        };
-        const res = await request(sslManageApi.certList(payload));
-        setCertList(res);
-      }
+      const payload = params && {
+        sslDomains: params.filters.sslDomains,
+        searchPage: params.searchPage,
+        keyword: params.filters.keyword,
+        customer: { name: params.filters.customer },
+      };
+      const res = await request(sslManageApi.originCertList(payload));
+      setCertList(res);
     },
     rowId: "uid",
     data: certList,
@@ -96,12 +79,9 @@ const Index: FC = () => {
         title: "相关域名",
         dataIndex: "domains",
         key: "domains",
-        render: (key: any) => {
-          return <div>{key !== null ? `${key}` : `-`}</div>;
-        },
       },
       {
-        title: "站点",
+        title: "网站",
         dataIndex: "site",
         key: "site",
         render: (key: any) => {
@@ -118,22 +98,20 @@ const Index: FC = () => {
         key: "sslExpire",
       },
       {
-        title: "类型",
-        dataIndex: "sslAuto",
-        key: "sslAuto",
-      },
-      {
         title: "客户",
         dataIndex: "customer",
         key: "customer",
-        render: (key: any) =>
-          key !== "" ? <div>{key.name}</div> : <div>-</div>,
+        render: (key: any) => {
+          if (key !== null) {
+            return <div>{key.name}</div>;
+          }
+        },
       },
     ],
     normalBtns: [
       {
-        text: "上传证书",
-        onClick: () => setUploadFlag(true),
+        text: "申请证书",
+        onClick: () => setApplyFlag(true),
       },
     ],
   };
@@ -149,11 +127,6 @@ const Index: FC = () => {
             type: "input",
           },
           {
-            text: "网站",
-            name: "site",
-            type: "input",
-          },
-          {
             text: "客户",
             name: "customer",
             type: "input",
@@ -162,17 +135,18 @@ const Index: FC = () => {
         {...TempConfig}
         event$={event$}
       ></Template>
-      <UploadDrawer
-        onClose={() => setUploadFlag(false)}
-        reload={() => sendMessage("reload")}
-        visible={uploadFlag}
-        loading={loading}
-      ></UploadDrawer>
+
       <DetailDrawer
         onClose={() => setDetailFlag(false)}
         visible={detailFlag}
-        certData={certDetail}
+        certData={originDetail}
       ></DetailDrawer>
+      <ApplyDrawer
+        onClose={() => setApplyFlag(false)}
+        reload={() => sendMessage("reload")}
+        visible={applyFlag}
+        loading={loading}
+      ></ApplyDrawer>
       <EdgeModal
         visible={deleteFlag}
         onCancel={() => setDeleteFlag(false)}

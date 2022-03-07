@@ -45,6 +45,7 @@ const CreateDrawer: FC<IProps> = ({
       visible={visible}
       width={500}
       closable={false}
+      getContainer={false}
     >
       <Form form={form} onFinish={onFinish}>
         <Form.Item

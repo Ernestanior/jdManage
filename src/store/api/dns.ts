@@ -22,7 +22,7 @@ class DnsAPI {
     config.headers = {};
     return config;
   };
-  FindDnsDomain = (data: IDnsDomain|ISearchDomain) => {
+  FindDnsDomain = (data: IDnsDomain | ISearchDomain) => {
     const config: AxiosRequestConfig = {
       url: "/dns/domain/list",
       method: "post",
@@ -31,7 +31,7 @@ class DnsAPI {
     config.headers = {};
     return config;
   };
-  FindDnsRecord = (data: IDnsRecord|ISearchDomain) => {
+  FindDnsRecord = (data: IDnsRecord | ISearchDomain) => {
     const config: AxiosRequestConfig = {
       url: "/dns/record/list",
       method: "post",
@@ -89,7 +89,25 @@ class DnsAPI {
     const config: AxiosRequestConfig = {
       url: "/domain/count",
       method: "get",
-      params: { customerUid},
+      params: { customerUid },
+    };
+    config.headers = {};
+    return config;
+  };
+  DnsCertList = (data: any) => {
+    const config: AxiosRequestConfig = {
+      url: "/dns/cert/list",
+      method: "POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  DnsCertDelete = (data: string[]) => {
+    const config: AxiosRequestConfig = {
+      url: "/dns/cert/delete",
+      method: "DELETE",
+      data,
     };
     config.headers = {};
     return config;
@@ -161,28 +179,26 @@ class DnsAPI {
     config.headers = {};
     return config;
   };
-  
-  DnsCertList = (data: any) => {
-    const config: AxiosRequestConfig = {
-      url: "/dns/cert/list",
-      method: "POST",
-      data,
-    };
-    config.headers = {};
-    return config;
-  };
 
-  DnsCertDelete = (uid: string) => {
-    const config: AxiosRequestConfig = {
-      url: "/dns/cert/delete",
-      method: "DELETE",
-      data: [uid],
-    };
-    config.headers = {};
-    return config;
-  };
-  
+  // DnsCertList = (data: any) => {
+  //   const config: AxiosRequestConfig = {
+  //     url: "/dns/cert/list",
+  //     method: "POST",
+  //     data,
+  //   };
+  //   config.headers = {};
+  //   return config;
+  // };
+
+  // DnsCertDelete = (uid: string) => {
+  //   const config: AxiosRequestConfig = {
+  //     url: "/dns/cert/delete",
+  //     method: "DELETE",
+  //     data: [uid],
+  //   };
+  //   config.headers = {};
+  //   return config;
+  // };
 }
-
 
 export default DnsAPI;
