@@ -1,7 +1,5 @@
 import { Template } from "@/components/template";
 import { IRenderConfig } from "@/components/template/fastRender";
-import { useDnsCustomerList } from "@/store/network/dnsManage";
-import dnsManage from "@/store/network/dnsManage/service";
 import IconFont from "@/components/icon";
 import moment from "moment";
 import { FC, useEffect, useMemo, useState } from "react";
@@ -11,6 +9,8 @@ import { EdgeModal } from "@/components/modal";
 import { useLoading } from "@/components/loading";
 import useEvent from "@/common/hooks/useEvent";
 import { notification } from "antd";
+import { useCustomerList } from "@/store/network/customer";
+import { from } from "rxjs";
 const Index: FC = () => {
   const [deleteFlag, setDeleteFlag] = useState<boolean>(false);
   const loading$ = useLoading();
@@ -18,11 +18,17 @@ const Index: FC = () => {
   const [event$, sendMessage] = useEvent();
   const [deleteUid, setDeleteUid] = useState<any>();
   const [dnsCertList, setDnsCertList] = useState<string>();
-  const dnsCustomerList = useDnsCustomerList();
+  const [dnsCustomerList, setDnsCustomerList] = useState<any>();
 
   useEffect(() => {
-    !dnsCustomerList &&
-      dnsManage.customerList({ searchPage: { page: 1, pageSize: 9999 } });
+    const obs = from(
+      request(
+        dnsApi.FindCustomerList({ searchPage: { page: 1, pageSize: 9999 } })
+      )
+    ).subscribe((data) => {
+      setDnsCustomerList(data);
+    });
+    return () => obs.unsubscribe();
   }, []);
 
   const customerList = useMemo(

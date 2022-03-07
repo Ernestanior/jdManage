@@ -14,6 +14,10 @@ export interface ISearchDomain {
   searchPage: ISearchPage;
   siteUid?: string;
   sslEnable?: number;
+  displayName?:string;
+  masterName?:string;
+  value?: string;
+  name?:string;
 }
 
 export interface ISearchPage {
@@ -25,7 +29,8 @@ export interface ISearchPage {
 
 export interface IDnsDomain {
   searchPage: ISearchPage;
-  uid: string;
+  uid?: string;
+  type?: string;
 }
 export interface IDnsRecord {
   searchPage: ISearchPage;

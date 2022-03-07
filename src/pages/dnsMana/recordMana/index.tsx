@@ -1,33 +1,63 @@
 import { Template } from "@/components/template";
-import { useDomainList } from "@/store/network/dnsManage";
-import { useRecordList } from "@/store/network/dnsManage";
-import dnsManage from "@/store/network/dnsManage/service";
+import { dnsApi } from "@/store/api";
+import { useDnsDomainList } from "@/store/network/dns";
+import request from "@/store/request";
 import { FC, useEffect, useState } from "react";
+import { from } from "rxjs";
 
 const Index: FC = () => {
   const [params, setParams] = useState<any>();
-  const domainList = useDomainList();
-  const recordList = useRecordList();
+  const [recordList, setRecordList] = useState();
+  const [option, setOption] = useState<Object[]>([]);
 
   useEffect(() => {
-    params &&
-      dnsManage.recordList({
-        keyword: params.filters.keyword,
-        searchPage: params.searchPage,
-        domainUid: params.filters.domainUid,
-        status: params.filters.status,
-        value: params.filters.value,
-        name: params.filters.name,
-      });
+    if (params) {
+      if (params.filters !== undefined) {
+        let searchDetail = {
+          keyWord: params.filters.keyword,
+          searchPage: params.searchPage,
+          domainUid: params.filters.domainUid,
+          status: params.filters.status,
+          value: params.filters.value,
+          name: params.filters.name,
+        };
+        from(request(dnsApi.FindDnsRecord(searchDetail))).subscribe((data) => {
+          console.log(data);
+          setRecordList(data);
+        });
+      } else {
+        let searchDetail = {
+          searchPage: { desc: 0, page: 1, pageSize: 25, sort: "create_date" },
+        };
+        from(request(dnsApi.FindDnsRecord(searchDetail))).subscribe((data) => {
+          console.log(data);
+          setRecordList(data);
+        });
+      }
+    }
   }, [params]);
 
+
   useEffect(() => {
-    !domainList &&
-      dnsManage.domainList({
-        searchPage: { page: 1, pageSize: 99999 },
-        uid: "",
-      });
+    const handleDnsDomainList = async () => {
+      const result = await request(
+        dnsApi.FindDnsDomain({
+          searchPage: { page: 1, pageSize: 99999 },
+          uid: "",
+        })
+      );
+      if (result) {
+        let dnsOption: object[] = [];
+        Object.entries(result.content).forEach((item: any) => {
+          let a = item[1];
+          dnsOption.push({ uid: a.uid, name: a.name });
+        });
+        setOption(dnsOption);
+      }
+    };
+    handleDnsDomainList();
   }, []);
+
 
   const TempConfig = {
     onSearch: (params: any) => {
@@ -128,14 +158,9 @@ const Index: FC = () => {
             type: "input",
           },
           {
-            text: "域名",
+            text: " 域名",
             name: "domainUid",
-            data: domainList
-              ? domainList.content.map((item: any) => ({
-                  uid: item.uid,
-                  name: item.name,
-                }))
-              : [],
+            data: option,
             type: "select",
           },
           {

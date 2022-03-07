@@ -1,9 +1,5 @@
 import { Template } from "@/components/template";
-import { dnsManageApi } from "@/store/api";
-import DnsManageAPI from "@/store/api/dnsManage";
-import { useDomainList } from "@/store/network/dnsManage";
-import { useDnsCustomerList } from "@/store/network/dnsManage";
-import dnsManage from "@/store/network/dnsManage/service";
+import { dnsApi } from "@/store/api";
 import request from "@/store/request";
 import { Form, Drawer, Input, Select, Button } from "antd";
 import TextArea from "antd/lib/input/TextArea";
@@ -13,8 +9,7 @@ import { from } from "rxjs";
 const Index: FC = () => {
   const [AddForm] = Form.useForm();
   const [CloneForm] = Form.useForm();
-  const domainList = useDomainList();
-  const customerList = useDnsCustomerList();
+  const [domainList, setdomainList] = useState();
   const [params, setParams] = useState<any>();
   const [option, setOption] = useState<Object[]>([]);
   const [addDomainOption, setAddDomainOption] = useState<Object[]>([]);
@@ -24,15 +19,28 @@ const Index: FC = () => {
   useEffect(() => {
     if (params) {
       if (params.filters !== undefined) {
-        dnsManage?.domainList({
+        const data = {
           keyword: params.filters.keyword,
           searchPage: params.searchPage,
           customerUid: params.filters.customerUid,
           status: params.filters.status,
+        };
+        from(request(dnsApi.FindDnsDomain(data))).subscribe((data) => {
+          if (data) {
+            setdomainList(data);
+          }
         });
       } else {
-        dnsManage?.domainList({
-          searchPage: { desc: 0, page: 1, pageSize: 25, sort: "name" },
+        from(
+          request(
+            dnsApi.FindDnsDomain({
+              searchPage: { desc: 0, page: 1, pageSize: 25, sort: "name" },
+            })
+          )
+        ).subscribe((data) => {
+          if (data) {
+            setdomainList(data);
+          }
         });
       }
     }
@@ -53,27 +61,25 @@ const Index: FC = () => {
   const closeCLoneDrawer = () => {
     setCloneDrawer(false);
   };
-
   useEffect(() => {
-    dnsManage?.customerList({
-      searchPage: { page: 1, pageSize: 99999 },
-      type: "customer",
-    });
+    const handleDnsCustomerList = async () => {
+      const result = await request(
+        dnsApi.FindCustomerList({
+          searchPage: { page: 1, pageSize: 99999 },
+          uid: "",
+        })
+      );
+      if (result) {
+        let dnsOption: object[] = [];
+        Object.entries(result.content).forEach((item: any) => {
+          let a = item[1];
+          dnsOption.push({ uid: a.uid, name: a.name });
+        });
+        setOption(dnsOption);
+      }
+    };
+    handleDnsCustomerList();
   }, []);
-
-  useEffect(() => {
-    if (customerList) {
-      let dnsOption: object[] = [];
-      let adddomainOption: object[] = [];
-      Object.entries(customerList?.content).forEach((item: any) => {
-        let a = item[1];
-        dnsOption.push({ uid: a.uid, name: a.name });
-        adddomainOption.push({ value: a.uid, label: a.name });
-      });
-      setAddDomainOption(adddomainOption);
-      setOption(dnsOption);
-    }
-  }, [customerList]);
 
   const TempConfig = {
     optList: [
@@ -86,7 +92,7 @@ const Index: FC = () => {
         event: (data: any) => {
           console.log(data.uid);
           let uid = { domainUid: data.uid, records: [data.name] };
-          from(request(dnsManageApi.CertRequest(uid))).subscribe((data) => {
+          from(request(dnsApi.CertRequest(uid))).subscribe((data) => {
             console.log(data);
           });
         },
@@ -106,12 +112,12 @@ const Index: FC = () => {
           console.log(data);
           let uid = [data.uid];
           if (data.status === "enabled") {
-            from(request(dnsManageApi.Disable(uid))).subscribe((data) => {
+            from(request(dnsApi.Disable(uid))).subscribe((data) => {
               if (data) {
               }
             });
           } else {
-            from(request(dnsManageApi.Enable(uid))).subscribe((data) => {
+            from(request(dnsApi.Enable(uid))).subscribe((data) => {
               if (data) {
               }
             });
@@ -122,7 +128,7 @@ const Index: FC = () => {
         text: "删除",
         event: (data: any) => {
           let uid = [data.uid];
-          from(request(dnsManageApi.DomainDelete(uid))).subscribe((data) => {
+          from(request(dnsApi.DomainDelete(uid))).subscribe((data) => {
             if (data) {
             }
           });
@@ -133,7 +139,7 @@ const Index: FC = () => {
       {
         text: "批量删除",
         onClick: (value: any) => {
-          from(request(dnsManageApi.DomainDelete(value))).subscribe((data) => {
+          from(request(dnsApi.DomainDelete(value))).subscribe((data) => {
             if (data) {
             }
           });
@@ -142,16 +148,16 @@ const Index: FC = () => {
       {
         text: "批量启用",
         onClick: (value: any) => {
-          from(request(dnsManageApi.Enable(value))).subscribe((data) => {
+          from(request(dnsApi.Enable(value))).subscribe((data) => {
             if (data) {
             }
           });
-        }
+        },
       },
       {
         text: "批量禁用",
         onClick: (value: any) => {
-          from(request(dnsManageApi.Disable(value))).subscribe((data) => {
+          from(request(dnsApi.Disable(value))).subscribe((data) => {
             if (data) {
             }
           });
@@ -199,7 +205,7 @@ const Index: FC = () => {
   };
 
   const AddNewDomain = (key: string[]) => {
-    from(request(dnsManageApi.CreateDomain(key))).subscribe((data) => {
+    from(request(dnsApi.CreateDomain(key))).subscribe((data) => {
       if (data) {
       }
     });
@@ -209,7 +215,7 @@ const Index: FC = () => {
     console.log(data.names.replace(/\n/g, ",").split(","));
     let cloneNameArr = data.names.replace(/\n/g, ",").split(",");
     let cloneValue = { names: cloneNameArr, uid: data.uid };
-    from(request(dnsManageApi.CloneDomain(cloneValue))).subscribe((data) => {
+    from(request(dnsApi.CloneDomain(cloneValue))).subscribe((data) => {
       if (data) {
       }
     });

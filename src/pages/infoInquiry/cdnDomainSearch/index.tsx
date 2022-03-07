@@ -1,46 +1,43 @@
 import { Template } from "@/components/template";
-import {
-  useInfoInquiryCustomerList,
-  useInfoInquiryDomainList,
-  useSite,
-} from "@/store/network/infoInquiry";
-import {} from "@/store/network/infoInquiry";
-import infoInquiry from "@/store/network/infoInquiry/service";
-import { DownOutlined } from "@ant-design/icons";
-import { Col, Divider, Drawer, Dropdown, Menu, Row } from "antd";
+import { useCustomerList } from "@/store/network/customer";
+import customerService from "@/store/network/customer/service";
+import { useDomainList } from "@/store/network/dns";
+import dnsService from "@/store/network/dns/service";
+import { useSiteAll } from "@/store/network/site";
+import siteService from "@/store/network/site/service";
+import { Col, Divider, Drawer, Row } from "antd";
 import { FC, useEffect, useState } from "react";
 
 const Index: FC = () => {
   const [params, setParams] = useState<any>();
-  const customerList = useInfoInquiryCustomerList();
+  const customerList = useCustomerList();
   const [visible, setVisible] = useState<boolean>(false);
-  const site = useSite();
-  const domainList = useInfoInquiryDomainList();
+  const site = useSiteAll();
+  const domainList = useDomainList();
   const [siteOption, setSiteOption] = useState<Object[]>([]);
   const [cusNameOption, setCusNameOption] = useState<Object[]>([]);
   const [drawerDetail, setDrawerDetail] = useState<any>();
 
   useEffect(() => {
-    infoInquiry.customerList({
+    customerService.findCustomer({
       searchPage: { page: 1, pageSize: 99999 },
-      uid: "",
     });
-    infoInquiry.site();
+    siteService.findSiteAll();
   }, []);
   useEffect(() => {
     if (params) {
       if (params.filters !== undefined) {
-        infoInquiry.domainList({
+        dnsService.findDomain({
           customerUid: params.filters.customerUid,
           searchPage: params.searchPage,
           displayName: params.filters.displayName,
-          keyword: params.filters.keyword,
+          keyWord: params.filters.keyword,
           masterName: params.filters.masterName,
           siteUid: params.filters.siteUid,
           sslEnable: params.filters.sslEnable,
         });
       } else {
-        infoInquiry.domainList({
+        dnsService.findDomain({
           searchPage: { desc: 0, page: 1, pageSize: 25, sort: "name" },
         });
       }
@@ -89,10 +86,9 @@ const Index: FC = () => {
       {
         text: "进入站点",
         event: (data: any) => {
-        //  navigator(`/cdn-site/${data.uid}`);
+          //  navigator(`/cdn-site/${data.uid}`);
         },
       },
-      
     ],
     onSearch: (params: any) => {
       setParams(params);
@@ -136,9 +132,7 @@ const Index: FC = () => {
           return <div>{key.name}</div>;
         },
       },
-      
     ],
-
   };
 
   return (

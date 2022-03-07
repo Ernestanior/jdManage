@@ -34,22 +34,22 @@ const Index: FC = (): ReactElement => {
       onChange={(e: string) => handleOnchange(e)}
     >
       <TabPane tab="全部" key="1">
-        <All type={role} />
+        <All  />
       </TabPane>
       <TabPane tab="国内加速(备案)" key="2">
-        <AccelerationChinaICP type={role} />
+        <AccelerationChinaICP  />
       </TabPane>
       <TabPane tab="国内加速(免备案)" key="3">
-        <AccelerationChina type={role} />
+        <AccelerationChina  />
       </TabPane>
       <TabPane tab="全球加速" key="4">
-        <AccelerationGlabal type={role} />
+        <AccelerationGlabal />
       </TabPane>
       <TabPane tab="全球高防" key="5">
-        <DdoosGlobal type={role} />
+        <DdoosGlobal  />
       </TabPane>
       <TabPane tab="自定义平台" key="6">
-        <Customized type={role} />
+        <Customized />
       </TabPane>
     </Tabs>
   );
