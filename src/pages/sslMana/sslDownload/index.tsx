@@ -43,7 +43,7 @@ const Index: FC = () => {
     [dnsCustomerList]
   );
   const deleteCustomer = async (data: string[]) => {
-    const res = await request(dnsApi.DnsCertDelete(deleteUid));
+    const res = await request(dnsApi.DnsCertDelete([deleteUid]));
     res instanceof Object
       ? notification.success({ message: "Delete Success" })
       : notification.error({ message: "Delete failed", description: data });
@@ -117,6 +117,7 @@ const Index: FC = () => {
         ),
         event: (data: any) => {
           setDeleteUid(data.uid);
+          setDeleteFlag(true);
         },
       },
     ],
