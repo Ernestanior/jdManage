@@ -9,16 +9,6 @@ import {
  * @return 返回request的config
  */
 class SslManageAPI {
-  customerList = (data: any) => {
-    const config: AxiosRequestConfig = {
-      url: "/customer/list",
-      method: "POST",
-      data,
-    };
-    config.headers = {};
-    return config;
-  };
-
   certList = (data: any) => {
     const config: AxiosRequestConfig = {
       url: "/ssl/customer/cert-list",

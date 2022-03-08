@@ -1,9 +1,10 @@
-import { Btn } from "@/components/button";
 import { warnIcon } from "@/components/icon";
 import Tip from "@/components/tip";
 import { customerApi } from "@/store/api";
-import { useDefenceQuota, useServiceDomain } from "@/store/network/customer";
-import customerService from "@/store/network/customer/service";
+import {
+  IDefenceQuota,
+  IServiceDomain,
+} from "@/store/network/customer/interface";
 import request from "@/store/request";
 import {
   Button,
@@ -15,40 +16,42 @@ import {
   Switch,
 } from "antd";
 import { FC, useEffect, useState } from "react";
-import { from } from "rxjs";
 
 interface IProps {
   visible: boolean;
   onClose: () => void;
   reload: () => void;
   loading: boolean;
+  defenceQuota: IDefenceQuota[];
+  serviceDomain: IServiceDomain[];
 }
 const { Option } = Select;
 const formItemLayout = {
   labelCol: { span: 24 },
   wrapperCol: { span: 24 },
 };
-const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
+const CreateDrawer: FC<IProps> = ({
+  visible,
+  onClose,
+  reload,
+  loading,
+  defenceQuota,
+  serviceDomain,
+}) => {
   const [form] = Form.useForm();
-  const defenceQuota = useDefenceQuota();
-  const serviceDomain = useServiceDomain();
+
   const [cdnEnabled, setCdnEnabled] = useState<boolean>(false);
   const [dnsEnabled, setDnsEnabled] = useState<boolean>(true);
   const [defenceEnabled, setDefenceEnabled] = useState<boolean>(true);
   const [supSupplier, setSupsSupplier] = useState<boolean>(false);
-  useEffect(() => {
-    !defenceQuota && customerService.findDefenceQuota();
-  }, []);
-  useEffect(() => {
-    !serviceDomain && customerService.findServiceDomain();
-  }, []);
+
   useEffect(() => {
     if (!cdnEnabled && !dnsEnabled) {
       notification.warn({ message: "CDN和DNS不能同时关闭" });
       setDnsEnabled(true);
     }
   }, [cdnEnabled, dnsEnabled]);
-  const onFinish = (e: any) => {
+  const onFinish = async (e: any) => {
     const payload = {
       cdnEnabled,
       dnsEnabled,
@@ -59,15 +62,15 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
       dataAllowance: parseInt(e.dataAllowance) || 0,
       domainQuota: parseInt(e.domainQuota) || 0,
     };
-    from(request(customerApi.CreateCustomer(payload))).subscribe((data) => {
-      if (data) {
-        form.resetFields();
-        onClose();
-        reload();
-        // notification.success({ message: "success" });
-      }
-    });
+    const res = await request(customerApi.CreateCustomer(payload));
+    if (res) {
+      form.resetFields();
+      onClose();
+      reload();
+      // notification.success({ message: "success" });
+    }
   };
+
   return (
     <Drawer
       title="新增客户"
@@ -213,15 +216,14 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
           name="serviceDomain"
           style={{ borderTop: "1px dashed #eee", paddingTop: 15 }}
           label="服务域名"
-          initialValue={serviceDomain && serviceDomain[0].name}
+          initialValue={serviceDomain[0] && serviceDomain[0].name}
         >
           <Select>
-            {serviceDomain &&
-              serviceDomain.map((i) => (
-                <Option key={i.uid} value={i.name}>
-                  {i.name}
-                </Option>
-              ))}
+            {serviceDomain.map((i) => (
+              <Option key={i.uid} value={i.name}>
+                {i.name}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
         <section

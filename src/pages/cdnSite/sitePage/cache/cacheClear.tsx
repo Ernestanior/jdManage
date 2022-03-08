@@ -12,15 +12,14 @@ const Index: FC = (): ReactElement => {
   const uid = useUid();
   const loading = useLoading();
   const [modal, setModal] = useState<boolean>(false);
-  const onClear = () => {
-    from(request(cacheApi.ClearAllCache(uid))).subscribe((data) => {
-      if (data instanceof Object) {
-        notification.success({
-          message: "Clear Success",
-        });
-        setModal(false);
-      }
-    });
+  const onClear = async () => {
+    const res = await request(cacheApi.ClearAllCache(uid));
+    if (!(res instanceof Array)) {
+      notification.success({
+        message: "Clear Success",
+      });
+      setModal(false);
+    }
   };
   return (
     <div

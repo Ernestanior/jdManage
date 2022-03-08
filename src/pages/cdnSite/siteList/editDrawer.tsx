@@ -10,7 +10,7 @@ import Loading from "@/components/loading/context";
 import { useLoading } from "@/components/loading";
 import { from } from "rxjs";
 import request from "@/store/request";
-import { siteApi } from "@/store/api";
+import { siteApi, supplierApi } from "@/store/api";
 interface IProps {
   title: string;
   visible: boolean;
@@ -26,11 +26,17 @@ const formItemLayout = {
 const CreateDrawer: FC<IProps> = ({ title, editRow, visible, onClose }) => {
   const loading = useLoading();
   const [checkedList, setCheckedList] = useState<string[]>([]);
-
+  const [supplierList, setSupplierList] = useState<any>();
   useEffect(() => {
     if (editRow) {
       SupplierService.findSiteSupplier(editRow.uid);
-      SupplierService.findSupplier(editRow.customer.uid);
+      // SupplierService.findSupplier(editRow.customer.uid);
+      const obs = from(
+        request(supplierApi.FindSupplier(editRow.customer.uid))
+      ).subscribe((data) => {
+        data && setSupplierList(data);
+      });
+      return () => obs.unsubscribe();
     }
   }, [editRow]);
 
@@ -49,7 +55,8 @@ const CreateDrawer: FC<IProps> = ({ title, editRow, visible, onClose }) => {
     [siteSupplierList]
   );
 
-  const supplierList = useSupplierList();
+  // const supplierList = useSupplierList();
+
   const optionList = useMemo(
     () =>
       (supplierList &&
@@ -63,7 +70,7 @@ const CreateDrawer: FC<IProps> = ({ title, editRow, visible, onClose }) => {
     [supplierList]
   );
 
-  const onFinish = (value: any) => {
+  const onFinish = async (value: any) => {
     const submitData = {
       uid: editRow.uid,
       ...value,
@@ -85,13 +92,11 @@ const CreateDrawer: FC<IProps> = ({ title, editRow, visible, onClose }) => {
       })),
     };
 
-    from(request(siteApi.EditSite(submitData))).subscribe((data) => {
-      console.log(data);
-      notification.success({
-        message: "Edit Success",
-      });
-      onClose();
+    const res = await request(siteApi.EditSite(submitData));
+    notification.success({
+      message: "Edit Success",
     });
+    onClose();
   };
 
   return (

@@ -41,16 +41,15 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
   }, [keyData, certData]);
   //CustomerList for select option
   useEffect(() => {
-    customerService.findCustomer({
-      searchPage: {
-        page: 1,
-        pageSize: 9999,
-      },
-    });
-  }, []);
+    if (!customerList || !customerList.content) {
+      customerService.findCustomer({
+        searchPage: { page: 1, pageSize: 99999 },
+      });
+    }
+  }, [customerList]);
   const onSubmit = useCallback((e: any) => {
     const payload = { ...e, sslEnable: 0 };
-    const res = request(sslManageApi.uploadCert(payload))
+    const res = request(sslManageApi.uploadCert(payload));
     if (res instanceof Object) {
       notification.success({ message: "Upload Success" });
       form.resetFields();

@@ -1,8 +1,10 @@
 import { warnIcon } from "@/components/icon";
 import Tip from "@/components/tip";
 import { customerApi } from "@/store/api";
-import { useDefenceQuota, useServiceDomain } from "@/store/network/customer";
-import customerService from "@/store/network/customer/service";
+import {
+  IDefenceQuota,
+  IServiceDomain,
+} from "@/store/network/customer/interface";
 import request from "@/store/request";
 import {
   Button,
@@ -14,7 +16,6 @@ import {
   Switch,
 } from "antd";
 import { FC, useEffect, useState } from "react";
-import { from } from "rxjs";
 
 interface IProps {
   data: any;
@@ -22,6 +23,8 @@ interface IProps {
   onClose: () => void;
   reload: () => void;
   loading: boolean;
+  defenceQuota: IDefenceQuota[];
+  serviceDomain: IServiceDomain[];
 }
 const { Option } = Select;
 const formItemLayout = {
@@ -34,10 +37,10 @@ const EditDrawer: FC<IProps> = ({
   onClose,
   reload,
   loading,
+  defenceQuota,
+  serviceDomain,
 }) => {
   const [form] = Form.useForm();
-  const defenceQuota = useDefenceQuota();
-  const serviceDomain = useServiceDomain();
   const [cdnEnabled, setCdnEnabled] = useState<boolean>(false);
   const [dnsEnabled, setDnsEnabled] = useState<boolean>(true);
   const [defenceEnabled, setDefenceEnabled] = useState<boolean>(true);
@@ -60,7 +63,7 @@ const EditDrawer: FC<IProps> = ({
       setDnsEnabled(true);
     }
   }, [cdnEnabled, dnsEnabled]);
-  const onFinish = (e: any) => {
+  const onFinish = async (e: any) => {
     const payload = {
       ...data,
       cdnEnabled,
@@ -73,16 +76,15 @@ const EditDrawer: FC<IProps> = ({
       domainQuota: parseInt(e.domainQuota) || 0,
     };
 
-    from(request(customerApi.ModifyCustomer(payload))).subscribe((data) => {
-      if (data) {
-        form.resetFields();
-        onClose();
-        reload();
-      }
-      if (data instanceof Object) {
-        notification.success({ message: "Edit Success" });
-      }
-    });
+    const res = await request(customerApi.ModifyCustomer(payload));
+    if (res) {
+      form.resetFields();
+      onClose();
+      reload();
+    }
+    if (res instanceof Object) {
+      notification.success({ message: "Edit Success" });
+    }
   };
   return (
     <Drawer
@@ -208,15 +210,14 @@ const EditDrawer: FC<IProps> = ({
           name="serviceDomain"
           style={{ borderTop: "1px dashed #eee", paddingTop: 15 }}
           label="服务域名"
-          initialValue={serviceDomain && serviceDomain[0].name}
+          initialValue={serviceDomain[0] && serviceDomain[0].name}
         >
           <Select>
-            {serviceDomain &&
-              serviceDomain.map((i) => (
-                <Option key={i.uid} value={i.name}>
-                  {i.name}
-                </Option>
-              ))}
+            {serviceDomain.map((i) => (
+              <Option key={i.uid} value={i.name}>
+                {i.name}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
         <section

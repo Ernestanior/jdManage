@@ -3,8 +3,7 @@ import { FC, useState } from "react";
 import { Drawer, Input, Table } from "antd";
 import { useLoading } from "@/components/loading";
 import { ISiteOrigin } from ".";
-import { IStatSiteOrigin } from "@/store/network/stat/interface";
-import { from } from "rxjs";
+import { IStatSiteOrigin } from "@/store/api/stat";
 import request from "@/store/request";
 import { statApi } from "@/store/api";
 const { Search } = Input;
@@ -19,14 +18,11 @@ interface IProps {
 const CreateDrawer: FC<IProps> = ({ title, visible, onClose, params, uid }) => {
   const loading = useLoading();
   const [currData, setCurrData] = useState<ISiteOrigin[]>();
-  const onSearch = (keyword: string) => {
+  const onSearch = async (keyword: string) => {
     const payload: IStatSiteOrigin = { ...params, keyword, type: "ip-search" };
     if (payload) {
-      from(request(statApi.StatSiteOrigin(uid, payload))).subscribe((data) => {
-        if (data) {
-          setCurrData(data.map((v: any, i: number) => ({ key: i, ...v })));
-        }
-      });
+      const res = await request(statApi.StatSiteOrigin(uid, payload));
+      res && setCurrData(res.map((v: any, i: number) => ({ key: i, ...v })));
     }
   };
 

@@ -1,6 +1,5 @@
 import { Template } from "@/components/template";
 import { dnsApi } from "@/store/api";
-import { useDnsDomainList } from "@/store/network/dns";
 import request from "@/store/request";
 import { FC, useEffect, useState } from "react";
 import { from } from "rxjs";
@@ -37,7 +36,6 @@ const Index: FC = () => {
     }
   }, [params]);
 
-
   useEffect(() => {
     const handleDnsDomainList = async () => {
       const result = await request(
@@ -57,7 +55,6 @@ const Index: FC = () => {
     };
     handleDnsDomainList();
   }, []);
-
 
   const TempConfig = {
     onSearch: (params: any) => {

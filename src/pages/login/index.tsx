@@ -10,11 +10,6 @@ const Login = () => {
   const loading = useLoading();
   const onFinish = (values: any) => {
     accountService.login(values.userName, values.pwd);
-    // const payload = { username: values.userName, password: values.pwd };
-    // from(request(authApi.Login(payload))).subscribe((data) => {
-    //   accountService.info$.next(data);
-    //   saveToken(data.token);
-    // });
   };
 
   const onFinishFailed = (errorInfo: any) => {

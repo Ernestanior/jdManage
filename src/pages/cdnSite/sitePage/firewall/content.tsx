@@ -6,7 +6,6 @@ import request from "@/store/request";
 import { Button, Drawer, notification, Switch } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { FC, ReactElement, useMemo, useState } from "react";
-import { from } from "rxjs";
 import Loading from "@/components/loading/context";
 import "./index.less";
 import { FirewallList } from "@/store/network/firewall/interface";
@@ -64,7 +63,7 @@ const Content: FC<IProps> = ({
   const handleSwitch = () => {
     switchFlag ? setModalFlag(true) : setDrawerFlag(true);
   };
-  const onSubmit = (status: boolean) => {
+  const onSubmit = async (status: boolean) => {
     let payload;
     if (type === "whiteIP" || type === "blackIP") {
       payload = {
@@ -80,25 +79,24 @@ const Content: FC<IProps> = ({
         userAgents: status ? text.split("\n") : [],
       };
     }
-    from(request(saveApi(payload))).subscribe((data) => {
-      if (data) {
-        if (JSON.stringify(data) === "{}") {
-          notification.success({
-            message: "Update Success",
-          });
-          setModalFlag(false);
-          setDrawerFlag(false);
-          onRefresh();
-        } else {
-          data.map((item: any) =>
-            notification.error({
-              message: item.name,
-              description: item.message,
-            })
-          );
-        }
+    const res = await request(saveApi(payload));
+    if (res) {
+      if (JSON.stringify(res) === "{}") {
+        notification.success({
+          message: "Update Success",
+        });
+        setModalFlag(false);
+        setDrawerFlag(false);
+        onRefresh();
+      } else {
+        res.map((item: any) =>
+          notification.error({
+            message: item.name,
+            description: item.message,
+          })
+        );
       }
-    });
+    }
   };
   return (
     <div className="access-control">

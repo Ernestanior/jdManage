@@ -1,11 +1,14 @@
-import { useSiteAll, useSiteInfo } from "@/store/network/site";
-import siteService from "@/store/network/site/service";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Menu } from "antd";
-import { FC, ReactElement, useEffect, useMemo } from "react";
+import { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Loading from "@/components/loading/context";
+import { from } from "rxjs";
+import request from "@/store/request";
+import { siteApi } from "@/store/api";
 const Index: FC = (): ReactElement => {
+  const [siteList, setSiteList] = useState<any[]>();
+  const [siteInfo, setSiteInfo] = useState<any>();
   // 获取当前路由路径
   const path = useLocation()
     .pathname.split("/")
@@ -13,15 +16,21 @@ const Index: FC = (): ReactElement => {
 
   // 根据uid向后台获取site信息
   useEffect(() => {
-    path && siteService.getSiteInfo(path);
+    if (path) {
+      const obs = from(request(siteApi.GetSiteInfo(path))).subscribe((data) => {
+        data && setSiteInfo(data);
+      });
+      return () => obs.unsubscribe();
+    }
   }, [path]);
-  const siteInfo = useSiteInfo();
 
   // 获取所有site
-  useEffect(() => siteService.findSiteAll(), []);
-  const siteList = useSiteAll();
-
-  // const onClick = ({ key }: { key: string }) => {};
+  useEffect(() => {
+    const obs = from(request(siteApi.FindSiteAll())).subscribe((data) => {
+      data && setSiteList(data);
+    });
+    return () => obs.unsubscribe();
+  }, []);
 
   const menu = useMemo(() => {
     return (

@@ -58,16 +58,14 @@ export const Index: FC<UserInfoInterFace> = () => {
   useEffect(() => {
     form.setFieldsValue(rawInfo);
     console.log(rawInfo);
-    
   }, [rawInfo, form]);
 
-  const onFinish = (values: any) => {
-    from(request(userApi.UserChangeLanguage(rawInfo?.lang, values.lang))).subscribe((data)=>{
-      if (data) {
-        alert("change success")
-      }
-    })
-   // userService.UserChangeLanguage(rawInfo?.lang, values.lang);
+  const onFinish = async (values: any) => {
+    const res = await request(
+      userApi.UserChangeLanguage(rawInfo?.lang, values.lang)
+    );
+    res && alert("change success");
+    // userService.UserChangeLanguage(rawInfo?.lang, values.lang);
     setOnSetting(!onSetting);
   };
   const onFinishFailed = (errorInfo: any) => {
@@ -86,7 +84,6 @@ export const Index: FC<UserInfoInterFace> = () => {
         onFinishFailed={onFinishFailed}
         labelCol={{ span: 2 }}
         wrapperCol={{ span: 5 }}
-      
       >
         {UserInfoForm.map((item, index) => {
           return (

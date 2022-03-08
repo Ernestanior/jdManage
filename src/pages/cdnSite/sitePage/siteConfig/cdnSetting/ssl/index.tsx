@@ -2,8 +2,9 @@ import useEvent from "@/common/hooks/useEvent";
 import { Template } from "@/components/template";
 import Tip from "@/components/tip";
 import useUid from "@/hooks/useUid";
-import { useSslList } from "@/store/network/site";
-import siteService from "@/store/network/site/service";
+import { siteApi } from "@/store/api";
+import { ISslList } from "@/store/network/site/interface";
+import request from "@/store/request";
 import { Button } from "antd";
 import { FC, ReactElement, useState } from "react";
 import { NavLink } from "react-router-dom";
@@ -11,7 +12,8 @@ import HttpsDrawer from "./httpsDrawer";
 import "./index.less";
 const Index: FC = (): ReactElement => {
   const uid = useUid();
-  const currData = useSslList();
+  const [currData, setCurrData] = useState<ISslList>();
+  // const currData = useSslList();
   const [httpsFlag, setHttpsFlag] = useState(false);
   const [event$, sendMessage] = useEvent();
   const closeEvent = () => {
@@ -36,17 +38,15 @@ const Index: FC = (): ReactElement => {
         },
       },
     ],
-    onSearch: (params: any) => {
+    onSearch: async (params: any) => {
       const { filters, searchPage } = params;
-      console.log({
-        ...filters,
-        searchPage: searchPage,
-      });
-
-      siteService.findSsl(uid, {
-        ...filters,
-        searchPage: searchPage,
-      });
+      const res = await request(
+        siteApi.SslList(uid, {
+          ...filters,
+          searchPage: searchPage,
+        })
+      );
+      setCurrData(res);
     },
     batchBtns: [
       {

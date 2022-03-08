@@ -118,23 +118,21 @@ const Index: FC = (): ReactElement => {
     setType(currData.type);
     setCancelFlag(!cancelFlag);
   };
-  const onTest = () => {
+  const onTest = async () => {
     const payload = { type, uid, aiSettings };
-    from(request(siteApi.AiTest(payload))).subscribe((data) => {
-      setTestResult(data && data.decisions);
-    });
+    const res = await request(siteApi.AiTest(payload));
+    setTestResult(res && res.decisions);
   };
-  const onOk = () => {
+  const onOk = async () => {
     const listOne = aiSettings.map((item: any) => item.lineId);
     const listTwo = new Set(listOne);
     if (listOne.length === listTwo.size) {
       const payload = { type, uid, aiSettings };
-      from(request(siteApi.AiSave(payload))).subscribe((data) => {
-        if (data instanceof Object) {
-          notification.success({ message: "AI Upload Success" });
-        }
-        setRefreshFlag(!refreshFlag);
-      });
+      const res = await request(siteApi.AiSave(payload));
+      if (!(res instanceof Array)) {
+        notification.success({ message: "AI Upload Success" });
+      }
+      setRefreshFlag(!refreshFlag);
     } else {
       notification.error({ message: "区域选择不能重复" });
     }

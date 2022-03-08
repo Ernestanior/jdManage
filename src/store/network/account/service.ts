@@ -24,14 +24,12 @@ class Account {
     // 登录成功之后将数据设置到info就可以触发登录信息的更新
     from(request(authApi.Login({ username, password }), true)).subscribe(
       (data) => {
-        if (data) {
-          // token存储
-          // console.log(data);
-          if (data.response === "success") {
-            if (data.result) {
-              saveToken(data.result.token);
-              this.info$.next(data.result);
-            }
+        // token存储
+        // console.log(data);
+        if (data && data.response === "success") {
+          if (data.result) {
+            saveToken(data.result.token);
+            this.info$.next(data.result);
           }
         }
       }

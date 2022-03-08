@@ -1,6 +1,4 @@
 import useUid from "@/hooks/useUid";
-import { useStatSiteOrigin } from "@/store/network/stat";
-import statService from "@/store/network/stat/service";
 import { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import Map from "./map";
 import TableComp from "./table";
@@ -12,7 +10,10 @@ import IconFont from "@/components/icon";
 import SearchDrawer from "./searchDrawer";
 import ViewAllDrawer from "./viewAllDrawer";
 import "./index.less";
-import { IStatSiteOrigin } from "@/store/network/stat/interface";
+import { IStatSiteOrigin } from "@/store/api/stat";
+import { from } from "rxjs";
+import request from "@/store/request";
+import { statApi } from "@/store/api";
 const GlobalData = treeData[2]["children"];
 const ChinaData = treeData[1]["children"];
 export interface ISiteOrigin {
@@ -24,7 +25,7 @@ export interface ISiteOrigin {
 interface IProps {}
 const Index: FC<IProps> = ({}): ReactElement => {
   const uid = useUid();
-  const statSiteOrigin: ISiteOrigin[] | null = useStatSiteOrigin();
+  const [statSiteOrigin, setStatSiteOrigin] = useState<ISiteOrigin[]>([]);
   const loading = useLoading();
   const [timeFilter, setTimeFilter] = useState<ITimeFilter>({
     reportType: ETimeFilter.CURRENT_MONTH,
@@ -61,7 +62,12 @@ const Index: FC<IProps> = ({}): ReactElement => {
         data.endDate = timeFilter.endDate.format("YYYY/MM/DD");
       }
       setParams(data);
-      statService.statSiteOrigin(uid, data);
+      const obs = from(request(statApi.StatSiteOrigin(uid, data))).subscribe(
+        (data) => {
+          data && setStatSiteOrigin(data);
+        }
+      );
+      return () => obs.unsubscribe();
     }
   }, [uid, timeFilter, scope, lines, type]);
   return (

@@ -8,6 +8,7 @@ import { Button, Col, Form, notification, Row, Select, Switch } from "antd";
 import { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import { from } from "rxjs";
 import Loading from "@/components/loading/context";
+import { CacheSetting } from "@/store/network/cache/interface";
 
 const { Option } = Select;
 const formItemLayout = {
@@ -34,7 +35,8 @@ const Index: FC = (): ReactElement => {
   const [ext, setExt] = useState<string[]>();
   const [refresh, setRefresh] = useState<boolean>(false);
   const [ignoreQuery, setIgnoreQuery] = useState<boolean>(false);
-  const cacheSetting = useCacheSetting();
+  const [cacheSetting, setCacheSetting] = useState<CacheSetting | null>(null);
+  // const cacheSetting = useCacheSetting();
 
   const currSetting = useMemo(
     () => ({
@@ -57,25 +59,30 @@ const Index: FC = (): ReactElement => {
   );
 
   useEffect(() => {
-    cacheService.findCacheSetting(uid);
+    // cacheService.findCacheSetting(uid);
+    const obs = from(request(cacheApi.FindCacheSetting(uid))).subscribe(
+      (data) => {
+        data && setCacheSetting(data);
+      }
+    );
+    return () => obs.unsubscribe();
   }, [refresh, uid]);
   useEffect(() => {
     onReset();
   }, [cacheSetting]);
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const payload = {
       ...currSetting,
       cacheExt: currSetting.cacheExt || "",
       uid,
     };
-    from(request(cacheApi.SaveCacheSetting(payload))).subscribe((data) => {
-      if (data instanceof Object) {
-        notification.success({
-          message: "Update Success",
-        });
-      }
-      setRefresh(!refresh);
-    });
+    const res = await request(cacheApi.SaveCacheSetting(payload));
+    if (!(res instanceof Array)) {
+      notification.success({
+        message: "Update Success",
+      });
+    }
+    setRefresh(!refresh);
   };
   const onReset = () => {
     if (cacheSetting) {

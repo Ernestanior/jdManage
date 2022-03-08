@@ -30,24 +30,15 @@ const Index: FC<userPassword> = () => {
     },
   ];
 
-  const onFinish = (values: any) => {
+  const onFinish = async (values: any) => {
     if (values.oldPwd && values.newPwd && values.comfirmPwd !== null) {
       if (values.newPwd === values.confirmPwd) {
-        from(request(userApi.UserChangePassword(values), true)).subscribe(
-          (data) => {
-            if (data) {
-              alert("change password success")
-            }
-          }
-        );
+        const res = await request(userApi.UserChangePassword(values), true);
+        res && alert("change password success");
       }
       console.log("Comfirm Password and New Password must be same");
     } else console.log("Cannot Be Empty");
   };
-
-
-
-
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);

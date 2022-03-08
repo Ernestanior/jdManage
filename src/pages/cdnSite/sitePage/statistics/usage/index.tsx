@@ -1,6 +1,4 @@
 import useUid from "@/hooks/useUid";
-import { useStatSiteBandwidth, useStatSiteFlow } from "@/store/network/stat";
-import statService from "@/store/network/stat/service";
 import { FC, ReactElement, useEffect, useState } from "react";
 import Flow from "./flow";
 import TableComp from "./table";
@@ -10,16 +8,17 @@ import TimeFilter, { ETimeFilter, ITimeFilter } from "@/components/timeFilter";
 import { Select } from "antd";
 import { useSiteSupplierList } from "@/store/network/supplier";
 import SupplierService from "@/store/network/supplier/service";
+import { from } from "rxjs";
+import request from "@/store/request";
+import { statApi } from "@/store/api";
 const { Option } = Select;
 const Index: FC = (): ReactElement => {
   const uid = useUid();
-  const bandwidth = useStatSiteBandwidth();
-  const flow = useStatSiteFlow();
   const siteSupplier = useSiteSupplierList();
-  console.log(bandwidth);
-  console.log(flow);
 
   const loading = useLoading();
+  const [bandwidth, setBandwidth] = useState<any>();
+  const [flow, setFlow] = useState<any>();
   const [suppliers, setSuppliers] = useState<string[]>([]);
   const [timeFilter, setTimeFilter] = useState<ITimeFilter>({
     reportType: ETimeFilter.CURRENT_MONTH,
@@ -39,8 +38,22 @@ const Index: FC = (): ReactElement => {
       if (data.reportType === ETimeFilter.CUSTOM && timeFilter.endDate) {
         data.endDate = timeFilter.endDate.format("YYYY/MM/DD");
       }
-      statService.statSiteBandwidth(uid, data);
-      statService.statSiteFlow(uid, data);
+      // statService.statSiteBandwidth(uid, data);
+      // statService.statSiteFlow(uid, data);
+      const obs1 = from(
+        request(statApi.StatSiteBandwidth(uid, data))
+      ).subscribe((data) => {
+        data && setBandwidth(data);
+      });
+      const obs2 = from(request(statApi.StatSiteFlow(uid, data))).subscribe(
+        (data) => {
+          data && setFlow(data);
+        }
+      );
+      return () => {
+        obs1.unsubscribe();
+        obs2.unsubscribe();
+      };
     }
   }, [uid, timeFilter, suppliers]);
   return (

@@ -36,17 +36,17 @@ const Index: FC = (): ReactElement => {
       uid,
     });
   }, [searchPage, refresh]);
-  const onConfirm = () => {
-    modifyData &&
-      from(request(supplierApi.ChangeOption(modifyData))).subscribe((data) => {
-        if (data instanceof Object) {
-          notification.success({
-            message: "Update Success",
-          });
-          setModifyingId("");
-          setRefresh(!refresh);
-        }
-      });
+  const onConfirm = async () => {
+    if (modifyData) {
+      const res = await request(supplierApi.ChangeOption(modifyData));
+      if (!(res instanceof Array)) {
+        notification.success({
+          message: "Update Success",
+        });
+        setModifyingId("");
+        setRefresh(!refresh);
+      }
+    }
   };
   const TempConfig = {
     onSearch: (params: any) => {

@@ -13,25 +13,17 @@ import { from } from "rxjs";
 import request from "@/store/request";
 import { siteApi } from "@/store/api";
 import { notification } from "antd";
-// interface IData {
-//   number: number;
-//   size: number;
-//   totalPages: number;
-//   numberOfElements: number;
-//   totalElements: number;
-//   sort: any;
-//   content: any[];
-// }
+import { ISiteList } from "@/store/network/site/interface";
 
 const Index: FC = (): ReactElement => {
   const navigator = useNavigate();
   const initdata = {
     number: 1,
     numberOfElements: 1,
-    size: 10,
+    size: 20,
     totalElements: 1,
     totalPages: 1,
-    sort: "",
+    sort: "customer.name",
     content: [],
   };
 
@@ -48,18 +40,18 @@ const Index: FC = (): ReactElement => {
     [customerList]
   );
 
-  const currData = useSiteList();
-  // 表格数据
-  const currdata = useMemo(() => {
-    if (currData && currData.content) {
-      return currData;
-    }
-  }, [currData]);
+  // const currData = useSiteList();
+  // // 表格数据
+  // const currdata = useMemo(() => {
+  //   if (currData && currData.content) {
+  //     return currData;
+  //   }
+  // }, [currData]);
 
   // 表格内选中的数据的key集合
   const [selectedRowKeys, setSelectedKey] = useState<string[]>([]);
   const [editRow, setEditRow] = useState<string>("");
-
+  const [currData, setCurrData] = useState<ISiteList>();
   const [createFlag, setCreateFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
   const [deleteFlag, setDeleteFlag] = useState(false);
@@ -110,17 +102,19 @@ const Index: FC = (): ReactElement => {
         },
       },
     ],
-    onSearch: (params: any) => {
-      const { customerUid, health, status, name } = params.filters;
-
-      siteService.findSite({
+    onSearch: async (params: any) => {
+      const { customerUid, health, status, name, keyword } = params.filters;
+      const payload = {
         ...params.filters,
         customerUid: customerUid || "",
         health: health || "",
         status: status || "",
         name: name || "",
+        keyword: keyword || "",
         searchPage: params.searchPage,
-      });
+      };
+      const res = await request(siteApi.FindSite(payload));
+      setCurrData(res);
     },
     batchBtns: [
       {
@@ -152,7 +146,7 @@ const Index: FC = (): ReactElement => {
       },
     ],
     rowId: "uid",
-    data: currdata || initdata,
+    data: currData || initdata,
     config: [
       {
         title: "站点名称",
@@ -237,30 +231,27 @@ const Index: FC = (): ReactElement => {
             ],
           },
         ]}
-        primarySearch="name"
+        primarySearch="keyword"
         event$={event$}
         {...TempConfig}
       />
       <EdgeModal
         visible={deleteFlag}
-        onOk={() => {
-          from(request(siteApi.DeleteSite(selectedRowKeys))).subscribe(
-            (data) => {
-              if (data.length) {
-                data.forEach((item: any) =>
-                  notification.error({
-                    message: "Delete Failed",
-                    description: `UID: ${item.uid} ${item.message}`,
-                  })
-                );
-              } else {
-                notification.success({
-                  message: "Delete Success",
-                });
-              }
-              closeEvent("delete");
-            }
-          );
+        onOk={async () => {
+          const res = await request(siteApi.DeleteSite(selectedRowKeys));
+          if (res.length) {
+            res.forEach((item: any) =>
+              notification.error({
+                message: "Delete Failed",
+                description: `UID: ${item.uid} ${item.message}`,
+              })
+            );
+          } else {
+            notification.success({
+              message: "Delete Success",
+            });
+          }
+          closeEvent("delete");
         }}
         onCancel={() => setDeleteFlag(false)}
       >
@@ -268,24 +259,21 @@ const Index: FC = (): ReactElement => {
       </EdgeModal>
       <EdgeModal
         visible={enableFlag}
-        onOk={() => {
-          from(request(siteApi.EnableSite(selectedRowKeys))).subscribe(
-            (data) => {
-              if (data.length) {
-                data.forEach((item: any) =>
-                  notification.error({
-                    message: "Enable Failed",
-                    description: `UID: ${item.uid} ${item.message}`,
-                  })
-                );
-              } else {
-                notification.success({
-                  message: "Enable Success",
-                });
-              }
-              closeEvent("enable");
-            }
-          );
+        onOk={async () => {
+          const res = await request(siteApi.EnableSite(selectedRowKeys));
+          if (res.length) {
+            res.forEach((item: any) =>
+              notification.error({
+                message: "Enable Failed",
+                description: `UID: ${item.uid} ${item.message}`,
+              })
+            );
+          } else {
+            notification.success({
+              message: "Enable Success",
+            });
+          }
+          closeEvent("enable");
         }}
         onCancel={() => setDeleteFlag(false)}
       >
@@ -293,24 +281,21 @@ const Index: FC = (): ReactElement => {
       </EdgeModal>
       <EdgeModal
         visible={disableFlag}
-        onOk={() => {
-          from(request(siteApi.DisableSite(selectedRowKeys))).subscribe(
-            (data) => {
-              if (data.length) {
-                data.forEach((item: any) =>
-                  notification.error({
-                    message: "Disable Failed",
-                    description: `UID: ${item.uid} ${item.message}`,
-                  })
-                );
-              } else {
-                notification.success({
-                  message: "Disable Success",
-                });
-              }
-              closeEvent("disable");
-            }
-          );
+        onOk={async () => {
+          const res = await request(siteApi.DisableSite(selectedRowKeys));
+          if (res.length) {
+            res.forEach((item: any) =>
+              notification.error({
+                message: "Disable Failed",
+                description: `UID: ${item.uid} ${item.message}`,
+              })
+            );
+          } else {
+            notification.success({
+              message: "Disable Success",
+            });
+          }
+          closeEvent("disable");
         }}
         onCancel={() => setDeleteFlag(false)}
       >

@@ -12,7 +12,7 @@ import Loading from "@/components/loading/context";
 import { useLoading } from "@/components/loading";
 import { from } from "rxjs";
 import request from "@/store/request";
-import { siteApi } from "@/store/api";
+import { siteApi, supplierApi } from "@/store/api";
 interface IProps {
   title: string;
   visible: boolean;
@@ -28,37 +28,51 @@ const { Option } = Select;
 
 const CreateDrawer: FC<IProps> = ({ title, visible, cusList, onClose }) => {
   const [checkedList, setCheckedList] = useState<string[]>([]);
-
-  const onFinish = (value: any) => {
+  //  const [cusId,setCusId] = useState<string>('')
+  const [supplierList, setSupplierList] = useState<string[]>([]);
+  const onFinish = async (value: any) => {
     const submitData = {
       ...value,
       sourceIps: value.sourceIps.join(" "),
       siteSuppliers: checkedList.map((item) => JSON.parse(item)),
     };
-    // console.log(submitData);
 
-    from(request(siteApi.CreateSite(submitData))).subscribe((data) => {
-      if (data && JSON.stringify(data) !== "{}") {
-        notification.success({
-          message: "Create Success",
-        });
-        onClose();
-      }
-    });
+    const res = await request(siteApi.CreateSite(submitData));
+    if (res && JSON.stringify(res) !== "{}") {
+      notification.success({
+        message: "Create Success",
+      });
+      onClose();
+    }
   };
-  const supplierList = useSupplierList();
-  const optionList = useMemo(
-    () =>
-      (supplierList &&
-        supplierList.map((item: any) =>
-          JSON.stringify({
-            uid: item.customerSupplier.uid,
-            name: item.displayName,
-          })
-        )) ||
-      [],
-    [supplierList]
-  );
+  // const supplierList = useSupplierList();
+  // const optionList = useMemo(
+  //   () =>{
+
+  //   },
+  //     // (supplierList &&
+  //       // supplierList.map((item: any) =>
+  //       //   JSON.stringify({
+  //       //     uid: item.customerSupplier.uid,
+  //       //     name: item.displayName,
+  //       //   })
+  //       // )) ||
+  //     // [],
+  //   [cusId]
+  // );
+  const onChange = async (cusId: string) => {
+    const res = await request(supplierApi.FindSupplier(cusId));
+    if (res) {
+      const supList = res.map((item: any) =>
+        JSON.stringify({
+          uid: item.customerSupplier.uid,
+          name: item.displayName,
+        })
+      );
+      setSupplierList(supList);
+    }
+  };
+
   const loading = useLoading();
 
   return (
@@ -216,7 +230,7 @@ const CreateDrawer: FC<IProps> = ({ title, visible, cusList, onClose }) => {
           />
         </Form.Item>
         <Form.Item {...formItemLayout} name="customerUid" label="选择客户">
-          <Select onChange={(id) => SupplierService.findSupplier(id)}>
+          <Select onChange={onChange}>
             {cusList &&
               cusList.map((item) => (
                 <Option value={item.uid} key={item.uid}>
@@ -226,8 +240,8 @@ const CreateDrawer: FC<IProps> = ({ title, visible, cusList, onClose }) => {
           </Select>
         </Form.Item>
         <CheckboxGroup
-          optionList={optionList}
-          showCheckAll={optionList && optionList.length >= 2}
+          optionList={supplierList}
+          showCheckAll={supplierList && supplierList.length >= 2}
           checkedOptions={(list: any) => setCheckedList(list)}
         ></CheckboxGroup>
         <Form.Item labelCol={{ span: 24 }} name="remark" label="备注">

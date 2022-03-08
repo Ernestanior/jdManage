@@ -29,7 +29,7 @@ const Customized: FC<IProps> = ({ onSubmit, currAiSetting, cancelFlag }) => {
     if (!siteSupplier) {
       SupplierService.findSiteSupplier(uid);
     }
-  }, []);
+  }, [uid]);
   useEffect(() => {
     currAiSetting && setCurrAiSetting([...currAiSetting]);
   }, [currAiSetting, cancelFlag]);

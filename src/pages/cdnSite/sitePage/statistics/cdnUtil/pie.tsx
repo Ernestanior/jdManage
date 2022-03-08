@@ -8,8 +8,6 @@ interface IProps {
 }
 
 const PieComp: FC<IProps> = ({ data }) => {
-  console.log(data);
-
   const pieData = useMemo(
     () =>
       data &&

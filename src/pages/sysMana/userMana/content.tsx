@@ -1,24 +1,18 @@
 import { Template } from "@/components/template";
 import { notification } from "antd";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import CreateDrawer from "./createDrawer";
 import EditDrawer from "./editDrawer";
-import customerService from "@/store/network/customer/service";
 import { useLoading } from "@/components/loading";
 import { from } from "rxjs";
 import request from "@/store/request";
 import { customerApi } from "@/store/api";
 import { EdgeModal } from "@/components/modal";
-import { useCustomerList } from "@/store/network/customer";
-import { DEFAULT_SEARCHPAGE } from "@/common/utils/constants";
 import useEvent from "@/common/hooks/useEvent";
-import useType from "@/hooks/useType";
-// import { debounce } from "@/common/utils/util";
+import { ICustomerList } from "@/store/network/customer/interface";
 
 const Content: FC = () => {
-  const [params, setParams] = useState<any>();
-
   const [createFlag, setCreateFlag] = useState<boolean>(false);
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [deleteFlag, setDeleteFlag] = useState<boolean>(false);
@@ -29,8 +23,8 @@ const Content: FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
   const [editData, setEditData] = useState<any>({});
   const [customerUid, setCustomerUid] = useState<string>();
-  const [refresh, setRefresh] = useState<boolean>(false);
-  const customerList = useCustomerList();
+  const [customerList, setCustomerList] = useState<ICustomerList>();
+  const [event$, sendMessage] = useEvent();
   const loading = useLoading();
   const routerState: any = useLocation().state;
   const type = useMemo(() => {
@@ -42,7 +36,7 @@ const Content: FC = () => {
       data instanceof Object
         ? notification.success({ message: "Delete Success" })
         : notification.error({ message: "Delete failed", description: data });
-      setRefresh(!refresh);
+      sendMessage("reload");
       setDeleteFlag(false);
       setSelected([]);
     });
@@ -52,7 +46,7 @@ const Content: FC = () => {
       data instanceof Object
         ? notification.success({ message: "Disable Success" })
         : notification.error({ message: "Disable failed", description: data });
-      setRefresh(!refresh);
+      sendMessage("reload");
       setDisableFlag(false);
       setSelected([]);
     });
@@ -62,7 +56,7 @@ const Content: FC = () => {
       data instanceof Object
         ? notification.success({ message: "Enable Success" })
         : notification.error({ message: "Enable failed", description: data });
-      setRefresh(!refresh);
+      sendMessage("reload");
       setEnableFlag(false);
       setSelected([]);
     });
@@ -81,23 +75,12 @@ const Content: FC = () => {
                 message: "Reset Password failed",
                 description: data,
               });
-          setRefresh(!refresh);
+          sendMessage("reload");
           setPwdFlag(false);
           setSelected([]);
         }
       );
   };
-  useEffect(() => {
-    params &&
-      customerService.findCustomer({
-        keyword: params.filters.keyword || "",
-        searchPage: params.searchPage,
-        email: params.filters.email,
-        status: params.filters.status,
-        name: params.filters.name || "",
-        type: type || "admin",
-      });
-  }, [params, refresh]);
 
   const TempConfig = {
     batchBtns: [
@@ -154,8 +137,17 @@ const Content: FC = () => {
         },
       },
     ],
-    onSearch: (params: any) => {
-      setParams(params);
+    onSearch: async (params: any) => {
+      const payload = {
+        keyword: params.filters.keyword || "",
+        searchPage: params.searchPage,
+        email: params.filters.email,
+        status: params.filters.status,
+        name: params.filters.name || "",
+        type: type || "admin",
+      };
+      const res = await request(customerApi.FindCustomer(payload));
+      res && setCustomerList(res);
     },
     rowId: "uid",
     data: customerList,
@@ -209,17 +201,18 @@ const Content: FC = () => {
           },
         ]}
         {...TempConfig}
+        event$={event$}
       ></Template>
       <CreateDrawer
         onClose={() => setCreateFlag(false)}
-        reload={() => setRefresh(!refresh)}
+        reload={() => sendMessage("reload")}
         visible={createFlag}
         loading={loading}
         type={type}
       ></CreateDrawer>
       <EditDrawer
         onClose={() => setEditFlag(false)}
-        reload={() => setRefresh(!refresh)}
+        reload={() => sendMessage("reload")}
         data={editData}
         visible={editFlag}
         loading={loading}

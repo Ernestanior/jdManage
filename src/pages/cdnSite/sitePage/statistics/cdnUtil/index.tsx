@@ -1,6 +1,4 @@
 import useUid from "@/hooks/useUid";
-import { useStatSiteSupplier } from "@/store/network/stat";
-import statService from "@/store/network/stat/service";
 import { FC, ReactElement, useEffect, useState } from "react";
 import Flow from "@/components/charts/flow/flow";
 import TableComp from "./table";
@@ -8,9 +6,13 @@ import Pie from "./pie";
 import Loading from "@/components/loading/context";
 import { useLoading } from "@/components/loading";
 import TimeFilter, { ETimeFilter, ITimeFilter } from "@/components/timeFilter";
+import { from } from "rxjs";
+import request from "@/store/request";
+import { statApi } from "@/store/api";
 const Index: FC = (): ReactElement => {
   const uid = useUid();
-  const currData = useStatSiteSupplier();
+  // const currData = useStatSiteSupplier();
+  const [currData, setCurrData] = useState<any>();
   const loading = useLoading();
   const [timeFilter, setTimeFilter] = useState<ITimeFilter>({
     reportType: ETimeFilter.CURRENT_MONTH,
@@ -27,7 +29,12 @@ const Index: FC = (): ReactElement => {
       if (data.reportType === ETimeFilter.CUSTOM && timeFilter.endDate) {
         data.endDate = timeFilter.endDate.format("YYYY/MM/DD");
       }
-      statService.statSiteSupplier(data);
+      const obs = from(request(statApi.StatSiteSupplier(data))).subscribe(
+        (data) => {
+          data && setCurrData(data);
+        }
+      );
+      return () => obs.unsubscribe();
     }
   }, [uid, timeFilter]);
   return (

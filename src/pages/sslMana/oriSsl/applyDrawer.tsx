@@ -66,15 +66,6 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
       console.log(e);
     },
   };
-  //CustomerList for select option
-  useEffect(() => {
-    customerService.findCustomer({
-      searchPage: {
-        page: 1,
-        pageSize: 9999,
-      },
-    });
-  }, []);
 
   const onSubmit = useCallback(
     async (e: any) => {

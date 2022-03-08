@@ -1,18 +1,16 @@
-import { Btn } from "@/components/button";
 import PieComp, { IPieData } from "@/pages/cusMana/statDrawer/pie";
 import TimeFilter, { ETimeFilter, ITimeFilter } from "@/components/timeFilter";
-import accountService from "@/store/network/account/service";
-import { useDomainCount } from "@/store/network/dns";
-import dnsService from "@/store/network/dns/service";
-import { useStatCusOverview, useStatCusSupplier } from "@/store/network/stat";
-import statService from "@/store/network/stat/service";
-import userService from "@/store/network/user/service";
 import { Drawer } from "antd";
 import { FC, useEffect, useMemo, useState } from "react";
 import "./index.less";
 import Flow from "./flow";
 import Loading from "@/components/loading/context";
 import { useLoading } from "@/components/loading";
+import { from } from "rxjs";
+import request from "@/store/request";
+import { dnsApi, statApi } from "@/store/api";
+import { ICustomerSupplier } from "@/store/network/supplier/interface";
+import { IDomainCount } from "@/store/network/dns/interface";
 interface IProps {
   visible: boolean;
   onClose: () => void;
@@ -27,20 +25,35 @@ const StatDrawer: FC<IProps> = ({
   supSupplier,
 }) => {
   const loading = useLoading();
-  const domainCount = useDomainCount();
-  const statCusOverview = useStatCusOverview();
-  const statCusSupplier = useStatCusSupplier();
+  const [domainCount, setDomainCount] = useState<IDomainCount>();
+  const [statCusOverview, setStatCusOverview] = useState<any>();
+  const [statCusSupplier, setstatCusSupplier] = useState<ICustomerSupplier[]>();
   const [timeFilter, setTimeFilter] = useState<ITimeFilter>({
     reportType: ETimeFilter.TODAY,
   });
   useEffect(() => {
-    dnsService.findDomainCount(customerUid);
+    const obs = from(request(dnsApi.FindDomainCount(customerUid))).subscribe(
+      (data) => {
+        data && setDomainCount(data);
+      }
+    );
+    return () => obs.unsubscribe();
   }, [customerUid]);
   useEffect(() => {
-    statService.statCusOverview(customerUid, timeFilter);
+    const obs = from(
+      request(statApi.StatCusOverview(customerUid, timeFilter))
+    ).subscribe((data) => {
+      data && setStatCusOverview(data);
+    });
+    return () => obs.unsubscribe();
   }, [timeFilter, customerUid]);
   useEffect(() => {
-    supSupplier && statService.statCusSupplier(customerUid);
+    const obs = from(request(statApi.StatCusSupplier(customerUid))).subscribe(
+      (data) => {
+        data && setstatCusSupplier(data);
+      }
+    );
+    return () => obs.unsubscribe();
   }, [supSupplier, customerUid]);
 
   const pieData = useMemo(() => {

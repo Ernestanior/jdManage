@@ -1,6 +1,4 @@
 import useUid from "@/hooks/useUid";
-import { useStatSiteAvail, useStatSiteResTime } from "@/store/network/stat";
-import statService from "@/store/network/stat/service";
 import { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import TableComp from "./table";
 import { useLoading } from "@/components/loading";
@@ -13,6 +11,9 @@ import IconFont from "@/components/icon";
 import "./index.less";
 import Flow from "@/components/charts/flow/flow";
 import Loading from "@/components/loading/context";
+import { from, Subscription } from "rxjs";
+import request from "@/store/request";
+import { statApi } from "@/store/api";
 
 const { Option } = Select;
 const GlobalData = treeData[2]["children"];
@@ -24,9 +25,9 @@ interface IProps {
 const Index: FC<IProps> = ({ type }): ReactElement => {
   const uid = useUid();
   const siteSupplier = useSiteSupplierList();
-  const statSiteAvail = useStatSiteAvail();
-  const statSiteResTime = useStatSiteResTime();
   const loading = useLoading();
+  const [statSiteAvail, setAvail] = useState<any>();
+  const [statSiteResTime, setResTime] = useState<any>();
   const [suppliers, setSuppliers] = useState<string[]>([]);
   const [timeFilter, setTimeFilter] = useState<ITimeFilter>({
     reportType: ETimeFilter.CURRENT_MONTH,
@@ -58,17 +59,24 @@ const Index: FC<IProps> = ({ type }): ReactElement => {
       if (data.reportType === ETimeFilter.CUSTOM && timeFilter.endDate) {
         data.endDate = timeFilter.endDate.format("YYYY/MM/DD");
       }
+      let obs: Subscription;
       switch (type) {
         case "availability":
-          statService.statSiteAvail(uid, data);
+          obs = from(request(statApi.StatSiteAvail(uid, data))).subscribe(
+            (data) => {
+              data && setAvail(data);
+            }
+          );
           break;
         case "responseTime":
-          statService.statSiteResTime(uid, data);
-          break;
-        default:
-          statService.statSiteAvail(uid, data);
+          obs = from(request(statApi.StatSiteResTime(uid, data))).subscribe(
+            (data) => {
+              data && setResTime(data);
+            }
+          );
           break;
       }
+      return () => obs && obs.unsubscribe();
     }
   }, [uid, timeFilter, suppliers, scope, lines, type]);
   return (

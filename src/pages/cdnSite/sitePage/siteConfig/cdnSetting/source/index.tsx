@@ -105,23 +105,23 @@ const Index: FC = (): ReactElement => {
     setCount(count + 1);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setLoading(true);
     const submitData = {
       uid,
       sources: data.map((item: any) => item.sourceIp),
       sourceScheme: scheme.toLocaleLowerCase(),
     };
-    from(request(siteApi.SourceUpdate(submitData))).subscribe((data) => {
-      setLoading(false);
-      setEditable(false);
-      setRefresh(!refresh);
-      if (data instanceof Object) {
-        notification.success({
-          message: "Update Success",
-        });
-      }
-    });
+    const res = await request(siteApi.SourceUpdate(submitData));
+    setLoading(false);
+    setEditable(false);
+    setRefresh(!refresh);
+
+    if (!(res instanceof Array)) {
+      notification.success({
+        message: "Update Success",
+      });
+    }
   };
   const handleCancel = () => {
     setData(initData);

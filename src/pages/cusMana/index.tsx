@@ -6,14 +6,9 @@ import { Tabs } from "antd";
 const { TabPane } = Tabs;
 
 const Index: FC = (): ReactElement => {
-  // console.log(useLocation());
-
   const navigator = useNavigate();
   const path: any = useLocation().state;
   const index = useMemo(() => (path && path.cusMana) || "reg", [path]);
-  // const handleOnChange = (e: string) => {
-  //   setProps(e);
-  // };
   return (
     <Tabs
       style={{ marginBottom: 32 }}

@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { from } from "rxjs";
 import { customerApi } from "@/store/api";
 import request from "@/store/request";
 import { Button, Drawer, Form, Input, notification } from "antd";
@@ -23,17 +22,16 @@ const CreateDrawer: FC<IProps> = ({
   type,
 }) => {
   const [form] = Form.useForm();
-  const onFinish = (e: any) => {
-    from(
-      request(customerApi.CreateCustomer({ ...e, type: type || "admin" }))
-    ).subscribe((data) => {
-      if (data) {
-        form.resetFields();
-        onClose();
-        reload();
-        notification.success({ message: "success" });
-      }
-    });
+  const onFinish = async (e: any) => {
+    const res = await request(
+      customerApi.CreateCustomer({ ...e, type: type || "admin" })
+    );
+    if (res) {
+      form.resetFields();
+      onClose();
+      reload();
+      notification.success({ message: "success" });
+    }
   };
   return (
     <Drawer

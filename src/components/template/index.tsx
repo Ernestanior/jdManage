@@ -116,10 +116,10 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   const [searchCondition, setSearchCondition] = useState({});
   //searchPage条件汇总
   const [searchPage, setSearchPage] = useState<ISearchPage>({
-    desc: 1,
+    desc: 0,
     page: (props.data && props.data.number) || 1,
     pageSize: (props.data && props.data.size) || 20,
-    sort: "create_date",
+    sort: "",
   });
   //filter切换
   // const [showFilter, setShowFilter] = useState<boolean>(false);
