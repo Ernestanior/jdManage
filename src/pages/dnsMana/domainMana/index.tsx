@@ -10,9 +10,7 @@ const Index: FC = () => {
   const [AddForm] = Form.useForm();
   const [CloneForm] = Form.useForm();
   const [domainList, setdomainList] = useState();
-  const [params, setParams] = useState<any>();
   const [option, setOption] = useState<Object[]>([]);
-  const [addDomainOption, setAddDomainOption] = useState<Object[]>([]);
   const [addDrawer, setAddDrawer] = useState<boolean>(false);
   const [cloneDrawer, setCloneDrawer] = useState<boolean>(false);
   const [cloneData, setCloneData] = useState<any>(false);
@@ -242,7 +240,15 @@ const Index: FC = () => {
             <Input />
           </Form.Item>
           <Form.Item label="选择用户" name="customerUid">
-            <Select options={addDomainOption}></Select>
+            <Select
+              options={
+                option
+                  ? option.map((item: any) => {
+                      return { key: item.uid, label: item.name };
+                    })
+                  : [{ key: "", label: "" }]
+              }
+            ></Select>
           </Form.Item>
           <Form.Item label="备注" name="remark">
             <TextArea />
