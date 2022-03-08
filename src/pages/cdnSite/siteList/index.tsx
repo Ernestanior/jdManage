@@ -1,6 +1,6 @@
 import { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import { Template } from "@/components/template";
-import useEvent from "@/common/hooks/useEvent";
+import useEvent from "@/hooks/useEvent";
 import CreateDrawer from "./createDrawer";
 import EditDrawer from "./editDrawer";
 import { useCustomerList } from "@/store/network/customer";

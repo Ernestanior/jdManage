@@ -7,7 +7,7 @@ import { FC, ReactElement, useState } from "react";
 import { IChangeOption } from "@/store/network/supplier/interface";
 import Choose from "./chooseDrawer";
 import Edit from "./editDrawer";
-import useEvent from "@/common/hooks/useEvent";
+import useEvent from "@/hooks/useEvent";
 
 const { Option } = Select;
 

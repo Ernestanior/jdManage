@@ -17,7 +17,7 @@ import {
   IDefenceQuota,
   IServiceDomain,
 } from "@/store/network/customer/interface";
-import useEvent from "@/common/hooks/useEvent";
+import useEvent from "@/hooks/useEvent";
 import { from } from "rxjs";
 
 const Index: FC = () => {

@@ -6,7 +6,7 @@ import ApplyDrawer from "./applyDrawer";
 import DetailDrawer from "./detailDrawer";
 import { FC, useState } from "react";
 import { useLoading } from "@/components/loading";
-import useEvent from "@/common/hooks/useEvent";
+import useEvent from "@/hooks/useEvent";
 import { EdgeModal } from "@/components/modal";
 
 const Index: FC = () => {

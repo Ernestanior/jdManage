@@ -4,7 +4,7 @@ import { siteApi } from "@/store/api";
 import request from "@/store/request";
 import { Template } from "@/components/template";
 import { ISslList } from "@/store/api/site";
-import useEvent from "@/common/hooks/useEvent";
+import useEvent from "@/hooks/useEvent";
 interface IProps {
   visible: boolean;
   onClose: () => void;
