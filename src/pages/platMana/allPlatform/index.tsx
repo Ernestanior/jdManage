@@ -35,9 +35,9 @@ const Index: FC = () => {
   const [domainDrawer, setDomainDrawer] = useState<boolean>(false);
   const [fieldData, setFieldData] = useState<any>();
   const [validateButton, setValidateButton] = useState<boolean>(true);
-  const [createButton, setCreateButton] = useState<boolean>(true);
+  const [button, setButton] = useState<boolean>(true);
   const [tokenValue, setTokenValue] = useState<any>();
-  const [approve, setApprove] = useState<boolean>();
+  const [approve, setApprove] = useState<boolean|null>();
   const [validNotification, setValidNotification] = useState<boolean>(true);
   const [form] = Form.useForm();
   const [modifyForm] = Form.useForm();
@@ -45,6 +45,8 @@ const Index: FC = () => {
     null
   );
   const [drawerOption, setDrawerOption] = useState<Object[]>([]);
+  const [mVButton, setMVButton] = useState<boolean>(true);
+  const [mCButton, setMCButton] = useState<boolean>(false);
   useEffect(() => {
     SupplierService.supplierInfo("");
   }, []);
@@ -70,22 +72,6 @@ const Index: FC = () => {
   useEffect(() => {
     setSupplierAccount(supplierDetail);
   }, [supplierDetail]);
-
-  useEffect(() => {
-    let tokenValue = supplierAccount?.supplier?.tokenValue;
-    let name = supplierAccount?.name;
-    let remark = supplierAccount?.remark;
-    let code = supplierAccount?.supplier?.code;
-    let tokenFields = supplierAccount?.supplier?.tokenFields;
-    let defaultValue1 = { ...tokenValue, name, remark, code };
-    let defaultValue2 = { name, remark, code };
-    let fieldData = supplierInfo?.find((item: any) => item.code === code);
-    console.log(fieldData, "91");
-    setFieldData(fieldData);
-    tokenValue
-      ? modifyForm.setFieldsValue(defaultValue1)
-      : modifyForm.setFieldsValue(defaultValue2);
-  }, [modifyForm, supplierAccount, supplierInfo]);
 
   useEffect(() => {
     if (supplierInfo) {
@@ -129,6 +115,8 @@ const Index: FC = () => {
     setVisible(false);
     setDomainDrawer(false);
     setModifyDrawer(false);
+    setMCButton(false);
+    setMVButton(true);
   };
 
   const handleTokenValue = (e: any) => {
@@ -161,7 +149,7 @@ const Index: FC = () => {
 
     if (result.response === "success") {
       setApprove(true);
-      setCreateButton(false);
+      setButton(false);
 
       console.log(domainDetail);
       setCreateDomainDetail(domainDetail);
@@ -179,32 +167,85 @@ const Index: FC = () => {
       console.log(result);
     }
   };
+  useEffect(() => {
+    let tokenValue = supplierAccount?.supplier?.tokenValue;
+    let name = supplierAccount?.name;
+    let remark = supplierAccount?.remark;
+    let code = supplierAccount?.supplier?.code;
+    let defaultValue1 = { ...tokenValue, name, remark, code };
+    let defaultValue2 = { name, remark, code };
+    let fieldData = supplierInfo?.find((item: any) => item.code === code);
+    console.log(fieldData, "91");
+    setFieldData(fieldData);
+    tokenValue
+      ? modifyForm.setFieldsValue(defaultValue1)
+      : modifyForm.setFieldsValue(defaultValue2);
+  }, [modifyForm, supplierAccount, supplierInfo]);
 
   const showModifyDrawer = () => {
     setModifyDrawer(true);
   };
 
   const ModifyDomain = async (data: any) => {
-    const {name,code,remark, ...tokenValue} = data;
-    console.log(tokenValue,"rest");
-    const modifyValue: IAccountUpdate = {
-      name: data.name,
-      remark: data.remark,
-      uid: supplierDetail?.uid,
-      status: "enabled",
-      supplier: { code, tokenValue: { ...tokenValue } },
-    };
-    console.log(modifyValue);
-    const sumbitUpdate = await request(supplierApi.UpdateAccount(modifyValue));
-    console.log(sumbitUpdate);
+    const { name, code, remark, ...tokenValue } = data;
+    console.log(tokenValue, "rest");
+    const validateValue = { supplier: { code, tokenValue } };
+    console.log(validateValue);
+
+    const validDate = await request(
+      supplierApi.SupplierAccountValidate(validateValue),
+      true
+    );
+    if (validDate.response === "success") {
+      setApprove(true);
+      setMCButton(false);
+    } else {
+      setApprove(false);
+    }
+  };
+
+  const handleModifyDomain = () => {
+    // const { name, code, remark, ...tokenValue } = data;
+    // console.log(tokenValue, "rest");
+    // const modifyValue: IAccountUpdate = {
+    //   name: data.name,
+    //   remark: data.remark,
+    //   uid: supplierDetail?.uid,
+    //   status: "enabled",
+    //   supplier: { code, tokenValue: { ...tokenValue } },
+    // };
+    // console.log(modifyValue);
+    // const sumbitUpdate = await request(supplierApi.UpdateAccount(modifyValue));
+    // console.log(sumbitUpdate);
   };
 
   const OptionOnchage = (selectedOption: string) => {
+    console.log(selectedOption, "1");
+    console.log(supplierDetail);
+    let code = supplierDetail?.supplier?.code;
+    console.log(code);
+    setValidNotification(true)
+    setApprove(null)
     if (selectedOption !== undefined || selectedOption !== null) {
       let fieldData = supplierInfo?.find(
         (item: any) => item.code === selectedOption
       );
+      console.log(fieldData?.tokenFields);
+
       setFieldData(fieldData);
+      if (selectedOption !== code) {
+        console.log(modifyForm, "aaa");
+        fieldData?.tokenFields.map((item: any) => {
+          let name = item.name;
+          modifyForm.setFieldsValue({ [name]: "" });
+        });
+        modifyForm.setFieldsValue({ remark: "a" });
+
+        //显示验证按钮
+ 
+        setMCButton(true);
+        setMVButton(false);
+      }
     }
   };
 
@@ -448,7 +489,7 @@ const Index: FC = () => {
             <Button
               type="primary"
               onClick={handleCreateDomain}
-              disabled={createButton}
+              disabled={button}
             >
               确认
             </Button>
@@ -514,8 +555,25 @@ const Index: FC = () => {
             <Form.Item label="备注" name="remark">
               <TextArea />
             </Form.Item>
+            <Form.Item hidden={validNotification}>
+              {approve === undefined || approve === null ? (
+                <Spin />
+              ) : approve === true ? (
+                <div>账号凭证验证已通过</div>
+              ) : (
+                <div>账号凭证验证未通过</div>
+              )}
+            </Form.Item>
+
             <Form.Item>
-              <Button htmlType="submit">确认</Button>
+              <Button
+                hidden={mVButton}
+                htmlType="submit"
+                onClick={() => setValidNotification(false)}
+              >
+                验证
+              </Button>
+              <Button disabled={mCButton}>确认</Button>
             </Form.Item>
           </Form>
         ) : (
