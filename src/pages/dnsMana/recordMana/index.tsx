@@ -1,64 +1,42 @@
 import { Template } from "@/components/template";
 import { dnsApi } from "@/store/api";
 import request from "@/store/request";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { from } from "rxjs";
 
 const Index: FC = () => {
-  const [params, setParams] = useState<any>();
   const [recordList, setRecordList] = useState();
   const [option, setOption] = useState<Object[]>([]);
 
-  useEffect(() => {
-    if (params) {
-      if (params.filters !== undefined) {
-        let searchDetail = {
-          keyWord: params.filters.keyword,
-          searchPage: params.searchPage,
-          domainUid: params.filters.domainUid,
-          status: params.filters.status,
-          value: params.filters.value,
-          name: params.filters.name,
-        };
-        from(request(dnsApi.FindDnsRecord(searchDetail))).subscribe((data) => {
-          console.log(data);
-          setRecordList(data);
-        });
-      } else {
-        let searchDetail = {
-          searchPage: { desc: 0, page: 1, pageSize: 25, sort: "create_date" },
-        };
-        from(request(dnsApi.FindDnsRecord(searchDetail))).subscribe((data) => {
-          console.log(data);
-          setRecordList(data);
-        });
-      }
-    }
-  }, [params]);
-
-  useEffect(() => {
-    const handleDnsDomainList = async () => {
-      const result = await request(
-        dnsApi.FindDnsDomain({
-          searchPage: { page: 1, pageSize: 99999 },
-          uid: "",
-        })
-      );
-      if (result) {
-        let dnsOption: object[] = [];
-        Object.entries(result.content).forEach((item: any) => {
-          let a = item[1];
-          dnsOption.push({ uid: a.uid, name: a.name });
-        });
-        setOption(dnsOption);
-      }
-    };
-    handleDnsDomainList();
+  useMemo(async () => {
+    const result = await request(
+      dnsApi.FindDnsDomain({
+        searchPage: { page: 1, pageSize: 99999 },
+        uid: "",
+      })
+    );
+    const option = result.content.map((item: any) => {
+      return { uid: item.uid, name: item.name };
+    });
+    setOption(option);
   }, []);
 
   const TempConfig = {
     onSearch: (params: any) => {
-      setParams(params);
+      const { keyword, domainUid, status, value, name } = params.filters;
+
+      let searchDetail = {
+        keyword,
+        domainUid,
+        status,
+        value,
+        name,
+        searchPage: params.searchPage,
+      };
+      from(request(dnsApi.FindDnsRecord(searchDetail))).subscribe((data) => {
+        console.log(data);
+        setRecordList(data);
+      });
     },
     rowId: "uid",
     data: recordList,
