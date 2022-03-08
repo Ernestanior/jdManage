@@ -23,13 +23,13 @@ class User {
   readonly userAccessWhiteList$ = new BehaviorSubject<any>(null);
   readonly userChangeLanguage$ = new BehaviorSubject<any>(null);
   readonly userLogin$ = new BehaviorSubject<any>(null);
-  findUser(keyWord: string, searchPage: ISearchPage) {
+  findUser(keyword: string, searchPage: ISearchPage) {
     from(
       request(
         userApi.FindUser(
           {},
           {
-            keyWord,
+            keyword,
             searchPage,
           }
         )
@@ -48,8 +48,6 @@ class User {
       }
     });
   }
-
-
 
   UserServiceWorkLogCodeList() {
     from(request(userApi.UserAPIWorklogCodeList())).subscribe((data) => {

@@ -1,14 +1,12 @@
 import { useLoading } from "@/components/loading";
 import useUid from "@/hooks/useUid";
 import { cacheApi } from "@/store/api";
-import { useCacheSetting } from "@/store/network/cache";
-import cacheService from "@/store/network/cache/service";
 import request from "@/store/request";
 import { Button, Col, Form, notification, Row, Select, Switch } from "antd";
 import { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import { from } from "rxjs";
 import Loading from "@/components/loading/context";
-import { CacheSetting } from "@/store/network/cache/interface";
+import { CacheSetting } from "@/store/api/cache";
 
 const { Option } = Select;
 const formItemLayout = {
@@ -35,7 +33,7 @@ const Index: FC = (): ReactElement => {
   const [ext, setExt] = useState<string[]>();
   const [refresh, setRefresh] = useState<boolean>(false);
   const [ignoreQuery, setIgnoreQuery] = useState<boolean>(false);
-  const [cacheSetting, setCacheSetting] = useState<CacheSetting | null>(null);
+  const [cacheSetting, setCacheSetting] = useState<CacheSetting>();
   // const cacheSetting = useCacheSetting();
 
   const currSetting = useMemo(

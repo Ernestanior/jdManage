@@ -54,9 +54,7 @@ const CreateDrawer: FC<IProps> = ({
   };
   useEffect(() => {
     const obs = from(request(supplierApi.FindManagementList(uid))).subscribe(
-      (data) => {
-        data && setManaList(data);
-      }
+      (data) => data && setManaList(data)
     );
     return () => obs.unsubscribe();
   }, [uid]);

@@ -1,86 +1,53 @@
 import { Template } from "@/components/template";
+import { dnsApi, siteApi } from "@/store/api";
 import { useCustomerList } from "@/store/network/customer";
 import customerService from "@/store/network/customer/service";
-import { useDomainList } from "@/store/network/dns";
-import dnsService from "@/store/network/dns/service";
-import { useSiteAll } from "@/store/network/site";
-import siteService from "@/store/network/site/service";
-import { Col, Divider, Drawer, Row } from "antd";
-import { FC, useEffect, useState } from "react";
-
+import { IDomainList } from "@/store/network/dns/interface";
+import request from "@/store/request";
+import { FC, useEffect, useMemo, useState } from "react";
+import { from } from "rxjs";
+import CustomerDrawer from "./customerDrawer";
 const Index: FC = () => {
-  const [params, setParams] = useState<any>();
   const customerList = useCustomerList();
-  const [visible, setVisible] = useState<boolean>(false);
-  const site = useSiteAll();
-  const domainList = useDomainList();
-  const [siteOption, setSiteOption] = useState<Object[]>([]);
-  const [cusNameOption, setCusNameOption] = useState<Object[]>([]);
+  const [site, setSite] = useState<any[]>();
+  const [domainList, setDomainList] = useState<IDomainList>();
   const [drawerDetail, setDrawerDetail] = useState<any>();
-
+  const [detailFlag, setDetailFlag] = useState<boolean>(false);
   useEffect(() => {
-    customerService.findCustomer({
-      searchPage: { page: 1, pageSize: 99999 },
-    });
-    siteService.findSiteAll();
-  }, []);
-  useEffect(() => {
-    if (params) {
-      if (params.filters !== undefined) {
-        dnsService.findDomain({
-          customerUid: params.filters.customerUid,
-          searchPage: params.searchPage,
-          displayName: params.filters.displayName,
-          keyWord: params.filters.keyword,
-          masterName: params.filters.masterName,
-          siteUid: params.filters.siteUid,
-          sslEnable: params.filters.sslEnable,
-        });
-      } else {
-        dnsService.findDomain({
-          searchPage: { desc: 0, page: 1, pageSize: 25, sort: "name" },
-        });
-      }
+    if (!customerList || !customerList.content) {
+      customerService.findCustomer({
+        searchPage: { page: 1, pageSize: 99999 },
+      });
     }
-  }, [params]);
-  const handleOnclick = (key: any) => {
-    setDrawerDetail(key);
-  };
+    const obs2 = from(request(siteApi.FindSiteAll())).subscribe(
+      (data) => data && setSite(data)
+    );
+    return () => obs2.unsubscribe();
+  }, []);
+  const siteOption = useMemo(() => {
+    return site instanceof Array
+      ? site?.map((item: any) => ({ uid: item.uid, name: item.name }))
+      : [];
+  }, [site]);
 
-  const showDrawer = () => {
-    setVisible(true);
-  };
-
-  const onClose = () => {
-    setVisible(false);
-    setDrawerDetail({});
-  };
-
-  useEffect(() => {
-    let siteOption: object[] = [];
-    let cusNameOption: object[] = [];
-    site &&
-      Object.entries(site).forEach((item: any) => {
-        let a = item[1];
-        siteOption.push({ uid: a.uid, name: a.name });
-      });
-    customerList?.content &&
-      Object.entries(customerList?.content).forEach((item: any) => {
-        let a = item[1];
-        cusNameOption.push({ uid: a.uid, name: a.name });
-      });
-    setSiteOption(siteOption);
-    setCusNameOption(cusNameOption);
-  }, [site, customerList?.content]);
+  const cusNameOption = useMemo(
+    () =>
+      customerList && customerList.content
+        ? customerList.content.map((item: any) => ({
+            uid: item.uid,
+            name: item.name,
+          }))
+        : [],
+    [customerList]
+  );
 
   const TempConfig = {
     optList: [
       {
         text: "查看客户",
         event: (data: any) => {
-          console.log(data);
-          handleOnclick(data.customer);
-          showDrawer();
+          setDrawerDetail(data.customer);
+          setDetailFlag(true);
         },
       },
       {
@@ -90,8 +57,13 @@ const Index: FC = () => {
         },
       },
     ],
-    onSearch: (params: any) => {
-      setParams(params);
+    onSearch: async (params: any) => {
+      const payload = {
+        ...params.filters,
+        searchPage: params.searchPage,
+      };
+      const res = await request(dnsApi.FindDomain(payload));
+      res && setDomainList(res);
     },
     rowId: "uid",
     data: domainList,
@@ -120,24 +92,19 @@ const Index: FC = () => {
         title: "网站",
         dataIndex: "site",
         key: "site",
-        render: (key: any) => {
-          return <div>{key.name}</div>;
-        },
+        render: (key: any) => key.name,
       },
       {
         title: "客户名称",
         dataIndex: "customer",
         key: "customer",
-        render: (key: any) => {
-          return <div>{key.name}</div>;
-        },
+        render: (key: any) => key.name,
       },
     ],
   };
 
   return (
     <div>
-      {" "}
       <Template
         primarySearch={"keyword"}
         searchList={[
@@ -174,54 +141,14 @@ const Index: FC = () => {
           },
         ]}
         {...TempConfig}
+        // event$={event$}
+        sort="name"
       ></Template>
-      <Drawer
-        title="查看客户"
-        placement="left"
-        onClose={onClose}
-        visible={visible}
-        width={570}
-        bodyStyle={{ paddingBottom: 80 }}
-      >
-        <Row>
-          <Col span={4}>登入邮箱</Col>
-          <Col span={16} offset={4}>
-            {drawerDetail?.email}
-          </Col>
-          <Divider />
-          <Col span={4}>使用者名称</Col>
-          <Col span={16} offset={4}>
-            {drawerDetail?.name}
-          </Col>
-          <Divider />
-          <Col span={4}>账户类型</Col>
-          <Col span={16} offset={4}>
-            {drawerDetail?.supportsSupplier === true ? "企业版" : "-"}
-          </Col>
-          <Divider />
-          <Col span={4}>域名额度</Col>
-          <Col span={16} offset={4}>
-            {drawerDetail?.domainQuota !== null
-              ? drawerDetail?.domainQuota
-              : "-"}
-          </Col>
-          <Divider />
-          <Col span={4}>流量套餐</Col>
-          <Col span={16} offset={4}>
-            {drawerDetail?.dataAllowance !== null
-              ? drawerDetail?.dataAllowance + " GB"
-              : "-"}
-          </Col>
-          <Divider />
-          <Col span={4}>防御（GB）</Col>
-          <Col span={16} offset={4}>
-            {drawerDetail?.defenceQuota !== null
-              ? drawerDetail?.defenceQuota + " GB"
-              : "-"}
-          </Col>
-          <Divider />
-        </Row>
-      </Drawer>
+      <CustomerDrawer
+        onClose={() => setDetailFlag(false)}
+        visible={detailFlag}
+        drawerDetail={drawerDetail}
+      ></CustomerDrawer>
     </div>
   );
 };

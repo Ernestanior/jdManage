@@ -1,5 +1,5 @@
 import useUid from "@/hooks/useUid";
-import { IAiSetting } from "@/store/network/site/interface";
+import { IAiSetting } from "@/store/api/site";
 import { useSiteSupplierList } from "@/store/network/supplier";
 import SupplierService from "@/store/network/supplier/service";
 import { Col, Row, Select } from "antd";

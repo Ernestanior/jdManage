@@ -1,13 +1,7 @@
 import { FC, useEffect, useMemo, useState } from "react";
-import {
-  useCustomerLineList,
-  useDnsCnameList,
-  useRecordLoading,
-} from "@/store/network/dns";
+import { useDnsCnameList, useRecordLoading } from "@/store/network/dns";
 import dnsService from "@/store/network/dns/service";
 import { Btn } from "@/components/button";
-import { useSuffix } from "@/store/network/site";
-import siteService from "@/store/network/site/service";
 import useUid from "@/hooks/useUid";
 import { useLoading } from "@/components/loading";
 import { useLocation } from "react-router-dom";

@@ -1,19 +1,16 @@
 import { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import { Template } from "@/components/template";
 import useEvent from "@/common/hooks/useEvent";
-import siteService from "@/store/network/site/service";
-import { useSiteList } from "@/store/network/site";
 import CreateDrawer from "./createDrawer";
 import EditDrawer from "./editDrawer";
 import { useCustomerList } from "@/store/network/customer";
 import customerService from "@/store/network/customer/service";
 import { NavLink, useNavigate } from "react-router-dom";
 import { EdgeModal } from "@/components/modal";
-import { from } from "rxjs";
 import request from "@/store/request";
 import { siteApi } from "@/store/api";
 import { notification } from "antd";
-import { ISiteList } from "@/store/network/site/interface";
+import { ISiteList } from "@/store/api/site";
 
 const Index: FC = (): ReactElement => {
   const navigator = useNavigate();

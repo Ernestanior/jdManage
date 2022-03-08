@@ -1,41 +1,28 @@
 import { Template } from "@/components/template";
 import useUid from "@/hooks/useUid";
-import { useSiteSupplierList$ } from "@/store/network/supplier";
-import SupplierService from "@/store/network/supplier/service";
 import request from "@/store/request";
 import { Button, notification, Select } from "antd";
 import { supplierApi } from "@/store/api";
-import { FC, ReactElement, useEffect, useState } from "react";
-import { from } from "rxjs";
-import { ISearchPage } from "@/store/network/site/interface";
+import { FC, ReactElement, useState } from "react";
 import { IChangeOption } from "@/store/network/supplier/interface";
 import Choose from "./chooseDrawer";
 import Edit from "./editDrawer";
+import useEvent from "@/common/hooks/useEvent";
 
 const { Option } = Select;
 
 const Index: FC = (): ReactElement => {
   const uid = useUid();
-  const supplierList = useSiteSupplierList$();
+  const [supplierList, setSupplierList] = useState<any>();
+  const [event$, sendMessage] = useEvent();
   const [chooseFlag, setChooseFlag] = useState<boolean>(false);
   const [editFlag, setEditFlag] = useState<boolean>(false);
-  const [refresh, setRefresh] = useState<boolean>(false);
-  const [searchPage, setSearchPage] = useState<ISearchPage>({
-    page: 1,
-    pageSize: 10,
-  });
   const [modifyingId, setModifyingId] = useState("");
   const [editingId, setEditingId] = useState("");
   const [modifyData, setModifyData] = useState<IChangeOption>();
   const onChange = (uid: string, option: string) => {
     setModifyData({ uid, option });
   };
-  useEffect(() => {
-    SupplierService.findSiteSupplierList({
-      searchPage,
-      uid,
-    });
-  }, [searchPage, refresh]);
   const onConfirm = async () => {
     if (modifyData) {
       const res = await request(supplierApi.ChangeOption(modifyData));
@@ -44,14 +31,17 @@ const Index: FC = (): ReactElement => {
           message: "Update Success",
         });
         setModifyingId("");
-        setRefresh(!refresh);
+        sendMessage("reload");
       }
     }
   };
   const TempConfig = {
-    onSearch: (params: any) => {
+    onSearch: async (params: any) => {
       const { searchPage } = params;
-      setSearchPage(searchPage);
+      const res = await request(
+        supplierApi.FindSiteSupplierList({ searchPage, uid })
+      );
+      res && setSupplierList(res);
     },
     normalBtns: [
       {
@@ -125,12 +115,12 @@ const Index: FC = (): ReactElement => {
   };
   return (
     <div>
-      <Template closeFilter {...TempConfig} />
+      <Template closeFilter {...TempConfig} event$={event$} />
       {chooseFlag && (
         <Choose
           visible={chooseFlag}
           onClose={() => setChooseFlag(false)}
-          onRefresh={() => setRefresh(!refresh)}
+          onRefresh={() => sendMessage("reload")}
           currList={supplierList && supplierList.content}
         ></Choose>
       )}

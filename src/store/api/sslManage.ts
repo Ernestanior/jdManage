@@ -1,8 +1,4 @@
 import { AxiosRequestConfig } from "axios";
-import {
-  IUploadCert,
-  RequestOriginalCert,
-} from "../network/sslMange/interface";
 /**
  * @class UserAPI
  * @description 用户管理API
@@ -99,3 +95,17 @@ class SslManageAPI {
 }
 
 export default SslManageAPI;
+
+export interface IUploadCert {
+  customerUid: string;
+  sslCrt: string;
+  sslEnable: number;
+  sslKey: string;
+}
+export interface RequestOriginalCert {
+  domains: string[];
+  privateKeyType?: string;
+  privateKey?: string;
+  usesOwnPrivateKey: boolean;
+  validity: number;
+}

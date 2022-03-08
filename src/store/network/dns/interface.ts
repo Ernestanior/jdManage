@@ -8,16 +8,16 @@ export interface IDomainList {
   content: any[];
 }
 export interface ISearchDomain {
-  keyWord?: string;
+  keyword?: string;
   customerUid?: string;
   status?: string;
   searchPage: ISearchPage;
   siteUid?: string;
   sslEnable?: number;
-  displayName?:string;
-  masterName?:string;
+  displayName?: string;
+  masterName?: string;
   value?: string;
-  name?:string;
+  name?: string;
 }
 
 export interface ISearchPage {

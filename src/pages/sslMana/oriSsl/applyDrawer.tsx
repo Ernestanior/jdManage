@@ -1,6 +1,6 @@
 import { sslManageApi } from "@/store/api";
 import customerService from "@/store/network/customer/service";
-import { RequestOriginalCert } from "@/store/network/sslMange/interface";
+import { RequestOriginalCert } from "@/store/api/sslManage";
 import request from "@/store/request";
 import { InboxOutlined } from "@ant-design/icons";
 import {

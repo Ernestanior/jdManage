@@ -1,10 +1,8 @@
 import "./index.less";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { Drawer, Tabs } from "antd";
 import dnsService from "@/store/network/dns/service";
-import siteService from "@/store/network/site/service";
-import useUid from "@/hooks/useUid";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import FirstStep from "./firstStep";
 import SecondStep from "./secondStep";
@@ -17,14 +15,8 @@ interface IProps {
 }
 const CreateDrawer: FC<IProps> = ({ title, visible, onClose }) => {
   const [index, setIndex] = useState<string>("1");
-  const uid = useUid();
   const navigator = useNavigate();
-  // const path: any = useLocation().state;
 
-  // useEffect(() => {
-  //   dnsService.findCustomerLineList();
-  //   siteService.getSuffix(uid);
-  // }, []);
   const handleClose = () => {
     setIndex("1");
     onClose();
