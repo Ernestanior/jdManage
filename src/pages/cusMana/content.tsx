@@ -1,32 +1,26 @@
-import { Btn } from "@/components/button";
 import IconFont from "@/components/icon";
 import { Template } from "@/components/template";
-import accountService from "@/store/network/account/service";
-import userService from "@/store/network/user/service";
-import { useUserManage } from "@/store/network/userManage";
-import userManage from "@/store/network/userManage/service";
-import { DownOutlined } from "@ant-design/icons";
-import { Button, notification } from "antd";
+import { notification } from "antd";
 import { FC, useEffect, useMemo, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import LoginDrawer from "./loginDrawer";
 import CreateDrawer from "./createDrawer";
 import EditDrawer from "./editDrawer";
 import StatDrawer from "./statDrawer";
 import InterDataDrawer from "./interDataDrawer";
 import { useLoading } from "@/components/loading";
-import { from } from "rxjs";
 import request from "@/store/request";
 import { customerApi } from "@/store/api";
 import { EdgeModal } from "@/components/modal";
-import { useDefenceQuota, useServiceDomain } from "@/store/network/customer";
-import customerService from "@/store/network/customer/service";
-// interface IProps {
-//   type: "reg" | "sales";
-// }
-const Index: FC = () => {
-  const [params, setParams] = useState<any>();
+import {
+  ICustomerList,
+  IDefenceQuota,
+  IServiceDomain,
+} from "@/store/network/customer/interface";
+import useEvent from "@/common/hooks/useEvent";
+import { from } from "rxjs";
 
+const Index: FC = () => {
   const [loginFlag, setLoginFlag] = useState<boolean>(false);
   const [createFlag, setCreateFlag] = useState<boolean>(false);
   const [editFlag, setEditFlag] = useState<boolean>(false);
@@ -38,99 +32,93 @@ const Index: FC = () => {
   const [convertFlag, setConvertFlag] = useState<boolean>(false);
   const [resetPwdFlag, setPwdFlag] = useState<boolean>(false);
 
-  // const [convertType, setConvertType] = useState<string>("");
   const [selected, setSelected] = useState<string[]>([]);
   const [editData, setEditData] = useState<any>({});
   const [customerUid, setCustomerUid] = useState<string>();
   const [supSupplier, setSupSupplier] = useState<boolean>(false);
-  const [refresh, setRefresh] = useState<boolean>(false);
-  // const [loading$,setLoading] = useState<boolean>(false)
-  const customerList = useUserManage();
+  const [customerList, setCustomerList] = useState<ICustomerList>();
+  const [defenceQuota, setDefenceQuota] = useState<IDefenceQuota[]>([]);
+  const [serviceDomain, setServiceDomain] = useState<IServiceDomain[]>([]);
   const loading = useLoading();
+  const [event$, sendMessage] = useEvent();
 
   const routerState: any = useLocation().state;
 
-  const type = useMemo(() => routerState && routerState.cusMana, [routerState]);
-  const deleteCustomer = (data: string[]) => {
-    from(request(customerApi.DeleteCustomer(data))).subscribe((data) => {
-      data instanceof Object
-        ? notification.success({ message: "Delete Success" })
-        : notification.error({ message: "Delete failed", description: data });
-      setRefresh(!refresh);
-      setDeleteFlag(false);
-      setSelected([]);
-    });
-  };
-  const disableCustomer = (data: string[]) => {
-    from(request(customerApi.DisableCustomer(data))).subscribe((data) => {
-      data instanceof Object
-        ? notification.success({ message: "Disable Success" })
-        : notification.error({ message: "Disable failed", description: data });
-      setRefresh(!refresh);
-      setDisableFlag(false);
-      setSelected([]);
-    });
-  };
-  const enableCustomer = (data: string[]) => {
-    from(request(customerApi.EnableCustomer(data))).subscribe((data) => {
-      data instanceof Object
-        ? notification.success({ message: "Enable Success" })
-        : notification.error({ message: "Enable failed", description: data });
-      setRefresh(!refresh);
-      setEnableFlag(false);
-      setSelected([]);
-    });
-  };
-  const ChannelUpdate = () => {
-    customerUid &&
-      from(
-        request(
-          customerApi.ChannelUpdate(
-            type === "reg" ? "sales" : "reg",
-            customerUid
-          )
-        )
-      ).subscribe((data) => {
-        setConvertFlag(false);
-        setRefresh(!refresh);
-        data instanceof Object
-          ? notification.success({ message: "Update Success" })
-          : notification.error({ message: "Update failed", description: data });
-      });
-  };
-  const resetPwd = () => {
-    customerUid &&
-      from(request(customerApi.ResetPassword(customerUid))).subscribe(
-        (data) => {
-          data instanceof Object
-            ? notification.success({
-                message: "Reset Password Success",
-                description: data.password,
-                duration: null,
-              })
-            : notification.error({
-                message: "Reset Password failed",
-                description: data,
-              });
-          setRefresh(!refresh);
-          setPwdFlag(false);
-          setSelected([]);
-        }
-      );
-  };
   useEffect(() => {
-    params &&
-      userManage.CustomerList({
-        keyword: params.filters.keyword || "",
-        searchPage: params.searchPage,
-        type: "customer",
-        status: params.filters.status,
-        name: params.filters.name || "",
-        channel: type || "reg",
-        email: params.filters.email || "",
-        probationFlag: params.filters.probationFlag,
-      });
-  }, [params, refresh]);
+    const obs1 = from(request(customerApi.FindDefenceQuota())).subscribe(
+      (data) => {
+        data && data.options && setDefenceQuota(data.options);
+      }
+    );
+    const obs2 = from(request(customerApi.FindServiceDomain())).subscribe(
+      (data) => {
+        data && data.content && setServiceDomain(data.content);
+      }
+    );
+    return () => {
+      obs1.unsubscribe();
+      obs2.unsubscribe();
+    };
+  }, []);
+
+  const type = useMemo(() => routerState && routerState.cusMana, [routerState]);
+  const deleteCustomer = async (data: string[]) => {
+    const res = await request(customerApi.DeleteCustomer(data));
+    res instanceof Array
+      ? notification.error({ message: "Delete failed", description: data })
+      : notification.success({ message: "Delete Success" });
+    sendMessage("reload");
+    setDeleteFlag(false);
+    setSelected([]);
+  };
+  const disableCustomer = async (data: string[]) => {
+    const res = await request(customerApi.DisableCustomer(data));
+    res instanceof Array
+      ? notification.error({ message: "Disable failed", description: data })
+      : notification.success({ message: "Disable Success" });
+    sendMessage("reload");
+    setDisableFlag(false);
+    setSelected([]);
+  };
+  const enableCustomer = async (data: string[]) => {
+    const res = await request(customerApi.EnableCustomer(data));
+    res instanceof Array
+      ? notification.error({ message: "Enable failed", description: data })
+      : notification.success({ message: "Enable Success" });
+    sendMessage("reload");
+    setEnableFlag(false);
+    setSelected([]);
+  };
+  const ChannelUpdate = async () => {
+    if (customerUid) {
+      const res = await request(
+        customerApi.ChannelUpdate(type === "reg" ? "sales" : "reg", customerUid)
+      );
+      setConvertFlag(false);
+      sendMessage("reload");
+      res instanceof Array
+        ? notification.error({ message: "Update failed", description: res })
+        : notification.success({ message: "Update Success" });
+    }
+  };
+  const resetPwd = async () => {
+    if (customerUid) {
+      const res = await request(customerApi.ResetPassword(customerUid));
+      res instanceof Array
+        ? notification.error({
+            message: "Reset Password failed",
+            description: res,
+          })
+        : notification.success({
+            message: "Reset Password Success",
+            description: res.password,
+            duration: null,
+          });
+      sendMessage("reload");
+      setPwdFlag(false);
+      setSelected([]);
+    }
+  };
 
   const TempConfig = {
     batchBtns: [
@@ -215,8 +203,19 @@ const Index: FC = () => {
         },
       },
     ],
-    onSearch: (params: any) => {
-      setParams(params);
+    onSearch: async (params: any) => {
+      const payload = {
+        keyword: params.filters.keyword || "",
+        searchPage: params.searchPage,
+        type: "customer",
+        status: params.filters.status,
+        name: params.filters.name || "",
+        channel: type || "reg",
+        email: params.filters.email || "",
+        probationFlag: params.filters.probationFlag,
+      };
+      const res = await request(customerApi.FindCustomer(payload));
+      setCustomerList(res);
     },
     rowId: "uid",
     data: customerList,
@@ -315,6 +314,7 @@ const Index: FC = () => {
           },
         ]}
         {...TempConfig}
+        event$={event$}
       ></Template>
       {customerUid && (
         <>
@@ -338,16 +338,20 @@ const Index: FC = () => {
       )}
       <CreateDrawer
         onClose={() => setCreateFlag(false)}
-        reload={() => setRefresh(!refresh)}
+        reload={() => sendMessage("reload")}
         visible={createFlag}
         loading={loading}
+        defenceQuota={defenceQuota}
+        serviceDomain={serviceDomain}
       ></CreateDrawer>
       <EditDrawer
         onClose={() => setEditFlag(false)}
-        reload={() => setRefresh(!refresh)}
+        reload={() => sendMessage("reload")}
         data={editData}
         visible={editFlag}
         loading={loading}
+        defenceQuota={defenceQuota}
+        serviceDomain={serviceDomain}
       ></EditDrawer>
       <EdgeModal
         visible={deleteFlag}

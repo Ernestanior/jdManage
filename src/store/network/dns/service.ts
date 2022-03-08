@@ -130,13 +130,13 @@ class Dns {
       }
     });
   }
-  findDomainCount(customerUid: string) {
-    from(request(dnsApi.FindDomainCount(customerUid))).subscribe((data) => {
-      if (data) {
-        this.domainCountList$.next(data);
-      }
-    });
-  }
+  // findDomainCount(customerUid: string) {
+  //   from(request(dnsApi.FindDomainCount(customerUid))).subscribe((data) => {
+  //     if (data) {
+  //       this.domainCountList$.next(data);
+  //     }
+  //   });
+  // }
 }
 
 const dnsService = new Dns();

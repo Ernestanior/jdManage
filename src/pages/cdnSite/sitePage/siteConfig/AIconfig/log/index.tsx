@@ -5,17 +5,15 @@ import request from "@/store/request";
 import { Tooltip } from "antd";
 import moment from "moment";
 import { FC, ReactElement, useState } from "react";
-import { from } from "rxjs";
 
 const Index: FC = (): ReactElement => {
   const uid = useUid();
   const [currData, setCurrData] = useState({});
   const TempConfig = {
-    onSearch: (params: any) => {
+    onSearch: async (params: any) => {
       const { searchPage } = params;
-      from(request(siteApi.AiLog({ searchPage, uid }))).subscribe((data) => {
-        data && setCurrData(data);
-      });
+      const res = await request(siteApi.AiLog({ searchPage, uid }));
+      res && setCurrData(res);
     },
     closeFilter: true,
     rowId: "uid",

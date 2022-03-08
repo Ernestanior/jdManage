@@ -24,7 +24,7 @@ const Manual: FC<IProps> = ({ onSubmit, currAiSetting, cancelFlag }) => {
     if (!siteSupplier) {
       SupplierService.findSiteSupplier(uid);
     }
-  }, []);
+  }, [uid]);
 
   useEffect(() => {
     currAiSetting.supplierUid && setSupplierUid(currAiSetting.supplierUid);

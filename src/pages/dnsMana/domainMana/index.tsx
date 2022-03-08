@@ -26,9 +26,7 @@ const Index: FC = () => {
           status: params.filters.status,
         };
         from(request(dnsApi.FindDnsDomain(data))).subscribe((data) => {
-          if (data) {
-            setdomainList(data);
-          }
+          data && setdomainList(data);
         });
       } else {
         from(
@@ -38,9 +36,7 @@ const Index: FC = () => {
             })
           )
         ).subscribe((data) => {
-          if (data) {
-            setdomainList(data);
-          }
+          data && setdomainList(data);
         });
       }
     }

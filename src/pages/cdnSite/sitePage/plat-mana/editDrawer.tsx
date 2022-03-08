@@ -1,64 +1,53 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { Button, Drawer, Input, notification } from "antd";
 import { siteApi } from "@/store/api";
-import { from } from "rxjs";
 import request from "@/store/request";
-import { useCNameList } from "@/store/network/site";
-import siteService from "@/store/network/site/service";
 import { Template } from "@/components/template";
+import { ISslList } from "@/store/network/site/interface";
+import useEvent from "@/common/hooks/useEvent";
 interface IProps {
   visible: boolean;
   onClose: () => void;
-  // onRefresh: () => void;
   currUid: string;
 }
 
 const EditDrawer: FC<IProps> = ({ visible, onClose, currUid }) => {
-  const cnameList = useCNameList();
+  const [cnameList, setCnameList] = useState<ISslList>();
+  const [event$, sendMessage] = useEvent();
   const [modifyingKey, setModifyingKey] = useState("");
-  const [refresh, setRefresh] = useState<boolean>(false);
   const [input, setInput] = useState("");
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     const submitData = {
       cnames: [{ cname: input, name: modifyingKey }],
       uid: currUid,
     };
-    from(request(siteApi.SaveCName(submitData))).subscribe((data) => {
-      if (data.successes.length) {
-        notification.success({
-          message: "Update Success",
-        });
-        setRefresh(!refresh);
-        setModifyingKey("");
-      } else {
-        data.failures.forEach((item: any) =>
-          notification.error({
-            message: item.cname,
-            description: "Wrong CName Format",
-          })
-        );
-      }
-    });
+    const res = await request(siteApi.SaveCName(submitData));
+    if (res.successes.length) {
+      notification.success({
+        message: "Update Success",
+      });
+      sendMessage("reload");
+      setModifyingKey("");
+    } else {
+      res.failures.forEach((item: any) =>
+        notification.error({
+          message: item.cname,
+          description: "Wrong CName Format",
+        })
+      );
+    }
   };
-  useEffect(() => {
-    siteService.findCNameList({
-      keyword: "",
-      searchPage: {
-        page: 1,
-        pageSize: 10,
-      },
-      uid: currUid,
-    });
-  }, [refresh]);
   const TempConfig = {
-    onSearch: (params: any) => {
+    onSearch: async (params: any) => {
       const { searchPage, filters } = params;
-      siteService.findCNameList({
+      const payload = {
         keyword: filters.name,
         searchPage,
         uid: currUid,
-      });
+      };
+      const res = await request(siteApi.CNameList(payload));
+      setCnameList(res);
     },
     normalBtns: [
       {
@@ -130,7 +119,7 @@ const EditDrawer: FC<IProps> = ({ visible, onClose, currUid }) => {
       bodyStyle={{ paddingBottom: 80 }}
       className="cdn-create-drawer"
     >
-      <Template primarySearch="name" {...TempConfig} />
+      <Template primarySearch="name" {...TempConfig} event$={event$} />
     </Drawer>
   );
 };

@@ -2,7 +2,12 @@ import IconFont from "@/components/icon";
 import { Template } from "@/components/template";
 import { userApi } from "@/store/api";
 import { worklogDetail } from "@/store/api/user";
-import { useCodeList, useEventList, useNewDeleteWorklog, useWorkLog } from "@/store/network/user";
+import {
+  useCodeList,
+  useEventList,
+  useNewDeleteWorklog,
+  useWorkLog,
+} from "@/store/network/user";
 import userService from "@/store/network/user/service";
 import request from "@/store/request";
 import { Col, Input, Popconfirm, Row } from "antd";
@@ -74,12 +79,9 @@ const Index: FC<Role> = (props: Role) => {
     }
   }, [params, props.type, deletelog]);
 
-  const confirm = () => {
-    from(request(userApi.UserDeleteWorkLog([deleteId]))).subscribe((data)=>{
-      if (data) {
-        alert("delete Log Success");
-      }
-    })
+  const confirm = async () => {
+    const res = await request(userApi.UserDeleteWorkLog([deleteId]));
+    res && alert("delete Log Success");
   };
   const cancel = () => {};
 

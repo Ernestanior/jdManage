@@ -21,10 +21,10 @@ const CreateDrawer: FC<IProps> = ({ title, visible, onClose }) => {
   const navigator = useNavigate();
   // const path: any = useLocation().state;
 
-  useEffect(() => {
-    dnsService.findCustomerLineList();
-    siteService.getSuffix(uid);
-  }, []);
+  // useEffect(() => {
+  //   dnsService.findCustomerLineList();
+  //   siteService.getSuffix(uid);
+  // }, []);
   const handleClose = () => {
     setIndex("1");
     onClose();

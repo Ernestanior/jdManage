@@ -1,5 +1,4 @@
 import { FC, useEffect } from "react";
-import { from } from "rxjs";
 import { customerApi } from "@/store/api";
 import request from "@/store/request";
 import { Button, Drawer, Form, Input } from "antd";
@@ -24,18 +23,18 @@ const CreateDrawer: FC<IProps> = ({
 }) => {
   const [form] = Form.useForm();
   useEffect(() => form.setFieldsValue(data), [data]);
-  const onFinish = (e: any) => {
-    data &&
-      from(
-        request(customerApi.ModifyCustomer({ ...e, uid: data.uid }))
-      ).subscribe((data) => {
-        if (data) {
-          form.resetFields();
-          onClose();
-          reload();
-          // notification.success({ message: "success" });
-        }
-      });
+  const onFinish = async (e: any) => {
+    if (data) {
+      const res = await request(
+        customerApi.ModifyCustomer({ ...e, uid: data.uid })
+      );
+      if (res) {
+        form.resetFields();
+        onClose();
+        reload();
+        // notification.success({ message: "success" });
+      }
+    }
   };
   return (
     <Drawer

@@ -1,6 +1,5 @@
 import { FC, useEffect, useState } from "react";
 import { Select, Row } from "antd";
-import { from } from "rxjs";
 import request from "@/store/request";
 import { dnsApi } from "@/store/api";
 import _ from "underscore";
@@ -25,20 +24,19 @@ const DnsSelector: FC<IProps> = ({ dnsList, onDelete, onSubmit }) => {
     }
   }, [subDomain, domain]);
 
-  const domainChange = (domainUid: string) => {
+  const domainChange = async (domainUid: string) => {
     setLoading(true);
     const payload = { domainUid, searchPage: { page: 1, pageSize: 9999 } };
-    from(request(dnsApi.FindDnsRecord(payload))).subscribe((data) => {
-      if (data && data.content) {
-        // uniq方法去重,再去default选项
-        const newList = _.uniq(data.content, "name").filter(
-          (item: any) =>
-            item.defaultStatus !== "default" && item.name !== "_acme-challenge"
-        );
-        setRecord(newList);
-        setLoading(false);
-      }
-    });
+    const res = await request(dnsApi.FindDnsRecord(payload));
+    if (res && res.content) {
+      // uniq方法去重,再去default选项
+      const newList = _.uniq(res.content, "name").filter(
+        (item: any) =>
+          item.defaultStatus !== "default" && item.name !== "_acme-challenge"
+      );
+      setRecord(newList);
+      setLoading(false);
+    }
   };
 
   return (

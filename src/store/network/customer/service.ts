@@ -54,20 +54,20 @@ class Customer {
       }
     });
   }
-  findDefenceQuota() {
-    from(request(customerApi.FindDefenceQuota())).subscribe((data) => {
-      if (data) {
-        this.defenceQuotaList$.next(data.options);
-      }
-    });
-  }
-  findServiceDomain() {
-    from(request(customerApi.FindServiceDomain())).subscribe((data) => {
-      if (data) {
-        this.serviceDomainList$.next(data.content);
-      }
-    });
-  }
+  // findDefenceQuota() {
+  //   from(request(customerApi.FindDefenceQuota())).subscribe((data) => {
+  //     if (data) {
+  //       this.defenceQuotaList$.next(data.options);
+  //     }
+  //   });
+  // }
+  // findServiceDomain() {
+  //   from(request(customerApi.FindServiceDomain())).subscribe((data) => {
+  //     if (data) {
+  //       this.serviceDomainList$.next(data.content);
+  //     }
+  //   });
+  // }
   // create(params: ICreateUserParams) {
   //     from(request(userApi.CreateUser({
   //         ...params

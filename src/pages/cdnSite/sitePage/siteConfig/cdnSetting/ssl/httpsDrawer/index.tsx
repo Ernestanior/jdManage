@@ -5,10 +5,9 @@ import Loading from "@/components/loading/context";
 import { useLoading } from "@/components/loading";
 import { from } from "rxjs";
 import request from "@/store/request";
-import { siteApi } from "@/store/api";
+import { dnsApi, siteApi } from "@/store/api";
 import useUid from "@/hooks/useUid";
-import dnsService from "@/store/network/dns/service";
-import { useDomainList } from "@/store/network/dns";
+import { IDomainList } from "@/store/network/dns/interface";
 
 interface IProps {
   title: string;
@@ -18,32 +17,33 @@ interface IProps {
 
 const HttpsDrawer: FC<IProps> = ({ title, visible, onClose }) => {
   const uid = useUid();
-  const currData = useDomainList();
+  const [currData, setCurrData] = useState<IDomainList>();
   const loading = useLoading();
   const [refresh, setRefresh] = useState<boolean>(false);
-  const handleChange = (status: boolean, selected: any) => {
-    from(
-      request(
-        status
-          ? siteApi.EnableHttps([selected.uid])
-          : siteApi.DisableHttps([selected.uid])
-      )
-    ).subscribe((data) => {
-      setRefresh(!refresh);
-      data.length
-        ? data.map((item: any) => notification.error({ message: item.message }))
-        : notification.success({ message: "Update Success" });
-    });
+  const handleChange = async (status: boolean, selected: any) => {
+    const res = await request(
+      status
+        ? siteApi.EnableHttps([selected.uid])
+        : siteApi.DisableHttps([selected.uid])
+    );
+    setRefresh(!refresh);
+    res.length
+      ? res.map((item: any) => notification.error({ message: item.message }))
+      : notification.success({ message: "Update Success" });
   };
   useEffect(() => {
-    dnsService.findDomain({
+    const payload = {
       siteUid: uid,
       sslEnable: 1,
       searchPage: {
         page: 1,
         pageSize: 25,
       },
+    };
+    const obs = from(request(dnsApi.FindDomain(payload))).subscribe((data) => {
+      data && setCurrData(data);
     });
+    return () => obs.unsubscribe();
   }, [refresh]);
   const dataSource: any = currData && currData.content;
   const columns = [

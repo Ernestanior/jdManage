@@ -3,7 +3,6 @@ import { TreeSelect } from "antd";
 import _ from "underscore";
 // import Language from '@/locale'
 import { ITree } from "@/common/data/area_tree";
-import { ISupplierContent } from "@/store/network/stat/interface";
 
 export const removeDuplicates = (arr: any, key: string = "key") =>
   arr.reduce((acc: any, current: any) => {
@@ -51,12 +50,6 @@ export const mapToObj = (treeData: any, data: any) =>
 
 export const mapToKey = (treeData: any, data: any) =>
   data.map((item: any) => parseInt(deepSearch(treeData, { key: item })["key"]));
-
-export const excludeCustomSupplier = (suppliers: ISupplierContent[]) => {
-  return suppliers.filter(
-    (s: ISupplierContent) => s.name.toLowerCase().indexOf("cname") === -1
-  );
-};
 
 export const isEmptyObj = (obj: any) => {
   for (let key in obj) {

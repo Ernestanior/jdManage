@@ -1,13 +1,13 @@
 import { ITimeFilter } from "@/components/timeFilter";
 import { AxiosRequestConfig } from "axios";
-import {
-  IStatSiteAvail,
-  IStatSiteBandwidth,
-  IStatSiteFlow,
-  IStatSiteOrigin,
-  IStatSiteSupplier,
-  IStatSupplierAvail,
-} from "../network/stat/interface";
+// import {
+//   IStatSiteAvail,
+//   IStatSiteBandwidth,
+//   IStatSiteFlow,
+//   IStatSiteOrigin,
+//   IStatSiteSupplier,
+//   IStatSupplierAvail,
+// } from "../network/stat/interface";
 
 class StatAPI {
   StatSiteSupplier = (data: IStatSiteSupplier) => {
@@ -137,3 +137,48 @@ class StatAPI {
   };
 }
 export default StatAPI;
+
+interface IStatSiteSupplier {
+  uid: string;
+  reportType: string;
+  startDate?: string;
+  endDate?: string;
+}
+interface IStatSiteBandwidth {
+  suppliers: string[];
+  reportType: string;
+  startDate?: string;
+  endDate?: string;
+}
+interface IStatSiteFlow {
+  suppliers: string[];
+  reportType: string;
+  startDate?: string;
+  endDate?: string;
+}
+interface IStatSupplierAvail {
+  lines: string[];
+  reportType: string;
+  scope: string;
+  size: number;
+  suppliers: string[];
+  type: string;
+}
+export interface IStatSiteAvail extends IStatSiteFlow {
+  lines: string[];
+  scope: string;
+}
+export interface IStatSiteOrigin {
+  reportType: string;
+  startDate?: string;
+  endDate?: string;
+  keyword?: string;
+  size: number;
+  type: string;
+  lines: string[];
+  scope: string;
+}
+export interface IStatSiteAvail extends IStatSiteFlow {
+  lines: string[];
+  scope: string;
+}

@@ -25,25 +25,23 @@ const Index: FC = (): ReactElement => {
       cors$.unsubscribe();
     };
   }, []);
-  const handleWesocket = (status: boolean) => {
-    from(
-      request(siteApi.WebsocketSave({ siteUid: uid, isEnabled: status }))
-    ).subscribe((data) => {
-      if (data instanceof Object) {
-        notification.success({ message: "Save success" });
-        setWebsocket(status);
-      }
-    });
+  const handleWesocket = async (status: boolean) => {
+    const res = await request(
+      siteApi.WebsocketSave({ siteUid: uid, isEnabled: status })
+    );
+    if (!(res instanceof Array)) {
+      notification.success({ message: "Save success" });
+      setWebsocket(status);
+    }
   };
-  const handleCors = (status: boolean) => {
-    from(
-      request(siteApi.CorsSave({ siteUid: uid, isEnabled: status }))
-    ).subscribe((data) => {
-      if (data instanceof Object) {
-        notification.success({ message: "Save success" });
-        setCors(status);
-      }
-    });
+  const handleCors = async (status: boolean) => {
+    const res = await request(
+      siteApi.CorsSave({ siteUid: uid, isEnabled: status })
+    );
+    if (!(res instanceof Array)) {
+      notification.success({ message: "Save success" });
+      setCors(status);
+    }
   };
   return (
     <div className="cdn-setting-basic-box">

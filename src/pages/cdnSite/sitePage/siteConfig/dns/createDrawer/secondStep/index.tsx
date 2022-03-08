@@ -16,6 +16,10 @@ import _ from "underscore";
 import IconFont from "@/components/icon";
 import Tip from "@/components/tip";
 import "./index.less";
+import { from } from "rxjs";
+import request from "@/store/request";
+import { dnsApi, siteApi } from "@/store/api";
+import { IDomainLine } from "@/store/network/dns/interface";
 interface IProps {
   onClose: () => void;
   next: () => void;
@@ -29,11 +33,14 @@ type IRecord = {
 };
 const CreateDrawer: FC<IProps> = ({ onClose, next, prev }) => {
   const siteUid = useUid();
-  const suffix = useSuffix();
   const loading = useLoading();
   const { domains }: any = useLocation().state;
   const recordLoading = useRecordLoading();
-  const customerLine = useCustomerLineList();
+  const [customerLine, setCusLine] = useState<IDomainLine[]>();
+  const [suffix, setSuffix] = useState<string>();
+
+  // const customerLine = useCustomerLineList();
+  // const suffix = useSuffix();
 
   const [refresh, setRefresh] = useState(false);
   const acmelist = useDnsCnameList();
@@ -41,14 +48,18 @@ const CreateDrawer: FC<IProps> = ({ onClose, next, prev }) => {
   let allRecords: IRecord[] = [];
 
   useEffect(() => {
-    if (!suffix) {
-      siteService.getSuffix(siteUid);
-    }
+    const obs = from(request(siteApi.GetSuffix(siteUid))).subscribe((data) => {
+      data && setSuffix(data);
+    });
+    return () => obs.unsubscribe();
   }, []);
   useEffect(() => {
-    if (!customerLine) {
-      dnsService.findCustomerLineList();
-    }
+    const obs = from(request(dnsApi.FindCustomerLineList())).subscribe(
+      (data) => {
+        data && setCusLine(data);
+      }
+    );
+    return () => obs.unsubscribe();
   }, []);
 
   useEffect(() => {

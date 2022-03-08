@@ -21,38 +21,34 @@ const FlowComp: FC<IProps> = ({ customerUid, title, type }) => {
     reportType: ETimeFilter.TODAY,
   });
   useEffect(() => {
+    let obs;
     switch (type) {
       case IFlowType.CURRENT_MONTH:
         setKey("currentMonthFlowChart");
-        from(request(statApi.StatTraControlCurrMonth(customerUid))).subscribe(
-          (data) => {
-            if (data) {
-              setCurrData(data);
-            }
-          }
-        );
+        obs = from(
+          request(statApi.StatTraControlCurrMonth(customerUid))
+        ).subscribe((data) => {
+          data && setCurrData(data);
+        });
         break;
       case IFlowType.CURRENT_DAY:
         setKey("currentMonthFlowChart");
-        from(request(statApi.StatTraControlCurrDay(customerUid))).subscribe(
-          (data) => {
-            if (data) {
-              setCurrData(data);
-            }
-          }
-        );
+        obs = from(
+          request(statApi.StatTraControlCurrDay(customerUid))
+        ).subscribe((data) => {
+          data && setCurrData(data);
+        });
         break;
       case IFlowType.LAST_HOUR:
         setKey("lastHourBandwidthChart");
-        from(request(statApi.StatTraControlLastHour(customerUid))).subscribe(
-          (data) => {
-            if (data) {
-              setCurrData(data);
-            }
-          }
-        );
+        obs = from(
+          request(statApi.StatTraControlLastHour(customerUid))
+        ).subscribe((data) => {
+          data && setCurrData(data);
+        });
         break;
     }
+    return obs && obs.unsubscribe();
   }, [timeFilter, type, customerUid]);
   return (
     <section className="box">

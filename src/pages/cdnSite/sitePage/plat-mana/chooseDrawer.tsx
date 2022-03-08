@@ -2,9 +2,7 @@ import { FC, useEffect, useMemo, useState } from "react";
 import { Drawer, notification } from "antd";
 import { Btn } from "@/components/button";
 import CheckboxGroup from "@/components/checkboxGroup";
-import SupplierService from "@/store/network/supplier/service";
 import { supplierApi } from "@/store/api";
-import { useManagementList } from "@/store/network/supplier";
 import Loading from "@/components/loading/context";
 import { useLoading } from "@/components/loading";
 import { from } from "rxjs";
@@ -24,12 +22,13 @@ const CreateDrawer: FC<IProps> = ({
   currList,
 }) => {
   const uid = useUid();
-  const manaList = useManagementList();
+  const [manaList, setManaList] = useState<any[]>([]);
+  // const manaList = useManagementList();
   const loading = useLoading();
 
   const [checkedList, setCheckedList] = useState<string[]>([]);
 
-  const onFinish = () => {
+  const onFinish = async () => {
     const checked = checkedList.map((item) => JSON.parse(item).code);
     const suppliers = manaList.map((item: any) => {
       return checked.includes(item.code)
@@ -37,39 +36,39 @@ const CreateDrawer: FC<IProps> = ({
         : { code: item.code, isEnabled: false };
     });
     const submitData = { suppliers, uid };
-    from(request(supplierApi.SaveManagement(submitData))).subscribe((data) => {
-      if (JSON.stringify(data) === "[]") {
-        notification.success({
-          message: "Update Success",
-        });
-        onClose();
-      } else if (data instanceof Array) {
-        data.forEach((item: any) =>
-          notification.error({
-            message: item.code,
-            description: item.message,
-          })
-        );
-      }
-      onRefresh();
-    });
+    const res = await request(supplierApi.SaveManagement(submitData));
+    if (JSON.stringify(res) === "[]") {
+      notification.success({
+        message: "Update Success",
+      });
+      onClose();
+    } else if (res instanceof Array) {
+      res.forEach((item: any) =>
+        notification.error({
+          message: item.code,
+          description: item.message,
+        })
+      );
+    }
+    onRefresh();
   };
   useEffect(() => {
-    if (!manaList) {
-      SupplierService.findManagementList(uid);
-    }
-  }, [manaList]);
+    const obs = from(request(supplierApi.FindManagementList(uid))).subscribe(
+      (data) => {
+        data && setManaList(data);
+      }
+    );
+    return () => obs.unsubscribe();
+  }, [uid]);
 
   const optionList = useMemo(
     () =>
-      (manaList &&
-        manaList.map((item: any) =>
-          JSON.stringify({
-            code: item.code,
-            name: item.displayName,
-          })
-        )) ||
-      [],
+      manaList.map((item) =>
+        JSON.stringify({
+          code: item.code,
+          name: item.displayName,
+        })
+      ),
     [manaList]
   );
   const defaultList = useMemo(

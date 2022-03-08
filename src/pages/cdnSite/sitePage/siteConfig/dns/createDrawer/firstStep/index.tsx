@@ -1,8 +1,6 @@
 // import "./index.less";
 import { FC, useEffect, useState } from "react";
 import { Input, notification } from "antd";
-import { useDnsDomainList } from "@/store/network/dns";
-import dnsService from "@/store/network/dns/service";
 import DnsSelector from "../components/dnsSelector";
 import { Btn } from "@/components/button";
 import { useLoading } from "@/components/loading";
@@ -11,24 +9,33 @@ import { Upload } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import "./index.less";
 import psl from "psl";
+import { from } from "rxjs";
+import request from "@/store/request";
+import { dnsApi } from "@/store/api";
+import { IDomainList } from "@/store/network/dns/interface";
 const { Dragger } = Upload;
 interface IProps {
   onClose: () => void;
   next: (domains: string[]) => void;
 }
 const CreateDrawer: FC<IProps> = ({ onClose, next }) => {
-  const dnsList = useDnsDomainList();
+  const [dnsList, setDnsList] = useState<IDomainList>();
   useEffect(() => {
-    dnsService.findDnsDomain({
-      searchPage: { page: 1, pageSize: 9999 },
-      uid: "",
+    const obs = from(
+      request(
+        dnsApi.FindDnsDomain({
+          searchPage: { page: 1, pageSize: 9999 },
+          uid: "",
+        })
+      )
+    ).subscribe((data) => {
+      data && setDnsList(data);
     });
+    return () => obs.unsubscribe();
   }, []);
   const [domains, setDomains] = useState<any>([]);
   const [numList, setNumList] = useState<number[]>([]);
   const [input, setInput] = useState<string>();
-  console.log();
-
   const loading = useLoading();
   const showErrorNotification = (errorMsg: string) => {
     notification.error({ message: errorMsg });

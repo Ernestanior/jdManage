@@ -142,7 +142,6 @@ class User {
 
   UserLogin(data: any) {
     from(request(userApi.UserLogin(data))).subscribe((data) => {
-      
       if (data) {
         saveToken(data.token);
         this.userLogin$.next(data);
