@@ -3,7 +3,7 @@ import { Template } from "@/components/template";
 import Tip from "@/components/tip";
 import useUid from "@/hooks/useUid";
 import { siteApi } from "@/store/api";
-import { ISslList } from "@/store/network/site/interface";
+import { ISslList } from "@/store/api/site";
 import request from "@/store/request";
 import { Button } from "antd";
 import { FC, ReactElement, useState } from "react";

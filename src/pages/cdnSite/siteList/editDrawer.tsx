@@ -5,7 +5,7 @@ import { Form, Drawer, Input, notification } from "antd";
 import { Btn } from "@/components/button";
 import CheckboxGroup from "@/components/checkboxGroup";
 import SupplierService from "@/store/network/supplier/service";
-import { useSiteSupplierList, useSupplierList } from "@/store/network/supplier";
+import { useSiteSupplierList } from "@/store/network/supplier";
 import Loading from "@/components/loading/context";
 import { useLoading } from "@/components/loading";
 import { from } from "rxjs";
@@ -33,9 +33,7 @@ const CreateDrawer: FC<IProps> = ({ title, editRow, visible, onClose }) => {
       // SupplierService.findSupplier(editRow.customer.uid);
       const obs = from(
         request(supplierApi.FindSupplier(editRow.customer.uid))
-      ).subscribe((data) => {
-        data && setSupplierList(data);
-      });
+      ).subscribe((data) => data && setSupplierList(data));
       return () => obs.unsubscribe();
     }
   }, [editRow]);

@@ -2,17 +2,10 @@ import { BehaviorSubject, from } from "rxjs";
 import request from "@/store/request";
 import { dnsApi } from "@/store/api";
 import {
-  ISearchDomain,
-  IDomainList,
-  IDnsDomain,
   ISearchDnsCname,
   IDnsCname,
-  IDomainLine,
   IBatchRecords,
   IBatchRecordsResult,
-  IValidateCName,
-  IValidateCNameResult,
-  IDomainCount,
 } from "./interface";
 import _ from "underscore";
 import { findNestedObj } from "@/common/utils/util";
@@ -21,33 +14,10 @@ import { findNestedObj } from "@/common/utils/util";
  * 用户相关功能
  */
 class Dns {
-  readonly domainList$ = new BehaviorSubject<IDomainList | null>(null);
-  readonly dnsDomainList$ = new BehaviorSubject<IDomainList | null>(null);
   readonly dnsCnameList$ = new BehaviorSubject<IDnsCname[] | null>(null);
-  readonly customerLineList$ = new BehaviorSubject<IDomainLine[] | null>(null);
   public createBatchRecordsResult$: IBatchRecordsResult[] = [];
-  readonly cNameValidatedResult$ =
-    new BehaviorSubject<IValidateCNameResult | null>(null);
-  readonly domainCountList$ = new BehaviorSubject<IDomainCount | null>(null);
-
-  // readonly createBatchRecordsResult$ = new BehaviorSubject<IBatchRecordsResult[] | null>(null);
-
   readonly recordLoading = new BehaviorSubject<boolean | null>(null);
 
-  findDomain(data: ISearchDomain) {
-    from(request(dnsApi.FindDomain(data))).subscribe((data) => {
-      if (data) {
-        this.domainList$.next(data);
-      }
-    });
-  }
-  findDnsDomain(data: IDnsDomain) {
-    from(request(dnsApi.FindDnsDomain(data))).subscribe((data) => {
-      if (data) {
-        this.dnsDomainList$.next(data);
-      }
-    });
-  }
   findDnsCnameList(data: ISearchDnsCname) {
     from(request(dnsApi.FindDnsCnameList(data))).subscribe((data) => {
       if (data) {
@@ -116,27 +86,6 @@ class Dns {
       }
     });
   }
-  findCustomerLineList() {
-    from(request(dnsApi.FindCustomerLineList())).subscribe((data) => {
-      if (data) {
-        this.customerLineList$.next(data);
-      }
-    });
-  }
-  validateCName(data: IValidateCName) {
-    from(request(dnsApi.ValidateCName(data))).subscribe((data) => {
-      if (data) {
-        this.cNameValidatedResult$.next(data);
-      }
-    });
-  }
-  // findDomainCount(customerUid: string) {
-  //   from(request(dnsApi.FindDomainCount(customerUid))).subscribe((data) => {
-  //     if (data) {
-  //       this.domainCountList$.next(data);
-  //     }
-  //   });
-  // }
 }
 
 const dnsService = new Dns();

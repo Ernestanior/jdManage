@@ -1,7 +1,6 @@
 import { FirewallListSave } from "./../network/firewall/interface";
 import { AxiosRequestConfig } from "axios";
 import { ISearchDomain } from "@/store/network/dns/interface";
-import { CacheSetting } from "@/store/network/cache/interface";
 
 class CacheAPI {
   FindCacheSetting = (uid: string) => {
@@ -33,3 +32,11 @@ class CacheAPI {
   };
 }
 export default CacheAPI;
+
+export interface CacheSetting {
+  cacheExt: string;
+  cacheMethod: string;
+  ignoreQueryString: boolean;
+  ttl: number;
+  uid: string;
+}

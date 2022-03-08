@@ -3,7 +3,7 @@ import { Button, Drawer, Input, notification } from "antd";
 import { siteApi } from "@/store/api";
 import request from "@/store/request";
 import { Template } from "@/components/template";
-import { ISslList } from "@/store/network/site/interface";
+import { ISslList } from "@/store/api/site";
 import useEvent from "@/common/hooks/useEvent";
 interface IProps {
   visible: boolean;

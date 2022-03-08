@@ -1,4 +1,4 @@
-import { IAiSetting } from "@/store/network/site/interface";
+import { IAiSetting } from "@/store/api/site";
 import { Col, Row, Select } from "antd";
 import { FC, useEffect, useState } from "react";
 import {

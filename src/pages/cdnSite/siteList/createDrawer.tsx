@@ -1,16 +1,13 @@
 // import "./index.less";
-import { FC, useMemo, useState } from "react";
+import { FC, useState } from "react";
 import { Form, Drawer, Input, Select, Switch, notification } from "antd";
 import Tip from "@/components/tip";
 // import { FormattedMessage } from "react-intl";
 import IconFont, { tipIcon } from "@/components/icon";
 import { Btn } from "@/components/button";
 import CheckboxGroup from "@/components/checkboxGroup";
-import SupplierService from "@/store/network/supplier/service";
-import { useSupplierList } from "@/store/network/supplier";
 import Loading from "@/components/loading/context";
 import { useLoading } from "@/components/loading";
-import { from } from "rxjs";
 import request from "@/store/request";
 import { siteApi, supplierApi } from "@/store/api";
 interface IProps {

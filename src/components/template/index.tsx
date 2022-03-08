@@ -89,6 +89,7 @@ interface ITemplateProps {
   //   sort:any;
   // };
   data: any;
+  sort?: string;
   /* 传递事件 **/
   event$?: Subject<IEvent>;
   loading?: boolean;
@@ -119,7 +120,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
     desc: 0,
     page: (props.data && props.data.number) || 1,
     pageSize: (props.data && props.data.size) || 20,
-    sort: "",
+    sort: props.sort || "",
   });
   //filter切换
   // const [showFilter, setShowFilter] = useState<boolean>(false);

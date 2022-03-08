@@ -79,19 +79,18 @@ class UserAPI {
     return config;
   };
   //Change Language
-  UserChangeLanguage = (lang:{},data:{lang: string})=>{
-    console.log(lang,data);
-    
+  UserChangeLanguage = (lang: {}, data: { lang: string }) => {
+    console.log(lang, data);
+
     const config: AxiosRequestConfig = {
-      url:"/account/change-lang",
-      method:'POST',
-      params:{lang},
-      data:{lang:data},
+      url: "/account/change-lang",
+      method: "POST",
+      params: { lang },
+      data: { lang: data },
     };
     config.headers = {};
     return config;
-  }
-
+  };
 
   //Code List
   UserAPIWorklogCodeList = () => {
@@ -158,7 +157,7 @@ class UserAPI {
   };
 
   //Access Log
-  UserAccessLog = (data:ISearchPage) => {
+  UserAccessLog = (data: ISearchPage) => {
     const config: AxiosRequestConfig = {
       url: `/access/list/access-log`,
       method: "POST",
@@ -168,7 +167,7 @@ class UserAPI {
     return config;
   };
   //Access WhiteList
-  UserWhiteList = (data:ISearchPage) => {
+  UserWhiteList = (data: ISearchPage) => {
     const config: AxiosRequestConfig = {
       url: `/access/list/access-whitelist`,
       method: "POST",
@@ -178,20 +177,16 @@ class UserAPI {
     return config;
   };
 
-  UserLogin = (data: any)=>{
-    const config: AxiosRequestConfig ={
+  UserLogin = (data: any) => {
+    const config: AxiosRequestConfig = {
       url: `/user/login?`,
       method: "PUT",
       data,
     };
-    config.headers ={};
+    config.headers = {};
     return config;
   };
-
-
-
 }
-
 
 export default UserAPI;
 
@@ -214,7 +209,7 @@ export interface ISearchPage {
   page: number;
   pageSize: number;
   sort?: string;
-  keyWord: string; //user name
+  keyword: string; //user name
   searchPage: ISearchPage;
 }
 
