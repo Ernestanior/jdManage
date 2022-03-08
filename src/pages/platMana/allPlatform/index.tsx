@@ -1,6 +1,7 @@
 import { Template } from "@/components/template";
 import { Role } from "@/components/template/interface";
 import { supplierApi } from "@/store/api";
+import { IAccountUpdate } from "@/store/api/supplier";
 import {
   useSupplierAccountList,
   useSupplierAccountView,
@@ -15,7 +16,6 @@ import {
   Drawer,
   Form,
   Input,
-  Popconfirm,
   Row,
   Select,
   Spin,
@@ -23,7 +23,6 @@ import {
 import TextArea from "antd/lib/input/TextArea";
 import { FC, useEffect, useState } from "react";
 import { from } from "rxjs";
-
 const Index: FC = () => {
   const [params, setParams] = useState<any>();
   const supplierAccountList = useSupplierAccountList();
@@ -31,10 +30,9 @@ const Index: FC = () => {
   const supplierDetail = useSupplierAccountView();
   const [option, setOption] = useState<Object[]>([]);
   const [visible, setVisible] = useState<boolean>(false);
-  const [supplierAccount, setSupplierAccount] = useState<any>();
+  const [supplierAccount, setSupplierAccount] = useState<any>(null);
   const [modifyDrawer, setModifyDrawer] = useState<boolean>(false);
   const [domainDrawer, setDomainDrawer] = useState<boolean>(false);
-  const [selectedOption, setSelectedOption] = useState<string>();
   const [fieldData, setFieldData] = useState<any>();
   const [validateButton, setValidateButton] = useState<boolean>(true);
   const [createButton, setCreateButton] = useState<boolean>(true);
@@ -46,8 +44,7 @@ const Index: FC = () => {
   const [createDomainDetail, setCreateDomainDetail] = useState<any | null>(
     null
   );
-  const [addAccountOption, setAddAccountOption] = useState<Object[]>([]);
-
+  const [drawerOption, setDrawerOption] = useState<Object[]>([]);
   useEffect(() => {
     SupplierService.supplierInfo("");
   }, []);
@@ -72,21 +69,36 @@ const Index: FC = () => {
 
   useEffect(() => {
     setSupplierAccount(supplierDetail);
-    console.log(supplierDetail);
   }, [supplierDetail]);
+
+  useEffect(() => {
+    let tokenValue = supplierAccount?.supplier?.tokenValue;
+    let name = supplierAccount?.name;
+    let remark = supplierAccount?.remark;
+    let code = supplierAccount?.supplier?.code;
+    let tokenFields = supplierAccount?.supplier?.tokenFields;
+    let defaultValue1 = { ...tokenValue, name, remark, code };
+    let defaultValue2 = { name, remark, code };
+    let fieldData = supplierInfo?.find((item: any) => item.code === code);
+    console.log(fieldData, "91");
+    setFieldData(fieldData);
+    tokenValue
+      ? modifyForm.setFieldsValue(defaultValue1)
+      : modifyForm.setFieldsValue(defaultValue2);
+  }, [modifyForm, supplierAccount, supplierInfo]);
 
   useEffect(() => {
     if (supplierInfo) {
       //搜索的选项
       let platformOption: object[] = [];
       //新增的选项
-      let addAccountOption: object[] = [];
+      let drawerOption: object[] = [];
       Object.entries(supplierInfo).forEach((item: any) => {
         let a = item[1];
         platformOption.push({ uid: a.code, name: a.displayName });
-        addAccountOption.push({ value: a.code, label: a.displayName });
+        drawerOption.push({ value: a.code, label: a.displayName });
       });
-      setAddAccountOption(addAccountOption);
+      setDrawerOption(drawerOption);
       setOption(platformOption);
     }
   }, [supplierInfo]);
@@ -98,15 +110,6 @@ const Index: FC = () => {
       SupplierService?.supplierInfo("");
     }
   }, [domainDrawer, modifyDrawer]);
-
-  useEffect(() => {
-    if (selectedOption !== undefined || selectedOption !== null) {
-      let fieldData = supplierInfo?.find(
-        (item: any) => item.code === selectedOption
-      );
-      setFieldData(fieldData);
-    }
-  }, [selectedOption, supplierInfo]);
 
   const handleOnclick = (key: any) => {
     SupplierService.supplierAccountView(key);
@@ -121,10 +124,11 @@ const Index: FC = () => {
   };
 
   const onClose = () => {
+    form.setFieldsValue({});
+    modifyForm.setFieldsValue({});
     setVisible(false);
     setDomainDrawer(false);
     setModifyDrawer(false);
-    setSupplierAccount({});
   };
 
   const handleTokenValue = (e: any) => {
@@ -180,8 +184,28 @@ const Index: FC = () => {
     setModifyDrawer(true);
   };
 
-  const ModifyDomain = (data: any) => {
-    console.log(data);
+  const ModifyDomain = async (data: any) => {
+    const {name,code,remark, ...tokenValue} = data;
+    console.log(tokenValue,"rest");
+    const modifyValue: IAccountUpdate = {
+      name: data.name,
+      remark: data.remark,
+      uid: supplierDetail?.uid,
+      status: "enabled",
+      supplier: { code, tokenValue: { ...tokenValue } },
+    };
+    console.log(modifyValue);
+    const sumbitUpdate = await request(supplierApi.UpdateAccount(modifyValue));
+    console.log(sumbitUpdate);
+  };
+
+  const OptionOnchage = (selectedOption: string) => {
+    if (selectedOption !== undefined || selectedOption !== null) {
+      let fieldData = supplierInfo?.find(
+        (item: any) => item.code === selectedOption
+      );
+      setFieldData(fieldData);
+    }
   };
 
   const TempConfig = {
@@ -205,16 +229,15 @@ const Index: FC = () => {
         text: "状态",
         event: async (data: any) => {
           console.log(data);
-          
+
           const uid = data.uid;
           if (data.status === "disabled") {
             const result = await request(supplierApi.EnableAccount(uid));
             console.log(result);
-          }else{
+          } else {
             const result = await request(supplierApi.DisableAccount(uid));
             console.log(result);
           }
-     
         },
       },
       {
@@ -330,6 +353,7 @@ const Index: FC = () => {
           <Divider />
         </Row>
       </Drawer>
+
       <Drawer
         title="新增账号"
         placement="left"
@@ -352,12 +376,12 @@ const Index: FC = () => {
           </Form.Item>
           <Form.Item label="平台选择" name={"code"} key={"code"}>
             <Select
-              options={addAccountOption}
-              onChange={(e) => {
+              options={drawerOption}
+              onChange={(selectedOption) => {
                 setValidateButton(false);
                 setValidNotification(true);
                 setTokenValue({});
-                setSelectedOption(e);
+                OptionOnchage(selectedOption);
               }}
             ></Select>
           </Form.Item>
@@ -441,7 +465,7 @@ const Index: FC = () => {
         width={570}
         bodyStyle={{ paddingBottom: 80 }}
       >
-        {supplierAccount ? (
+        {supplierAccount !== null ? (
           <Form
             form={modifyForm}
             layout="horizontal"
@@ -449,21 +473,44 @@ const Index: FC = () => {
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
             onFinish={ModifyDomain}
-            initialValues={{
-              name: supplierAccount.name,
-              remark: supplierAccount.remark,
-              code: supplierAccount.supplier?.code,
-            }}
           >
+            <Form.Item>
+              <div>
+                提示: 请谨慎修改API Token,错误的API Token将导致服务故障。
+              </div>
+            </Form.Item>
             <Form.Item label="平台配置名称" name="name">
               <Input />
             </Form.Item>
             <Form.Item label="平台选择" name="code">
-              <Select options={addAccountOption}></Select>
+              <Select
+                options={drawerOption}
+                onChange={(selectedOption) => {
+                  setTokenValue({});
+                  OptionOnchage(selectedOption);
+                }}
+              ></Select>
             </Form.Item>
-            <Form.Item label="平台名称">
-              <Input />
-            </Form.Item>
+            {fieldData?.description && (
+              <Form.Item>
+                <div>{fieldData.description}</div>
+              </Form.Item>
+            )}
+
+            {fieldData !== undefined
+              ? fieldData.tokenFields.map((item: any, key: number) => {
+                  return (
+                    <Form.Item
+                      label={item.displayName}
+                      name={item.name}
+                      key={item.name}
+                    >
+                      <Input onChange={(e) => handleTokenValue(e)} required />
+                    </Form.Item>
+                  );
+                })
+              : ""}
+
             <Form.Item label="备注" name="remark">
               <TextArea />
             </Form.Item>
