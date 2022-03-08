@@ -21,23 +21,22 @@ import {
   Spin,
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { from } from "rxjs";
 const Index: FC = () => {
   const [params, setParams] = useState<any>();
   const supplierAccountList = useSupplierAccountList();
   const supplierInfo = useSupplierInfo();
   const supplierDetail = useSupplierAccountView();
-  const [option, setOption] = useState<Object[]>([]);
+  //const [option, setOption] = useState<Object[]>([]);
   const [visible, setVisible] = useState<boolean>(false);
-  const [supplierAccount, setSupplierAccount] = useState<any>(null);
   const [modifyDrawer, setModifyDrawer] = useState<boolean>(false);
   const [domainDrawer, setDomainDrawer] = useState<boolean>(false);
   const [fieldData, setFieldData] = useState<any>();
   const [validateButton, setValidateButton] = useState<boolean>(true);
   const [button, setButton] = useState<boolean>(true);
   const [tokenValue, setTokenValue] = useState<any>();
-  const [approve, setApprove] = useState<boolean|null>();
+  const [approve, setApprove] = useState<boolean | null>();
   const [validNotification, setValidNotification] = useState<boolean>(true);
   const [form] = Form.useForm();
   const [modifyForm] = Form.useForm();
@@ -51,43 +50,47 @@ const Index: FC = () => {
     SupplierService.supplierInfo("");
   }, []);
 
-  useEffect(() => {
-    params && params.filters
-      ? SupplierService?.supplierAccountList({
-          keyword: params.filters.keyword,
-          searchPage: params.searchPage,
-          type: "",
-          supplier: params.filters.supplier,
-          name: params.filters.name,
-        })
-      : SupplierService?.supplierAccountList({
-          searchPage: { desc: 0, page: 1, pageSize: 25, sort: "name" },
-          keyword: "",
-          name: "",
-          supplier: "",
-          type: "",
-        });
-  }, [params]);
+  // useEffect(() => {
+  //   params && params.filters
+  //     ? SupplierService?.supplierAccountList({
+  //         keyword: params.filters.keyword,
+  //         searchPage: params.searchPage,
+  //         type: "",
+  //         supplier: params.filters.supplier,
+  //         name: params.filters.name,
+  //       })
+  //     : SupplierService?.supplierAccountList({
+  //         searchPage: { desc: 0, page: 1, pageSize: 25, sort: "name" },
+  //         keyword: "",
+  //         name: "",
+  //         supplier: "",
+  //         type: "",
+  //       });
+  // }, [params]);
 
-  useEffect(() => {
-    setSupplierAccount(supplierDetail);
-  }, [supplierDetail]);
+  // useEffect(() => {
+  //   if (supplierInfo) {
+  //     //搜索的选项
+  //     let platformOption: object[] = [];
+  //     //新增的选项
+  //     let drawerOption: object[] = [];
+  //     Object.entries(supplierInfo).forEach((item: any) => {
+  //       let a = item[1];
+  //       platformOption.push({ uid: a.code, name: a.displayName });
+  //       drawerOption.push({ value: a.code, label: a.displayName });
+  //     });
+  //     setDrawerOption(drawerOption);
+  //     // setOption(platformOption);
+  //   }
+  // }, [supplierInfo]);
 
-  useEffect(() => {
-    if (supplierInfo) {
-      //搜索的选项
-      let platformOption: object[] = [];
-      //新增的选项
-      let drawerOption: object[] = [];
-      Object.entries(supplierInfo).forEach((item: any) => {
-        let a = item[1];
-        platformOption.push({ uid: a.code, name: a.displayName });
-        drawerOption.push({ value: a.code, label: a.displayName });
-      });
-      setDrawerOption(drawerOption);
-      setOption(platformOption);
-    }
+  const option = useMemo(() => {
+    return supplierInfo instanceof Array
+      ? supplierInfo?.map((item: any) => ({ uid: item.uid, name: item.name }))
+      : [];
   }, [supplierInfo]);
+
+  console.log(option);
 
   useEffect(() => {
     if (domainDrawer === true) {
@@ -119,24 +122,20 @@ const Index: FC = () => {
     setMVButton(true);
   };
 
-  const handleTokenValue = (e: any) => {
-    let value = e.target.value;
-    setTokenValue({ ...tokenValue, [e.target.id]: value });
-  };
-
   const validateNewDomain = async (data: any) => {
-    let obj = { supplier: { code: data.code, tokenValue: tokenValue } };
+    const { code, name, remark, capacity } = data;
+    let obj = { supplier: { code, tokenValue: tokenValue } };
     let domainDetail = {
-      name: data.name,
-      remark: data.remark,
+      name,
+      remark,
       supplier: {
-        code: data.code,
+        code,
         tokenValue: tokenValue,
       },
       status: "enabled",
       quota: {
         domain: {
-          capacity: data.capacity === undefined ? 0 : data.capacity,
+          capacity: capacity === undefined ? 0 : capacity,
         },
       },
     };
@@ -168,19 +167,20 @@ const Index: FC = () => {
     }
   };
   useEffect(() => {
-    let tokenValue = supplierAccount?.supplier?.tokenValue;
-    let name = supplierAccount?.name;
-    let remark = supplierAccount?.remark;
-    let code = supplierAccount?.supplier?.code;
-    let defaultValue1 = { ...tokenValue, name, remark, code };
-    let defaultValue2 = { name, remark, code };
-    let fieldData = supplierInfo?.find((item: any) => item.code === code);
-    console.log(fieldData, "91");
-    setFieldData(fieldData);
-    tokenValue
-      ? modifyForm.setFieldsValue(defaultValue1)
-      : modifyForm.setFieldsValue(defaultValue2);
-  }, [modifyForm, supplierAccount, supplierInfo]);
+    if (supplierDetail) {
+      const {name,remark}=supplierDetail
+      const{ tokenValue, code } = supplierDetail?.supplier;
+      let defaultValue1 = { ...tokenValue, name, remark, code };
+      let defaultValue2 = { name, remark, code };
+      let fieldData = supplierInfo?.find((item: any) => item.code === code);
+      console.log(fieldData, "91");
+      setFieldData(fieldData);
+      tokenValue
+        ? modifyForm.setFieldsValue(defaultValue1)
+        : modifyForm.setFieldsValue(defaultValue2);
+    }
+
+  }, [modifyForm, supplierDetail, supplierInfo]);
 
   const showModifyDrawer = () => {
     setModifyDrawer(true);
@@ -224,8 +224,8 @@ const Index: FC = () => {
     console.log(supplierDetail);
     let code = supplierDetail?.supplier?.code;
     console.log(code);
-    setValidNotification(true)
-    setApprove(null)
+    setValidNotification(true);
+    setApprove(null);
     if (selectedOption !== undefined || selectedOption !== null) {
       let fieldData = supplierInfo?.find(
         (item: any) => item.code === selectedOption
@@ -242,7 +242,7 @@ const Index: FC = () => {
         modifyForm.setFieldsValue({ remark: "a" });
 
         //显示验证按钮
- 
+
         setMCButton(true);
         setMVButton(false);
       }
@@ -299,7 +299,14 @@ const Index: FC = () => {
       },
     ],
     onSearch: (params: any) => {
-      setParams(params);
+      const { keyword, supplier, name } = params.filters;
+      SupplierService?.supplierAccountList({
+        keyword,
+        supplier,
+        name,
+        searchPage: params.searchPage,
+        type: "",
+      });
     },
     rowId: "uid",
     data: supplierAccountList,
@@ -367,29 +374,29 @@ const Index: FC = () => {
         <Row>
           <Col span={7}>平台账号</Col>
           <Col span={15} offset={2}>
-            {supplierAccount?.name}
+            {supplierDetail?.name}
           </Col>
           <Divider />
           <Col span={7}>平台</Col>
           <Col span={15} offset={2}>
-            {supplierAccount?.supplier?.displayName}
+            {supplierDetail?.supplier?.displayName}
           </Col>
           <Divider />
           <Col span={7}>API 金钥</Col>
           <Col span={15} offset={2}>
-            {supplierAccount?.supplier?.tokenValue?.apiKey
-              ? supplierAccount?.supplier?.tokenValue?.apiKey
+            {supplierDetail?.supplier?.tokenValue?.apiKey
+              ? supplierDetail?.supplier?.tokenValue?.apiKey
               : "-"}
           </Col>
           <Divider />
           <Col span={7}>状态</Col>
           <Col span={15} offset={2}>
-            {supplierAccount?.status ? supplierAccount?.status : "-"}
+            {supplierDetail?.status ? supplierDetail?.status : "-"}
           </Col>
           <Divider />
           <Col span={7}>备注</Col>
           <Col span={15} offset={2}>
-            {supplierAccount?.remark === "" ? "-" : supplierAccount?.remark}
+            {supplierDetail?.remark === "" ? "-" : supplierDetail?.remark}
           </Col>
           <Divider />
         </Row>
@@ -417,7 +424,14 @@ const Index: FC = () => {
           </Form.Item>
           <Form.Item label="平台选择" name={"code"} key={"code"}>
             <Select
-              options={drawerOption}
+              options={
+                option
+                  ? option.map((item: any) => ({
+                      value: item.code,
+                      label: item.displayName,
+                    }))
+                  : []
+              }
               onChange={(selectedOption) => {
                 setValidateButton(false);
                 setValidNotification(true);
@@ -457,7 +471,15 @@ const Index: FC = () => {
                     name={item.name}
                     key={item.name}
                   >
-                    <Input onChange={(e) => handleTokenValue(e)} required />
+                    <Input
+                      onChange={(e) =>
+                        setTokenValue({
+                          ...tokenValue,
+                          [e.target.id]: e.target.value,
+                        })
+                      }
+                      required
+                    />
                   </Form.Item>
                 );
               })
@@ -506,7 +528,7 @@ const Index: FC = () => {
         width={570}
         bodyStyle={{ paddingBottom: 80 }}
       >
-        {supplierAccount !== null ? (
+        {supplierDetail !== null ? (
           <Form
             form={modifyForm}
             layout="horizontal"
@@ -525,7 +547,14 @@ const Index: FC = () => {
             </Form.Item>
             <Form.Item label="平台选择" name="code">
               <Select
-                options={drawerOption}
+                options={
+                  option
+                    ? option.map((item: any) => ({
+                        value: item.code,
+                        label: item.displayName,
+                      }))
+                    : []
+                }
                 onChange={(selectedOption) => {
                   setTokenValue({});
                   OptionOnchage(selectedOption);
@@ -546,7 +575,15 @@ const Index: FC = () => {
                       name={item.name}
                       key={item.name}
                     >
-                      <Input onChange={(e) => handleTokenValue(e)} required />
+                      <Input
+                        onChange={(e) =>
+                          setTokenValue({
+                            ...tokenValue,
+                            [e.target.id]: e.target.value,
+                          })
+                        }
+                        required
+                      />
                     </Form.Item>
                   );
                 })

@@ -244,9 +244,9 @@ const Index: FC = () => {
               options={
                 option
                   ? option.map((item: any) => {
-                      return { key: item.uid, label: item.name };
+                      return { value: item.uid, label: item.name };
                     })
-                  : [{ key: "", label: "" }]
+                  : [{ value: "", label: "" }]
               }
             ></Select>
           </Form.Item>
