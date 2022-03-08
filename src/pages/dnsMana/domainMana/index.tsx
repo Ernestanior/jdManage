@@ -3,44 +3,17 @@ import { dnsApi } from "@/store/api";
 import request from "@/store/request";
 import { Form, Drawer, Input, Select, Button } from "antd";
 import TextArea from "antd/lib/input/TextArea";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { from } from "rxjs";
 
 const Index: FC = () => {
   const [AddForm] = Form.useForm();
   const [CloneForm] = Form.useForm();
   const [domainList, setdomainList] = useState();
-  const [params, setParams] = useState<any>();
   const [option, setOption] = useState<Object[]>([]);
-  const [addDomainOption, setAddDomainOption] = useState<Object[]>([]);
   const [addDrawer, setAddDrawer] = useState<boolean>(false);
   const [cloneDrawer, setCloneDrawer] = useState<boolean>(false);
   const [cloneData, setCloneData] = useState<any>(false);
-  useEffect(() => {
-    if (params) {
-      if (params.filters !== undefined) {
-        const data = {
-          keyword: params.filters.keyword,
-          searchPage: params.searchPage,
-          customerUid: params.filters.customerUid,
-          status: params.filters.status,
-        };
-        from(request(dnsApi.FindDnsDomain(data))).subscribe((data) => {
-          data && setdomainList(data);
-        });
-      } else {
-        from(
-          request(
-            dnsApi.FindDnsDomain({
-              searchPage: { desc: 0, page: 1, pageSize: 25, sort: "name" },
-            })
-          )
-        ).subscribe((data) => {
-          data && setdomainList(data);
-        });
-      }
-    }
-  }, [params]);
 
   const showAddDrawer = () => {
     setAddDrawer(true);
@@ -57,24 +30,18 @@ const Index: FC = () => {
   const closeCLoneDrawer = () => {
     setCloneDrawer(false);
   };
-  useEffect(() => {
-    const handleDnsCustomerList = async () => {
-      const result = await request(
-        dnsApi.FindCustomerList({
-          searchPage: { page: 1, pageSize: 99999 },
-          uid: "",
-        })
-      );
-      if (result) {
-        let dnsOption: object[] = [];
-        Object.entries(result.content).forEach((item: any) => {
-          let a = item[1];
-          dnsOption.push({ uid: a.uid, name: a.name });
-        });
-        setOption(dnsOption);
-      }
-    };
-    handleDnsCustomerList();
+
+  useMemo(async () => {
+    const result = await request(
+      dnsApi.FindCustomerList({
+        searchPage: { page: 1, pageSize: 99999 },
+        uid: "",
+      })
+    );
+    const option = result.content.map((item: any) => {
+      return { uid: item.uid, name: item.name };
+    });
+    setOption(option);
   }, []);
 
   const TempConfig = {
@@ -169,7 +136,16 @@ const Index: FC = () => {
       },
     ],
     onSearch: (params: any) => {
-      setParams(params);
+      const { keyword, customerUid, status } = params.filters;
+      const data = {
+        keyword,
+        customerUid,
+        status,
+        searchPage: params.searchPage,
+      };
+      from(request(dnsApi.FindDnsDomain(data))).subscribe((data) => {
+        data && setdomainList(data);
+      });
     },
     rowId: "uid",
     data: domainList,
@@ -264,7 +240,15 @@ const Index: FC = () => {
             <Input />
           </Form.Item>
           <Form.Item label="选择用户" name="customerUid">
-            <Select options={addDomainOption}></Select>
+            <Select
+              options={
+                option
+                  ? option.map((item: any) => {
+                      return { value: item.uid, label: item.name };
+                    })
+                  : [{ value: "", label: "" }]
+              }
+            ></Select>
           </Form.Item>
           <Form.Item label="备注" name="remark">
             <TextArea />
