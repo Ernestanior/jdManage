@@ -1,6 +1,6 @@
 import { FC, ReactElement, useMemo, useState } from "react";
 import { Template } from "@/components/template";
-import useEvent from "@/common/hooks/useEvent";
+import useEvent from "@/hooks/useEvent";
 import { useNavigate } from "react-router-dom";
 import { EdgeModal } from "@/components/modal";
 import { from } from "rxjs";

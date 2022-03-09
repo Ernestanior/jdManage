@@ -7,7 +7,7 @@ import request from "@/store/request";
 import { sslManageApi } from "@/store/api";
 import { EdgeModal } from "@/components/modal";
 import { notification } from "antd";
-import useEvent from "@/common/hooks/useEvent";
+import useEvent from "@/hooks/useEvent";
 
 const Index: FC = () => {
   const loading = useLoading();

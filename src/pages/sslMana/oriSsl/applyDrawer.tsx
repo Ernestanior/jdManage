@@ -87,7 +87,6 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
             privateKeyType: priKeyType,
           };
       const res = await request(sslManageApi.requestOriginalCert(payload));
-      console.log(res);
       if (res.uid) {
         notification.success({ message: "Apply Success" });
         reload();

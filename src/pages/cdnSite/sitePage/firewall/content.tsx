@@ -1,18 +1,18 @@
 import { useLoading } from "@/components/loading";
 import { EdgeModal } from "@/components/modal";
+import Loading from "@/components/loading/context";
 import useUid from "@/hooks/useUid";
 import { firewallApi } from "@/store/api";
 import request from "@/store/request";
 import { Button, Drawer, notification, Switch } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { FC, ReactElement, useMemo, useState } from "react";
-import Loading from "@/components/loading/context";
 import "./index.less";
-import { FirewallList } from "@/store/network/firewall/interface";
+import { FirewallList } from "@/store/api/firewall";
 
 interface IProps {
   type: string;
-  currData: FirewallList | null;
+  currData: FirewallList | undefined;
   onRefresh: () => void;
   tip?: ReactElement;
 }

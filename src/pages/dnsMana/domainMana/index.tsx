@@ -53,7 +53,6 @@ const Index: FC = () => {
       {
         text: "申请证书",
         event: (data: any) => {
-          console.log(data.uid);
           let uid = { domainUid: data.uid, records: [data.name] };
           from(request(dnsApi.CertRequest(uid))).subscribe((data) => {
             console.log(data);

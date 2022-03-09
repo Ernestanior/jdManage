@@ -257,7 +257,6 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
         pageSize: searchPageOld.pageSize,
         sort: !!st.order ? st.field || "" : "",
       };
-      // console.log(searchPage);
       submit("searchPage", searchPage);
     },
     [submit, params$]
@@ -387,7 +386,6 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
       return () => sub.unsubscribe();
     }
   }, [props, pagination, searchPage]);
-  // console.log(props.data, 'template')
   return (
     <div className="temp302">
       {props.title && (

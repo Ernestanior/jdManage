@@ -33,19 +33,7 @@ const Map: FC<IDataModule> = ({ data, scope, type }) => {
     () => data && data.map((i: IMap) => ({ name: i.region, value: i.value })),
     [data]
   );
-  console.log(filteredData);
 
-  // const options = useMemo(
-  //   () => !isEmptyObj(data),
-  //   [data]
-  // );
-
-  // if (isEmptyObj(data)) {
-  //   return null;
-  // }
-  // if (!options) {
-  //   return null;
-  // }
   return (
     <section style={{ position: "relative", minHeight: 300, marginBottom: 20 }}>
       {!loading && filteredData ? (

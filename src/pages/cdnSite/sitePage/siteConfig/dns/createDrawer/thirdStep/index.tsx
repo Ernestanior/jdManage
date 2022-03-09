@@ -73,7 +73,6 @@ const CreateDrawer: FC<IProps> = ({ onClose, prev }) => {
     const domains = domain
       ? [domain]
       : acmelist?.map((v) => `${v.record}.${v.name}`);
-    console.log(domains);
     domains?.map(async (domain) => {
       const res: boolean = await request(dnsApi.ValidateDNS(siteUid, domain));
       const currentDomain =
@@ -104,7 +103,6 @@ const CreateDrawer: FC<IProps> = ({ onClose, prev }) => {
       siteUid,
       displayNames: selectedCName ? [selectedCName] : displayNames,
     };
-    console.log(domain);
     const result = await request(dnsApi.ValidateCName(domain));
     setCNameValidated({ ...cNameValidated, ...result });
   };

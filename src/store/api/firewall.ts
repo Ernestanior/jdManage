@@ -1,6 +1,4 @@
-import { FirewallListSave } from "./../network/firewall/interface";
 import { AxiosRequestConfig } from "axios";
-import { ISearchDomain } from "@/store/network/dns/interface";
 
 class FirewallAPI {
   FindWhiteIP = (uid: string) => {
@@ -77,3 +75,12 @@ class FirewallAPI {
   };
 }
 export default FirewallAPI;
+export interface FirewallList {
+  isEnabled: boolean;
+  addresses?: string[];
+  userAgents?: string[];
+}
+
+export interface FirewallListSave extends FirewallList {
+  siteUid: string;
+}

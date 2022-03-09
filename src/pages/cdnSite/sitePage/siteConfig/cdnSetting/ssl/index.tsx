@@ -1,4 +1,4 @@
-import useEvent from "@/common/hooks/useEvent";
+import useEvent from "@/hooks/useEvent";
 import { Template } from "@/components/template";
 import Tip from "@/components/tip";
 import useUid from "@/hooks/useUid";

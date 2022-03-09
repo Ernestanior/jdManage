@@ -9,7 +9,7 @@ import { from } from "rxjs";
 import request from "@/store/request";
 import { customerApi } from "@/store/api";
 import { EdgeModal } from "@/components/modal";
-import useEvent from "@/common/hooks/useEvent";
+import useEvent from "@/hooks/useEvent";
 import { ICustomerList } from "@/store/network/customer/interface";
 
 const Content: FC = () => {

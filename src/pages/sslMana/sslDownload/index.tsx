@@ -7,7 +7,7 @@ import { dnsApi } from "@/store/api";
 import request from "@/store/request";
 import { EdgeModal } from "@/components/modal";
 import { useLoading } from "@/components/loading";
-import useEvent from "@/common/hooks/useEvent";
+import useEvent from "@/hooks/useEvent";
 import { notification } from "antd";
 import { useCustomerList } from "@/store/network/customer";
 import { from } from "rxjs";

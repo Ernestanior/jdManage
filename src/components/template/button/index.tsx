@@ -31,9 +31,6 @@ export const Btn = ({
   loading,
   ...props
 }: IProps) => {
-  // console.log(children);
-  // console.log(props);
-
   return (
     <Button
       {...props}

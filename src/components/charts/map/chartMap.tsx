@@ -26,7 +26,6 @@ const ChartMap = (props: IProps) => {
     min = min < v.value ? min : v.value;
     return true;
   });
-  console.log(isLoading);
 
   return (
     <div

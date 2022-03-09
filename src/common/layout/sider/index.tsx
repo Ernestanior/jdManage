@@ -10,14 +10,9 @@ interface Props {
 const AntSide = Layout.Sider;
 const Sider: FC<Props> = ({ sideList }) => {
   const [collapsed, setCollapsed] = useState(true);
-  // const [selected, setSelected] = useState<Number>(0);
-
   const currentPath = useLocation().pathname.split("/");
   const navPath = currentPath[3] || "";
   const parentPath = currentPath.slice(0, 3).join("/");
-  // console.log(currentPath);
-  // console.log(parentPath);
-  // console.log(navPath);
   return (
     <AntSide
       collapsible

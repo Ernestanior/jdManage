@@ -1,6 +1,6 @@
 import { FC, ReactElement, useEffect, useMemo, useState } from "react";
 import { Template } from "@/components/template";
-import useEvent from "@/common/hooks/useEvent";
+import useEvent from "@/hooks/useEvent";
 import CreateDrawer from "./createDrawer";
 import EditDrawer from "./editDrawer";
 import { useCustomerList } from "@/store/network/customer";
@@ -168,7 +168,6 @@ const Index: FC = (): ReactElement => {
         title: "客户",
         key: "customer.name",
         render: (e: any) => {
-          // console.log(e);
           return e.customer.name;
         },
       },
