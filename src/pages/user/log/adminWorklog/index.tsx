@@ -5,7 +5,6 @@ import { worklogDetail } from "@/store/api/user";
 import {
   useCodeList,
   useEventList,
-  useNewDeleteWorklog,
   useWorkLog,
 } from "@/store/network/user";
 import userService from "@/store/network/user/service";
@@ -23,7 +22,6 @@ const Index: FC<Role> = (props: Role) => {
   const { TextArea } = Input;
   const codelist = useCodeList();
   const worklog = useEventList();
-  const deletelog = useNewDeleteWorklog();
   const LogDetail = useWorkLog();
   const [handleExpand, setHandleExpand] = useState(true);
   const [eventID, seteventID] = useState<string>("");
@@ -77,7 +75,7 @@ const Index: FC<Role> = (props: Role) => {
         }
       }
     }
-  }, [params, props.type, deletelog]);
+  }, [params, props.type]);
 
   const confirm = async () => {
     const res = await request(userApi.UserDeleteWorkLog([deleteId]));

@@ -186,6 +186,17 @@ class UserAPI {
     config.headers = {};
     return config;
   };
+  UserCreateWhiteList = (data: string) => {
+    const config: AxiosRequestConfig = {
+      url: `/access/create/access-whitelist`,
+      method: "POST",
+      data: {ips:[data]},
+    };
+    config.headers = {};
+    return config;
+  };
+
+
 }
 
 export default UserAPI;

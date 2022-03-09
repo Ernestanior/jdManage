@@ -1,5 +1,5 @@
 //New UI
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { Btn } from "@/components/button/index";
 import { Form, Input, Select, Spin } from "antd";
 import "./index.less";
@@ -52,12 +52,10 @@ const UserInfoForm = [
 export const Index: FC<UserInfoInterFace> = () => {
   const rawInfo = useNewUserInfo(); // 订阅流
   useEffect(() => userService?.UserInfo(), []); //调接口
-
   const [form] = Form.useForm();
 
   useEffect(() => {
     form.setFieldsValue(rawInfo);
-    console.log(rawInfo);
   }, [rawInfo, form]);
 
   const onFinish = async (values: any) => {

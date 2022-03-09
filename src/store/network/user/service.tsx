@@ -11,35 +11,14 @@ import { saveToken } from "@/store/storage";
  * 用户相关功能
  */
 class User {
-  readonly userList$ = new BehaviorSubject<IUserList | null>(null);
   readonly userInfo$ = new BehaviorSubject<any>(null);
   readonly userWorkLogCodeList$ = new BehaviorSubject<any>(null);
   readonly userWorkLogEventList$ = new BehaviorSubject<any>(null);
   readonly userLogDetail$ = new BehaviorSubject<any>(null);
-  readonly userDeleteWorkLog$ = new BehaviorSubject<string[] | null>(null);
-  readonly userAccountView$ = new BehaviorSubject<any | null>(null);
-  readonly userChangePassword$ = new BehaviorSubject<any>(null);
   readonly userAccessLog$ = new BehaviorSubject<any>(null);
   readonly userAccessWhiteList$ = new BehaviorSubject<any>(null);
-  readonly userChangeLanguage$ = new BehaviorSubject<any>(null);
   readonly userLogin$ = new BehaviorSubject<any>(null);
-  findUser(keyword: string, searchPage: ISearchPage) {
-    from(
-      request(
-        userApi.FindUser(
-          {},
-          {
-            keyword,
-            searchPage,
-          }
-        )
-      )
-    ).subscribe((data) => {
-      if (data) {
-        this.userList$.next(data);
-      }
-    });
-  }
+
 
   UserInfo() {
     from(request(userApi.UserInfo())).subscribe((data) => {
@@ -78,50 +57,6 @@ class User {
     }
   }
 
-  UserDeleteWorkLog(eventId: string[] | null) {
-    if (eventId !== null) {
-      from(request(userApi.UserDeleteWorkLog(eventId))).subscribe((data) => {
-        if (data) {
-          this.userDeleteWorkLog$.next(data);
-        }
-      });
-    }
-  }
-
-  create(params: ICreateUserParams) {
-    from(
-      request(
-        userApi.CreateUser(
-          {},
-          {
-            ...params,
-          }
-        )
-      )
-    ).subscribe((data) => {
-      if (data) {
-        this.userList$.next(data);
-      }
-    });
-  }
-
-  UserAccountView() {
-    from(request(userApi.UserAccountView())).subscribe((data) => {
-      if (data) {
-        this.userAccountView$.next(data);
-      }
-    });
-  }
-
-  UserChangePassword(password: any) {
-    from(request(userApi.UserChangePassword(password), true)).subscribe(
-      (data) => {
-        if (data) {
-          this.userChangePassword$.next(data);
-        }
-      }
-    );
-  }
   UserAccessLog(data: any) {
     from(request(userApi.UserAccessLog(data))).subscribe((data) => {
       if (data) {

@@ -2,7 +2,7 @@ import IconFont from "@/components/icon";
 import { Template } from "@/components/template";
 import { userApi } from "@/store/api";
 import { worklogDetail } from "@/store/api/user";
-import { useCodeList, useEventList, useNewDeleteWorklog, useWorkLog } from "@/store/network/user";
+import { useCodeList, useEventList, useWorkLog } from "@/store/network/user";
 import userService from "@/store/network/user/service";
 import request from "@/store/request";
 import { Col, Input, Popconfirm, Row } from "antd";
@@ -19,7 +19,6 @@ const Index: FC<Role> = (props: Role) => {
   const codelist = useCodeList();
   const worklog = useEventList();
   const LogDetail = useWorkLog();
-  const deletelog = useNewDeleteWorklog();
   const [handleExpand, setHandleExpand] = useState(true);
   const [eventID, seteventID] = useState<string>("");
   const [eventType, setEventType] = useState<object[]>([]);
@@ -72,7 +71,7 @@ const Index: FC<Role> = (props: Role) => {
         }
       }
     }
-  }, [params, props.type, deletelog]);
+  }, [params, props.type]);
 
   const confirm = () => {
     from(request(userApi.UserDeleteWorkLog([deleteId]))).subscribe((data)=>{
