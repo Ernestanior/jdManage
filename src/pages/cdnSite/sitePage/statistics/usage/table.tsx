@@ -49,7 +49,6 @@ const TableComp: FC<IProps> = ({ bandwidth, flow }) => {
       })),
     [bandwidth]
   );
-  console.log(tableData);
 
   if (!bandwidth) {
     return null;

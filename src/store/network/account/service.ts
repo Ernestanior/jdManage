@@ -13,9 +13,6 @@ class Account {
 
   constructor() {
     const token = getToken();
-    console.log(token, "aaaaa");
-
-    // console.log(token);
     if (token) {
       this.info$.next(token);
     }
@@ -25,7 +22,6 @@ class Account {
     from(request(authApi.Login({ username, password }), true)).subscribe(
       (data) => {
         // token存储
-        // console.log(data);
         if (data && data.response === "success") {
           if (data.result) {
             saveToken(data.result.token);

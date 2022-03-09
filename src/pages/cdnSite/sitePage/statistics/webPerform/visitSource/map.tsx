@@ -27,15 +27,12 @@ export const colorPalette = [
 
 const Map: FC<IDataModule> = ({ data, scope }) => {
   const loading = useLoading();
-  console.log(data);
-
   const filteredData = useMemo(
     () =>
       data instanceof Array &&
       data.map((i: IMap) => ({ name: i.region, value: i.count })),
     [data]
   );
-  console.log(filteredData);
 
   return (
     <section style={{ position: "relative", minHeight: 300, marginBottom: 20 }}>

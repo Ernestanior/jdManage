@@ -28,7 +28,6 @@ const EditDrawer: FC<IProps> = ({
   currData,
 }) => {
   const loading = useLoading();
-  // console.log(editId);
   const [mode, setMode] = useState<string>("availability");
   const [adjustmentWindow, setAdjustmentWindow] = useState<number>(12);
   const [adjustmentThreshold, setAdjustmentThreshold] = useState<number>(1);

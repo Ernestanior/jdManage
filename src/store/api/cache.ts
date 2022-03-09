@@ -1,6 +1,4 @@
-import { FirewallListSave } from "./../network/firewall/interface";
 import { AxiosRequestConfig } from "axios";
-import { ISearchDomain } from "@/store/network/dns/interface";
 
 class CacheAPI {
   FindCacheSetting = (uid: string) => {

@@ -1,18 +1,26 @@
 import Tip from "@/components/tip";
 import useUid from "@/hooks/useUid";
-import { useBlackUA } from "@/store/network/firewall";
-import firewallService from "@/store/network/firewall/service";
+import { firewallApi } from "@/store/api";
+import { FirewallList } from "@/store/api/firewall";
+import request from "@/store/request";
 import { FC, ReactElement, useEffect, useState } from "react";
+import { from } from "rxjs";
 import Firewall from "./content";
 
 const UaBlack: FC = (): ReactElement => {
   const uid = useUid();
-  const blackUA = useBlackUA();
+  const [blackUA, setBlackUA] = useState<FirewallList>();
+
   const [refreshFlag, setRefreshFlag] = useState(false);
 
   useEffect(() => {
-    firewallService.findBlackUA(uid);
-    firewallService.findWhiteUA(uid);
+    const obs1 = from(request(firewallApi.FindBlackUA(uid))).subscribe(
+      (data) => data && setBlackUA(data)
+    );
+    // const obs2 = from(request(firewallApi.FindWhiteUA(uid))).subscribe((data) => {
+    // data && setWhiteUA(data);
+    // });
+    return () => obs1.unsubscribe();
   }, [refreshFlag, uid]);
   return (
     <Firewall

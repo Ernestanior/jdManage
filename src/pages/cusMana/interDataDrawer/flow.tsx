@@ -21,8 +21,6 @@ export const colorPalette = [
 ];
 
 const Flow: FC<IDataModule> = ({ data, type }) => {
-  console.log(data);
-
   const createOptions = (data: any) => {
     const series = Object.keys(data).map((key, i) => {
       const _data = Array.isArray(data[key])

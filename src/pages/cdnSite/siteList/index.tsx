@@ -168,7 +168,6 @@ const Index: FC = (): ReactElement => {
         title: "客户",
         key: "customer.name",
         render: (e: any) => {
-          // console.log(e);
           return e.customer.name;
         },
       },

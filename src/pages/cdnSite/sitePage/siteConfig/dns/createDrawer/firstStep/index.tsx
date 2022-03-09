@@ -43,8 +43,6 @@ const CreateDrawer: FC<IProps> = ({ onClose, next }) => {
 
   const goNext = () => {
     const isValid = checkValid(input);
-    console.log(isValid);
-
     if (input && !isValid) {
       notification.error({
         message: "输入的内容无效",
@@ -113,11 +111,8 @@ const CreateDrawer: FC<IProps> = ({ onClose, next }) => {
             dnsList={dnsList.content}
             // numOfList={numList.length}
             onSubmit={(e: any) => {
-              // console.log(e);
-              // setDomains({ ...domains, ...e });
               domains[id] = e;
               setDomains([...domains]);
-              // setDomainList((domainList[index] = e));
             }}
             key={id}
             // id={id}
@@ -159,7 +154,6 @@ const CreateDrawer: FC<IProps> = ({ onClose, next }) => {
           // value={this.state.addRecords}
           placeholder="允许添加的域名格式为：www.sample.com，*.sample.com"
           onChange={(e) => {
-            // console.log(e.target.value);
             setInput(e.target.value);
             // this.setState({
             //   addRecords: e.target.value,
@@ -185,7 +179,6 @@ const CreateDrawer: FC<IProps> = ({ onClose, next }) => {
 
             fileReader.onload = () => {
               const addRecords = formatInput(fileReader.result);
-              console.log(addRecords);
               setInput(addRecords);
               // this.setState({
               //   fileList: [file],
@@ -241,10 +234,8 @@ const checkValid = (value: string | undefined) => {
     //筛选出有wildcard域名
     if (rec.split(".")[0] === "*") {
       const tdomain = rec.split(".").filter((v) => v !== "*");
-      // console.log(tdomain)
       const res1 = tdomain.length === 1 ? true : false;
       const res2 = tdomain.length === 2 ? true : false;
-      // console.log(res)
       if (!res1 && !res2) {
         errors.push(rec);
       }

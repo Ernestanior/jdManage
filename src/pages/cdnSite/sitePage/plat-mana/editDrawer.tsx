@@ -86,7 +86,6 @@ const EditDrawer: FC<IProps> = ({ visible, onClose, currUid }) => {
         title: "客户",
         key: "customer.name",
         render: (_: any, e: any) => {
-          // console.log(e);
           return e.name === modifyingKey ? (
             <>
               <Button
