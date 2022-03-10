@@ -33,7 +33,7 @@ const validity: number[] = [];
 for (let i = 0; i < 15; i++) {
   validity.push(i + 1);
 }
-const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
+const ApplyDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
   const [form] = Form.useForm();
   const [optionList, setOptionList] = useState<IOption[]>();
   const [priKeyType, setPriKeyType] = useState<string>();
@@ -226,4 +226,4 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
   );
 };
 
-export default CreateDrawer;
+export default ApplyDrawer;

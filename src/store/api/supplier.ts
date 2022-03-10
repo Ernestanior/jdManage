@@ -70,7 +70,7 @@ class SupplierAPI {
     config.headers = {};
     return config;
   };
-  SupplierInfo = (type: string) => {
+  SupplierInfoAll = (type: string) => {
     const config: AxiosRequestConfig = {
       url: `/supplier/info/all`,
       method: "GET",

@@ -7,7 +7,7 @@ interface IProps {
   onClose: () => void;
   certData: any;
 }
-const CreateDrawer: FC<IProps> = ({ visible, onClose, certData }) => {
+const DetailDrawer: FC<IProps> = ({ visible, onClose, certData }) => {
   return (
     <Drawer
       title="查看证书"
@@ -86,4 +86,4 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, certData }) => {
   );
 };
 
-export default CreateDrawer;
+export default DetailDrawer;
