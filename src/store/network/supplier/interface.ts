@@ -26,3 +26,4 @@ export interface ICustomerSupplier {
   name: string;
   value: number;
 }
+
