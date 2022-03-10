@@ -2,12 +2,12 @@ import IconFont from "@/components/icon";
 import { Template } from "@/components/template";
 import { userApi } from "@/store/api";
 import { worklogDetail } from "@/store/api/user";
-import { useCodeList, useEventList, useNewDeleteWorklog, useWorkLog } from "@/store/network/user";
+import { useCodeList, useEventList, useWorkLog } from "@/store/network/user";
 import userService from "@/store/network/user/service";
 import request from "@/store/request";
 import { Col, Input, Popconfirm, Row } from "antd";
 import moment from "moment";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { from } from "rxjs";
 
 interface Role {
@@ -19,67 +19,45 @@ const Index: FC<Role> = (props: Role) => {
   const codelist = useCodeList();
   const worklog = useEventList();
   const LogDetail = useWorkLog();
-  const deletelog = useNewDeleteWorklog();
   const [handleExpand, setHandleExpand] = useState(true);
   const [eventID, seteventID] = useState<string>("");
-  const [eventType, setEventType] = useState<object[]>([]);
-  const [eventService, setEventService] = useState<object[]>([]);
-  const [params, setparams] = useState<any>();
   const [deleteId, setDeleteId] = useState<any>();
   useEffect(() => userService?.UserServiceWorkLogCodeList(), []);
 
-  useEffect(() => {
-    if (codelist !== undefined) {
-      let eventType: object[] = [];
-      let eventService: object[] = [];
-      codelist?.eventType &&
-        Object.entries(codelist?.eventType).forEach(
-          ([key, value]: any, index: number) => {
-            eventType.push({ uid: key, name: value });
-          }
-        );
-      codelist?.eventService &&
-        Object.entries(codelist?.eventService).forEach(
-          ([key, value]: any, index: number) => {
-            eventService.push({ uid: key, name: value });
-          }
-        );
-      setEventType(eventType);
-      setEventService(eventService);
+  const eventType = useMemo(() => {
+    if (codelist) {
+      let { eventType } = codelist;
+      const obj = Object.entries(eventType).map(([key, value]: any) => ({
+        uid: key,
+        name: value,
+      }));
+      return obj;
+    } else {
+      return [];
     }
-  }, [codelist, codelist?.evetType, codelist?.eventService]);
+  }, [codelist]);
+
+  const eventService = useMemo(() => {
+    if (codelist) {
+      let { eventService } = codelist;
+      const obj = Object.entries(eventService).map(([key, value]: any) => ({
+        uid: key,
+        name: value,
+      }));
+      return obj;
+    } else {
+      return [];
+    }
+  }, [codelist]);
 
   useEffect(() => userService?.UserServiceLogDetail(eventID), [eventID]);
 
-  useEffect(() => {
-    if (props.type === 2) {
-      if (params) {
-        if (params.filters !== undefined) {
-          userService?.UserServiceWorkLogEventList({
-            keyword: params.filters.keyword,
-            searchPage: params.searchPage,
-            includesAll: true,
-            eventType: params.filters.eventType,
-            eventService: params.filters.eventService,
-            startDate: params.filters.startDate,
-            endDate: params.filters.endDate,
-          });
-        } else {
-          userService?.UserServiceWorkLogEventList({
-            searchPage: { desc: 1, page: 1, pageSize: 10, sort: "" },
-            includesAll: true,
-          });
-        }
-      }
-    }
-  }, [params, props.type, deletelog]);
-
   const confirm = () => {
-    from(request(userApi.UserDeleteWorkLog([deleteId]))).subscribe((data)=>{
+    from(request(userApi.UserDeleteWorkLog([deleteId]))).subscribe((data) => {
       if (data) {
         alert("delete Log Success");
       }
-    })
+    });
   };
   const cancel = () => {};
 
@@ -90,8 +68,6 @@ const Index: FC<Role> = (props: Role) => {
           <div>
             <Popconfirm
               title="Are you sure delete this task?"
-              //visible={this.state.visible}
-              //onVisibleChange={this.handleVisibleChange}
               onConfirm={() => confirm()}
               onCancel={() => cancel()}
               okText="Yes"
@@ -114,8 +90,12 @@ const Index: FC<Role> = (props: Role) => {
       },
     ],
 
-    onSearch: (params: any) => {
-      setparams(params);
+    onSearch: ({searchPage, filters}: any) => {
+      userService?.UserServiceWorkLogEventList({
+        ...filters,
+        includesAll: true,
+        searchPage,
+      });
     },
     rowId: "eventId",
     data: worklog,
@@ -146,7 +126,6 @@ const Index: FC<Role> = (props: Role) => {
         key: "eventDate",
         render: (text: number) => moment(text).format("YYYY/MM/DD h:mm:ss"),
       },
-      
     ],
     expandedRowRender: () => {
       return (
