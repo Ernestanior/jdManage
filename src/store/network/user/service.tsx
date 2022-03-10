@@ -37,7 +37,7 @@ class User {
   }
 
   UserServiceWorkLogEventList(data: any) {
-    from(request(userApi.UserAPIWorklogEventList({}, data))).subscribe(
+    from(request(userApi.UserAPIWorklogEventList(data))).subscribe(
       (data) => {
         if (data) {
           this.userWorkLogEventList$.next(data);

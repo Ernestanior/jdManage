@@ -1,75 +1,105 @@
 //New UI
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import { Btn } from "@/components/button/index";
 import { Form, Input, Select, Spin } from "antd";
 import "./index.less";
 import { Col, Row } from "antd";
-import { useNewUserInfo } from "@/store/network/user";
-import userService from "@/store/network/user/service";
 import moment from "moment";
-import { from } from "rxjs";
 import { userApi } from "@/store/api";
 import request from "@/store/request";
+import { LoadingOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 interface UserInfoInterFace {
   label?: string;
   name?: string;
   fieldType?: string;
+  readonly?: boolean;
+  style?: any;
 }
-const UserInfoForm = [
-  {
-    label: "登入邮箱",
-    name: "email",
-    fieldType: "Input",
-    type: "email",
-  },
-  {
-    label: "用户名称",
-    name: "name",
-    fieldType: "Input",
-    type: "string",
-  },
-  {
-    label: "联系电话",
-    name: "mobile",
-    fieldType: "Input",
-    type: "number",
-  },
-  {
-    label: "系统语言",
-    name: "lang",
-    fieldType: "Select",
-    type: "string",
-  },
-  {
-    label: "注册时间",
-    name: "regTime",
-    fieldType: "Date",
-  },
-];
 
 export const Index: FC<UserInfoInterFace> = () => {
-  const rawInfo = useNewUserInfo(); // 订阅流
-  useEffect(() => userService?.UserInfo(), []); //调接口
   const [form] = Form.useForm();
+  const [userInfo, setUserInfo] = useState<any>();
+  const [onSetting, setOnSetting] = useState<boolean>(false);
 
-  useEffect(() => {
-    form.setFieldsValue(rawInfo);
-  }, [rawInfo, form]);
+  const UserInfoForm = [
+    {
+      label: "用户名称",
+      name: "name",
+      fieldType: "Input",
+      type: "string",
+      readonly: true,
+      style: { cursor: "default" },
+    },
+    {
+      label: "登入邮箱",
+      name: "email",
+      fieldType: "Input",
+      type: "email",
+      readonly: !onSetting,
+      style: !onSetting ? { cursor: "default" } : { cursor: "text" },
+    },
+    {
+      label: "联系电话",
+      name: "mobile",
+      fieldType: "Input",
+      type: "number",
+      readonly: !onSetting,
+      style: !onSetting ? { cursor: "default" } : { cursor: "text" },
+    },
+    {
+      label: "系统语言",
+      name: "lang",
+      fieldType: "Select",
+      type: "string",
+      style: { cursor: "default" },
+    },
+    {
+      label: "注册时间",
+      name: "regTime",
+      fieldType: "Date",
+      readonly: true,
+      style: { cursor: "default" },
+    },
+  ];
+
+  useMemo(async () => {
+    const info = await request(userApi.UserInfo());
+    const newInfo = {
+      ...info,
+      regTime: moment(info.regTime).format("YYYY-MM-DD h:mm:ss"),
+    };
+    setUserInfo(newInfo);
+    form.setFieldsValue(newInfo);
+  }, [form]);
 
   const onFinish = async (values: any) => {
-    const res = await request(
-      userApi.UserChangeLanguage(rawInfo?.lang, values.lang)
-    );
-    res && alert("change success");
-    // userService.UserChangeLanguage(rawInfo?.lang, values.lang);
+    console.log(values);
+    console.log(userInfo);
+
+    if (
+      userInfo?.email !== values.email ||
+      userInfo?.mobile !== values.mobile
+    ) {
+      let { email, mobile } = values;
+      const modifyValue = { email, mobile };
+      const res = await request(userApi.UserAccountModify(modifyValue), true);
+      console.log(res);
+   
+    }
+
+    if (userInfo?.lang !== values.lang) {
+      const res = await request(userApi.UserChangeLanguage(values.lang));
+      console.log(res);
+    }
+
     setOnSetting(!onSetting);
   };
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
-  const [onSetting, setOnSetting] = useState<boolean>(false);
+
   return (
     <div className="userInfo-Container">
       <Form
@@ -113,30 +143,33 @@ export const Index: FC<UserInfoInterFace> = () => {
                   </Option>
                 </Select>
               ) : item.fieldType === "Date" ? (
-                <div style={{ paddingLeft: 10 }} className={`form`}>
-                  {!rawInfo
-                    ? ""
-                    : moment(rawInfo?.regTime).format(`YYYY/MM/DD h:mm:ss`)}
-                </div>
+                <Input
+                  style={item.style}
+                  className={`form`}
+                  bordered={onSetting}
+                  readOnly={item.readonly}
+                ></Input>
               ) : (
                 <Input
-                  style={onSetting ? { cursor: "text" } : { cursor: "default" }}
+                  style={item.style}
                   className={`form`}
-                  readOnly={!onSetting}
+                  readOnly={item.readonly}
                   bordered={onSetting}
                 />
               )}
             </Form.Item>
           );
         })}
-        <Form.Item></Form.Item>
 
         <Form.Item style={{ paddingLeft: 20 }}>
           <Row>
             <Col>
-              <Btn type="default" onClick={() => setOnSetting(!onSetting)}>{`${
-                onSetting ? "取消" : "编辑"
-              }`}</Btn>
+              <Btn
+                type="default"
+                onClick={userInfo ? () => setOnSetting(!onSetting) : () => {}}
+              >
+                {userInfo ? `${onSetting ? "取消" : "编辑"}` : <LoadingOutlined spin/>}
+              </Btn>
             </Col>
             <Col offset={2} style={onSetting ? {} : { display: "none" }}>
               <Btn type="primary" htmlType="submit">

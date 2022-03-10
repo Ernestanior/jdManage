@@ -2,16 +2,12 @@ import IconFont from "@/components/icon";
 import { Template } from "@/components/template";
 import { userApi } from "@/store/api";
 import { worklogDetail } from "@/store/api/user";
-import {
-  useCodeList,
-  useEventList,
-  useWorkLog,
-} from "@/store/network/user";
+import { useCodeList, useEventList, useWorkLog } from "@/store/network/user";
 import userService from "@/store/network/user/service";
 import request from "@/store/request";
 import { Col, Input, Popconfirm, Row } from "antd";
 import moment from "moment";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { from } from "rxjs";
 
 interface Role {
@@ -25,57 +21,35 @@ const Index: FC<Role> = (props: Role) => {
   const LogDetail = useWorkLog();
   const [handleExpand, setHandleExpand] = useState(true);
   const [eventID, seteventID] = useState<string>("");
-  const [eventType, setEventType] = useState<object[]>([]);
-  const [eventService, setEventService] = useState<object[]>([]);
-  const [params, setparams] = useState<any>();
   const [deleteId, setDeleteId] = useState<any>();
   useEffect(() => userService?.UserServiceWorkLogCodeList(), []);
-
-  useEffect(() => {
-    if (codelist !== undefined) {
-      // if (codelist.eventType && codelist.eventService !== undefined) {
-      let eventType: object[] = [];
-      let eventService: object[] = [];
-      codelist?.eventType &&
-        Object.entries(codelist?.eventType).forEach(
-          ([key, value]: any, index: number) => {
-            eventType.push({ uid: key, name: value });
-          }
-        );
-      codelist?.eventService &&
-        Object.entries(codelist?.eventService).forEach(
-          ([key, value]: any, index: number) => {
-            eventService.push({ uid: key, name: value });
-          }
-        );
-      setEventType(eventType);
-      setEventService(eventService);
-      // }
+  const eventType = useMemo(() => {
+    if (codelist) {
+      let { eventType } = codelist;
+      const obj = Object.entries(eventType).map(([key, value]: any) => ({
+        uid: key,
+        name: value,
+      }));
+      return obj;
+    } else {
+      return [];
     }
-  }, [codelist, codelist?.evetType, codelist?.eventService]);
+  }, [codelist]);
+
+  const eventService = useMemo(() => {
+    if (codelist) {
+      let { eventService } = codelist;
+      const obj = Object.entries(eventService).map(([key, value]: any) => ({
+        uid: key,
+        name: value,
+      }));
+      return obj;
+    } else {
+      return [];
+    }
+  }, [codelist]);
 
   useEffect(() => userService?.UserServiceLogDetail(eventID), [eventID]);
-
-  useEffect(() => {
-    if (props.type === 1) {
-      if (params) {
-        if (params.filters !== undefined) {
-          userService?.UserServiceWorkLogEventList({
-            keyword: params.filters.keyword,
-            searchPage: params.searchPage,
-            eventType: params.filters.eventType,
-            eventService: params.filters.eventService,
-            startDate: params.filters.startDate,
-            endDate: params.filters.endDate,
-          });
-        } else {
-          userService?.UserServiceWorkLogEventList({
-            searchPage: { desc: 1, page: 1, pageSize: 10, sort: "" },
-          });
-        }
-      }
-    }
-  }, [params, props.type]);
 
   const confirm = async () => {
     const res = await request(userApi.UserDeleteWorkLog([deleteId]));
@@ -114,7 +88,15 @@ const Index: FC<Role> = (props: Role) => {
       },
     ],
     onSearch: (params: any) => {
-      setparams(params);
+      const {searchPage,filters:{ keyword, eventType, eventService, startDate, endDate }} = params;
+      userService?.UserServiceWorkLogEventList({
+        keyword,
+        eventType,
+        eventService,
+        startDate,
+        endDate,
+        searchPage,
+      });
     },
     rowId: "eventId",
     data: worklog,

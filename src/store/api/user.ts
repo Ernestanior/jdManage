@@ -78,15 +78,24 @@ class UserAPI {
     config.headers = {};
     return config;
   };
-  //Change Language
-  UserChangeLanguage = (lang: {}, data: { lang: string }) => {
-    console.log(lang, data);
+  //Modify
+  UserAccountModify = (modifyValue: AccountModify)=>{
+    const config: AxiosRequestConfig ={
+      url:"/account/modify",
+      method:"POST",
+      data: modifyValue,
+    };
+    config.headers = {};
+    return config;
+  }
 
+
+  //Change Language
+  UserChangeLanguage = (lang: string ) => {
     const config: AxiosRequestConfig = {
       url: "/account/change-lang",
       method: "POST",
-      params: { lang },
-      data: { lang: data },
+      data: { lang },
     };
     config.headers = {};
     return config;
@@ -102,11 +111,10 @@ class UserAPI {
     return config;
   };
   //Event List
-  UserAPIWorklogEventList = (params: any, data: GeteventList) => {
+  UserAPIWorklogEventList = ( data: GeteventList) => {
     const config: AxiosRequestConfig = {
       url: "/log/event-list",
       method: "post",
-      params,
       data,
     };
     config.headers = {};
@@ -115,8 +123,6 @@ class UserAPI {
   //Log Detail
 
   UserAPILogDetail = (eventId: any) => {
-    console.log(eventId, "api eventID");
-
     const config: AxiosRequestConfig = {
       url: `/log/view?uid=${eventId.eventId}`,
       method: "GET",
@@ -186,6 +192,7 @@ class UserAPI {
     config.headers = {};
     return config;
   };
+  
   UserCreateWhiteList = (data: string) => {
     const config: AxiosRequestConfig = {
       url: `/access/create/access-whitelist`,
@@ -279,4 +286,10 @@ export interface GeteventList {
   endDate?: string;
   startDate?: string;
   searchPage: {};
+}
+
+
+export interface AccountModify{
+  email:string
+  mobile: string
 }
