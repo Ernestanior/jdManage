@@ -178,6 +178,30 @@ class SiteAPI {
     return config;
   };
   /**
+   * 暂停监控
+   */
+  DisableMonitor = (data: string[]) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/monitor/disable",
+      method: "put",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
+   * 重启监控
+   */
+  EnableMonitor = (data: string[]) => {
+    const config: AxiosRequestConfig = {
+      url: "/site/monitor/enable",
+      method: "put",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
+  /**
    * SSL查询
    */
   SslList = (uid: string, data: ISslList) => {
