@@ -15,23 +15,17 @@ const Index: FC = () => {
         uid: "",
       })
     );
-    const option = result.content.map((item: any) => {
-      return { uid: item.uid, name: item.name };
+    const option = result.content.map(({ uid, name }: any) => {
+      return { uid, name };
     });
     setOption(option);
   }, []);
 
   const TempConfig = {
-    onSearch: (params: any) => {
-      const { keyword, domainUid, status, value, name } = params.filters;
-
+    onSearch: ({ searchPage, filters }: any) => {
       let searchDetail = {
-        keyword,
-        domainUid,
-        status,
-        value,
-        name,
-        searchPage: params.searchPage,
+        ...filters,
+        searchPage,
       };
       from(request(dnsApi.FindDnsRecord(searchDetail))).subscribe((data) => {
         console.log(data);
