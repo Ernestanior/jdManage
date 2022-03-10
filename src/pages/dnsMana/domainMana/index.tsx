@@ -69,21 +69,17 @@ const Index: FC = () => {
         },
       },
       {
-        text: "状态",
+        text: "启用",
+        hide: (data: any) => data.status === "enabled",
         event: (data: any) => {
-          console.log(data);
-          let uid = [data.uid];
-          if (data.status === "enabled") {
-            from(request(dnsApi.Disable(uid))).subscribe((data) => {
-              if (data) {
-              }
-            });
-          } else {
-            from(request(dnsApi.Enable(uid))).subscribe((data) => {
-              if (data) {
-              }
-            });
-          }
+          const res = request(dnsApi.Enable(data.uid));
+        },
+      },
+      {
+        text: "禁用",
+        hide: (data: any) => data.status === "disabled",
+        event: (data: any) => {
+          const res = request(dnsApi.Disable(data.uid));
         },
       },
       {

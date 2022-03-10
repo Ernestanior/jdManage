@@ -131,21 +131,21 @@ class DnsAPI {
     config.headers = {};
     return config;
   };
-  Disable = (data: any) => {
+  Disable = (uid: any) => {
     const config: AxiosRequestConfig = {
       url: "/dns/domain/disable",
       method: "PUT",
-      data,
+      data: [uid],
     };
     config.headers = {};
     return config;
   };
 
-  Enable = (data: any) => {
+  Enable = (uid: any) => {
     const config: AxiosRequestConfig = {
       url: "/dns/domain/enable",
       method: "PUT",
-      data,
+      data: [uid],
     };
     config.headers = {};
     return config;
