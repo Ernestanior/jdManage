@@ -23,6 +23,7 @@ const Index: FC<Role> = (props: Role) => {
   const [eventID, seteventID] = useState<string>("");
   const [deleteId, setDeleteId] = useState<any>();
   useEffect(() => userService?.UserServiceWorkLogCodeList(), []);
+  
   const eventType = useMemo(() => {
     if (codelist) {
       let { eventType } = codelist;
@@ -82,13 +83,13 @@ const Index: FC<Role> = (props: Role) => {
             </Popconfirm>
           </div>
         ),
-        event: (data: any) => {
-          setDeleteId(data.eventId);
+        event: ({eventId}: any) => {
+          setDeleteId(eventId);
         },
       },
     ],
-    onSearch: (params: any) => {
-      const {searchPage,filters:{ keyword, eventType, eventService, startDate, endDate }} = params;
+    onSearch: ({searchPage,filters:{ keyword, eventType, eventService, startDate, endDate }}: any) => {
+    
       userService?.UserServiceWorkLogEventList({
         keyword,
         eventType,

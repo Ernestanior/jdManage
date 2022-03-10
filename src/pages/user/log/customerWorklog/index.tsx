@@ -68,8 +68,6 @@ const Index: FC<Role> = (props: Role) => {
           <div>
             <Popconfirm
               title="Are you sure delete this task?"
-              //visible={this.state.visible}
-              //onVisibleChange={this.handleVisibleChange}
               onConfirm={() => confirm()}
               onCancel={() => cancel()}
               okText="Yes"
@@ -92,14 +90,9 @@ const Index: FC<Role> = (props: Role) => {
       },
     ],
 
-    onSearch: (params: any) => {
-      const {searchPage, filters: { keyword, eventType, eventService, startDate, endDate }} = params;
+    onSearch: ({searchPage, filters}: any) => {
       userService?.UserServiceWorkLogEventList({
-        keyword,
-        eventType,
-        eventService,
-        startDate,
-        endDate,
+        ...filters,
         includesAll: true,
         searchPage,
       });

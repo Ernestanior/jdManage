@@ -74,23 +74,21 @@ export const Index: FC<UserInfoInterFace> = () => {
     form.setFieldsValue(newInfo);
   }, [form]);
 
-  const onFinish = async (values: any) => {
-    console.log(values);
+  const onFinish = async ({email, mobile, lang}:any) => {
+    console.log(email);
     console.log(userInfo);
 
     if (
-      userInfo?.email !== values.email ||
-      userInfo?.mobile !== values.mobile
+      userInfo?.email !== email ||
+      userInfo?.mobile !== mobile
     ) {
-      let { email, mobile } = values;
-      const modifyValue = { email, mobile };
-      const res = await request(userApi.UserAccountModify(modifyValue), true);
+      const res = await request(userApi.UserAccountModify({email, mobile}), true);
       console.log(res);
    
     }
 
-    if (userInfo?.lang !== values.lang) {
-      const res = await request(userApi.UserChangeLanguage(values.lang));
+    if (userInfo?.lang !== lang) {
+      const res = await request(userApi.UserChangeLanguage(lang));
       console.log(res);
     }
 
