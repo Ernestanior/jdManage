@@ -83,4 +83,3 @@ const Index: FC<userPassword> = () => {
 };
 
 export default Index;
-

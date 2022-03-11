@@ -79,19 +79,18 @@ class UserAPI {
     return config;
   };
   //Modify
-  UserAccountModify = (modifyValue: AccountModify)=>{
-    const config: AxiosRequestConfig ={
-      url:"/account/modify",
-      method:"POST",
+  UserAccountModify = (modifyValue: AccountModify) => {
+    const config: AxiosRequestConfig = {
+      url: "/account/modify",
+      method: "POST",
       data: modifyValue,
     };
     config.headers = {};
     return config;
-  }
-
+  };
 
   //Change Language
-  UserChangeLanguage = (lang: string ) => {
+  UserChangeLanguage = (lang: string) => {
     const config: AxiosRequestConfig = {
       url: "/account/change-lang",
       method: "POST",
@@ -102,7 +101,7 @@ class UserAPI {
   };
 
   //Code List
-  UserAPIWorklogCodeList = () => {
+  LogCodeList = () => {
     const config: AxiosRequestConfig = {
       url: "/log/code-list",
       method: "get",
@@ -111,7 +110,7 @@ class UserAPI {
     return config;
   };
   //Event List
-  UserAPIWorklogEventList = ( data: GeteventList) => {
+  LogEventList = (data: GeteventList) => {
     const config: AxiosRequestConfig = {
       url: "/log/event-list",
       method: "post",
@@ -122,10 +121,11 @@ class UserAPI {
   };
   //Log Detail
 
-  UserAPILogDetail = (eventId: any) => {
+  LogDetail = (uid: string) => {
     const config: AxiosRequestConfig = {
-      url: `/log/view?uid=${eventId.eventId}`,
+      url: "/log/view",
       method: "GET",
+      params: { uid },
     };
     config.headers = {};
     return config;
@@ -192,18 +192,16 @@ class UserAPI {
     config.headers = {};
     return config;
   };
-  
+
   UserCreateWhiteList = (data: string) => {
     const config: AxiosRequestConfig = {
       url: `/access/create/access-whitelist`,
       method: "POST",
-      data: {ips:[data]},
+      data: { ips: [data] },
     };
     config.headers = {};
     return config;
   };
-
-
 }
 
 export default UserAPI;
@@ -288,8 +286,7 @@ export interface GeteventList {
   searchPage: {};
 }
 
-
-export interface AccountModify{
-  email:string
-  mobile: string
+export interface AccountModify {
+  email: string;
+  mobile: string;
 }

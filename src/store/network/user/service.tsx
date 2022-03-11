@@ -12,13 +12,9 @@ import { saveToken } from "@/store/storage";
  */
 class User {
   readonly userInfo$ = new BehaviorSubject<any>(null);
-  readonly userWorkLogCodeList$ = new BehaviorSubject<any>(null);
-  readonly userWorkLogEventList$ = new BehaviorSubject<any>(null);
-  readonly userLogDetail$ = new BehaviorSubject<any>(null);
   readonly userAccessLog$ = new BehaviorSubject<any>(null);
   readonly userAccessWhiteList$ = new BehaviorSubject<any>(null);
   readonly userLogin$ = new BehaviorSubject<any>(null);
-
 
   UserInfo() {
     from(request(userApi.UserInfo())).subscribe((data) => {
@@ -26,35 +22,6 @@ class User {
         this.userInfo$.next(data);
       }
     });
-  }
-
-  UserServiceWorkLogCodeList() {
-    from(request(userApi.UserAPIWorklogCodeList())).subscribe((data) => {
-      if (data) {
-        this.userWorkLogCodeList$.next(data);
-      }
-    });
-  }
-
-  UserServiceWorkLogEventList(data: any) {
-    from(request(userApi.UserAPIWorklogEventList(data))).subscribe(
-      (data) => {
-        if (data) {
-          this.userWorkLogEventList$.next(data);
-        }
-      }
-    );
-  }
-
-  UserServiceLogDetail(eventId: string | "") {
-    if (eventId !== "") {
-      from(request(userApi.UserAPILogDetail({ eventId }))).subscribe((data) => {
-        if (data) {
-          this.userLogDetail$.next(data);
-        }
-        return "";
-      });
-    }
   }
 
   UserAccessLog(data: any) {

@@ -49,6 +49,7 @@ const Index: FC = (): ReactElement => {
   const [selectedRowKeys, setSelectedKey] = useState<string[]>([]);
   const [editRow, setEditRow] = useState<string>("");
   const [currData, setCurrData] = useState<ISiteList>();
+
   const [createFlag, setCreateFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
   const [deleteFlag, setDeleteFlag] = useState(false);
@@ -111,7 +112,7 @@ const Index: FC = (): ReactElement => {
       ? notification.success({ message: `${operate} Success` })
       : res.forEach((item: any) =>
           notification.error({
-            message: "Enable Failed",
+            message: `${operate} Failed`,
             description: `UID: ${item.uid} ${item.message}`,
           })
         );

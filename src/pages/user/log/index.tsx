@@ -1,37 +1,31 @@
-import React, { FC, ReactElement, useState } from "react";
+import React, { FC, ReactElement, useMemo, useState } from "react";
 import "./index.less";
 import { Tabs } from "antd";
-import AdminWorklog from "./adminWorklog";
-import CustomerWorklog from "./customerWorklog";
+import Content from "./content";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const { TabPane } = Tabs;
 const Index: FC = (): ReactElement => {
-  const [role, setrole] = useState<number>(1);
-  const handleOnchange = (e: string) => {
-    console.log(e);
-    if (e === "1") {
-      setrole(1);
-    } else if(e === "2"){
-      setrole(2);}
-  };
+  const navigator = useNavigate();
+  const path: any = useLocation().state;
+  const index = useMemo(() => (path && path.userLog) || "admin", [path]);
+
+  console.log(index);
+
   return (
     <Tabs
-      defaultActiveKey="1"
-      style={{ marginBottom: 32 }}
-      onChange={(e: string) => handleOnchange(e)}
+      destroyInactiveTabPane
+      activeKey={index}
+      onChange={(activeKey) =>
+        navigator(".", { state: { ...path, userLog: activeKey } })
+      }
     >
-      <TabPane tab="管理员操作日志" key="1">
-        <AdminWorklog type={role} />
+      <TabPane tab="管理员操作日志" key="admin">
+        <Content />
       </TabPane>
-      <TabPane tab="客户操作日志" key="2">
-        <CustomerWorklog type={role} />
+      <TabPane tab="客户操作日志" key="customer">
+        <Content />
       </TabPane>
-      {/* <TabPane tab="客户操作日志" key="3">
-        <Admin role={role} />
-      </TabPane>
-      <TabPane tab="Template" key="4">
-        <Admin role={role} />
-      </TabPane> */}
     </Tabs>
   );
 };

@@ -1,7 +1,6 @@
- import './index.less';
- export const TipInfo = (
+import "./index.less";
+export const TipInfo = (
   <div className={`tipBox`}>
-    <div className={`tipBox-Title`}>要点提示:</div>
     <div className={`tipBox-Detail`}>
       1、建议设置密码长度在8到16个字符之间，包含字母大小写（A..Z，a..z）和阿拉伯数字，至少包含一个特殊字符（如!@#$*）;
       <br />

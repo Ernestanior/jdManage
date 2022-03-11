@@ -1,13 +1,16 @@
 //New UI
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { Btn } from "@/components/button/index";
-import { Form, Input, Select, Spin } from "antd";
+import { Button, Form, Input, notification, Select, Spin } from "antd";
 import "./index.less";
 import { Col, Row } from "antd";
 import moment from "moment";
 import { userApi } from "@/store/api";
 import request from "@/store/request";
-import { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from "@ant-design/icons";
+import { useLoading } from "@/components/loading";
+import Loading from "@/components/loading/context";
+import { from } from "rxjs";
 const { Option } = Select;
 
 interface UserInfoInterFace {
@@ -19,6 +22,7 @@ interface UserInfoInterFace {
 }
 
 export const Index: FC<UserInfoInterFace> = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [userInfo, setUserInfo] = useState<any>();
   const [onSetting, setOnSetting] = useState<boolean>(false);
@@ -64,52 +68,52 @@ export const Index: FC<UserInfoInterFace> = () => {
     },
   ];
 
-  useMemo(async () => {
-    const info = await request(userApi.UserInfo());
-    const newInfo = {
-      ...info,
-      regTime: moment(info.regTime).format("YYYY-MM-DD h:mm:ss"),
-    };
-    setUserInfo(newInfo);
-    form.setFieldsValue(newInfo);
+  useEffect(() => {
+    setLoading(true);
+    const obs = from(request(userApi.UserInfo())).subscribe((data) => {
+      const newInfo = {
+        ...data,
+        regTime: moment(data.regTime).format("YYYY-MM-DD h:mm:ss"),
+      };
+      setLoading(false);
+
+      setUserInfo(newInfo);
+      form.setFieldsValue(newInfo);
+    });
+    return () => obs.unsubscribe();
   }, [form]);
 
-  const onFinish = async ({email, mobile, lang}:any) => {
-    console.log(email);
-    console.log(userInfo);
-
-    if (
-      userInfo?.email !== email ||
-      userInfo?.mobile !== mobile
-    ) {
-      const res = await request(userApi.UserAccountModify({email, mobile}), true);
-      console.log(res);
-   
+  const onFinish = async ({ email, mobile, lang }: any) => {
+    setLoading(true);
+    if (userInfo?.email !== email || userInfo?.mobile !== mobile) {
+      const res = await request(
+        userApi.UserAccountModify({ email, mobile }),
+        true
+      );
+      res.response === "success" &&
+        notification.success({ message: "Update Success" });
     }
 
     if (userInfo?.lang !== lang) {
       const res = await request(userApi.UserChangeLanguage(lang));
-      console.log(res);
+      res.response === "success" &&
+        notification.success({ message: "Change Language Success" });
     }
-
+    setLoading(false);
     setOnSetting(!onSetting);
-  };
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
   };
 
   return (
     <div className="userInfo-Container">
+      <Loading display={loading}></Loading>
       <Form
-        layout="horizontal"
         form={form}
         initialValues={undefined}
         name="userInfo"
         preserve={true}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         labelCol={{ span: 2 }}
-        wrapperCol={{ span: 5 }}
+        wrapperCol={{ offset: 1, span: 7 }}
       >
         {UserInfoForm.map((item, index) => {
           return (
@@ -159,23 +163,26 @@ export const Index: FC<UserInfoInterFace> = () => {
           );
         })}
 
-        <Form.Item style={{ paddingLeft: 20 }}>
-          <Row>
-            <Col>
-              <Btn
-                type="default"
-                onClick={userInfo ? () => setOnSetting(!onSetting) : () => {}}
-              >
-                {userInfo ? `${onSetting ? "取消" : "编辑"}` : <LoadingOutlined spin/>}
-              </Btn>
-            </Col>
-            <Col offset={2} style={onSetting ? {} : { display: "none" }}>
-              <Btn type="primary" htmlType="submit">
-                确定
-              </Btn>
-            </Col>
-          </Row>
-        </Form.Item>
+        <div
+          style={{
+            width: "150px",
+            display: "flex",
+            marginTop: "50px",
+            justifyContent: "space-between",
+          }}
+        >
+          <Button type="default" onClick={() => setOnSetting(!onSetting)}>
+            {onSetting ? "取消" : "编辑"}
+          </Button>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={onSetting ? {} : { display: "none" }}
+            loading={loading}
+          >
+            确定
+          </Button>
+        </div>
       </Form>
     </div>
   );

@@ -43,10 +43,13 @@ const ApplyDrawer: FC<IProps> = ({ visible, onClose, reload, loading }) => {
   const [applyWildcard, setApplyWildcard] = useState<boolean>(false);
 
   useEffect(() => {
-    from(request(sslManageApi.originCertOption())).subscribe((data) => {
-      data && setOptionList(data.privateKeyTypes);
-      data.privateKeyTypes && setPriKeyType(data.privateKeyTypes[0].key);
-    });
+    const obs = from(request(sslManageApi.originCertOption())).subscribe(
+      (data) => {
+        data && setOptionList(data.privateKeyTypes);
+        data.privateKeyTypes && setPriKeyType(data.privateKeyTypes[0].key);
+      }
+    );
+    return () => obs.unsubscribe();
   }, []);
 
   const dragConfig = {
