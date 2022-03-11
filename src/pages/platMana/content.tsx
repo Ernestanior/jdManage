@@ -124,12 +124,20 @@ const Index: FC = () => {
         },
       },
       {
-        text: "状态",
+        text: "启用",
+        hide: (data:any)=>data.status ==="enabled",
         event: async (data: any) => {
           setSelected(data.uid);
-          data.status === "disabled"
-            ? setEnableFlag(true)
-            : setDisableFlag(true);
+          setEnableFlag(true)
+    
+        },
+      },
+      {
+        text: "禁用",
+        hide: (data:any)=>data.status ==="disabled",
+        event: async (data: any) => {
+          setSelected(data.uid);
+          setDisableFlag(true);
         },
       },
       {

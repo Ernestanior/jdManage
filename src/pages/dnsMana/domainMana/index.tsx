@@ -31,17 +31,26 @@ const Index: FC = () => {
     setCloneDrawer(false);
   };
 
-  useMemo(async () => {
-    const result = await request(
-      dnsApi.FindCustomerList({
-        searchPage: { page: 1, pageSize: 99999 },
-        uid: "",
-      })
-    );
-    const option = result.content.map((item: any) => {
-      return { uid: item.uid, name: item.name };
+  useEffect(() => {
+    const result = from(
+      request(
+        dnsApi.FindCustomerList({
+          searchPage: { page: 1, pageSize: 99999 },
+          uid: "",
+        })
+      )
+    ).subscribe((data) => {
+      setOption(
+        data.content.map(({ uid, name }: any) => {
+          return { uid, name };
+        })
+      );
     });
-    setOption(option);
+
+    return () => result.unsubscribe();
+    // const option = result.content.map((item: any) => {
+    //   return { uid: item.uid, name: item.name };
+    // });
   }, []);
 
   const TempConfig = {
@@ -54,9 +63,12 @@ const Index: FC = () => {
         text: "申请证书",
         event: (data: any) => {
           let uid = { domainUid: data.uid, records: [data.name] };
-          from(request(dnsApi.CertRequest(uid))).subscribe((data) => {
-            console.log(data);
-          });
+          const obs = from(request(dnsApi.CertRequest(uid))).subscribe(
+            (data) => {
+              console.log(data);
+            }
+          );
+          return () => obs.unsubscribe();
         },
       },
       {
@@ -69,31 +81,31 @@ const Index: FC = () => {
         },
       },
       {
-        text: "状态",
+        text: "启用",
+        hide: (data: any) => data.status === "enabled",
         event: (data: any) => {
-          console.log(data);
-          let uid = [data.uid];
-          if (data.status === "enabled") {
-            from(request(dnsApi.Disable(uid))).subscribe((data) => {
-              if (data) {
-              }
-            });
-          } else {
-            from(request(dnsApi.Enable(uid))).subscribe((data) => {
-              if (data) {
-              }
-            });
-          }
+          const res = request(dnsApi.Enable(data.uid));
+        },
+      },
+      {
+        text: "禁用",
+        hide: (data: any) => data.status === "disabled",
+        event: (data: any) => {
+          const res = request(dnsApi.Disable(data.uid));
         },
       },
       {
         text: "删除",
         event: (data: any) => {
           let uid = [data.uid];
-          from(request(dnsApi.DomainDelete(uid))).subscribe((data) => {
-            if (data) {
+          const obs = from(request(dnsApi.DomainDelete(uid))).subscribe(
+            (data) => {
+              if (data) {
+              }
             }
-          });
+          );
+
+          return () => obs.unsubscribe();
         },
       },
     ],
@@ -101,28 +113,33 @@ const Index: FC = () => {
       {
         text: "批量删除",
         onClick: (value: any) => {
-          from(request(dnsApi.DomainDelete(value))).subscribe((data) => {
-            if (data) {
+          const obs = from(request(dnsApi.DomainDelete(value))).subscribe(
+            (data) => {
+              if (data) {
+              }
             }
-          });
+          );
+          return () => obs.unsubscribe();
         },
       },
       {
         text: "批量启用",
         onClick: (value: any) => {
-          from(request(dnsApi.Enable(value))).subscribe((data) => {
+          const obs = from(request(dnsApi.Enable(value))).subscribe((data) => {
             if (data) {
             }
           });
+          return () => obs.unsubscribe();
         },
       },
       {
         text: "批量禁用",
         onClick: (value: any) => {
-          from(request(dnsApi.Disable(value))).subscribe((data) => {
+          const obs = from(request(dnsApi.Disable(value))).subscribe((data) => {
             if (data) {
             }
           });
+          return () => obs.unsubscribe();
         },
       },
     ],
@@ -135,12 +152,10 @@ const Index: FC = () => {
       },
     ],
     onSearch: (params: any) => {
-      const { keyword, customerUid, status } = params.filters;
+      const { searchPage, filters } = params;
       const data = {
-        keyword,
-        customerUid,
-        status,
-        searchPage: params.searchPage,
+        ...filters,
+        searchPage,
       };
       from(request(dnsApi.FindDnsDomain(data))).subscribe((data) => {
         data && setdomainList(data);
@@ -168,28 +183,30 @@ const Index: FC = () => {
         title: "客户",
         dataIndex: "customer",
         key: "customer",
-        render: (key: any) => {
-          return <div>{key.name}</div>;
+        render: ({ name }: any) => {
+          return <div>{name}</div>;
         },
       },
     ],
   };
 
   const AddNewDomain = (key: string[]) => {
-    from(request(dnsApi.CreateDomain(key))).subscribe((data) => {
-      if (data) {
-      }
-    });
+    const obs = from(request(dnsApi.CreateDomain(key))).subscribe((data) => {});
+    return () => obs.unsubscribe();
   };
 
   const clone = (data: any) => {
-    console.log(data.names.replace(/\n/g, ",").split(","));
-    let cloneNameArr = data.names.replace(/\n/g, ",").split(",");
-    let cloneValue = { names: cloneNameArr, uid: data.uid };
-    from(request(dnsApi.CloneDomain(cloneValue))).subscribe((data) => {
-      if (data) {
+    const { names, uid } = data;
+    let cloneNameArr = names.replace(/\n/g, ",").split(",");
+
+    let cloneValue = { names: cloneNameArr, uid };
+    const obs = from(request(dnsApi.CloneDomain(cloneValue))).subscribe(
+      (data) => {
+        if (data) {
+        }
       }
-    });
+    );
+    return () => obs.unsubscribe();
   };
 
   return (

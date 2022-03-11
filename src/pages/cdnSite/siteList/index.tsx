@@ -57,7 +57,6 @@ const Index: FC = (): ReactElement => {
   const [disableFlag, setDisableFlag] = useState(false);
   const [enableMonitorFlag, setEnableMonitorFlag] = useState(false);
   const [disableMonitorFlag, setDisableMonitorFlag] = useState(false);
-
   const [event$, sendMessage] = useEvent();
   const closeEvent = (
     type:
