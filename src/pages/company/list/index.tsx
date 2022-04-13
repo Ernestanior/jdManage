@@ -40,65 +40,67 @@ const Content: FC = () => {
   };
 
   const TempConfig = {
-    normalBtns: [
-      {
-        text: "新增公司",
-        onClick: () => setCreateFlag(true),
-        loading: loading,
-      },
-    ],
     optList: [
       {
-        text: "编辑",
+        text: "查看", //修改
         event: (data: any) => {
-          setEditData(data);
-          setEditFlag(true);
+          console.log(data);
+
         },
       },
       {
         text: "删除",
         event: (data: any) => {
-          setSelected([data.uid]);
-          setDeleteFlag(true);
+          console.log(data);
         },
       },
     ],
-    onSearch: async (params: ITempParams) => {
-      console.log(params);
-      const { pageNum, pageSize } = params.searchPage;
-      const res = await request(companyApi.FindCompany({ pageNum, pageSize }));
-      console.log(res);
-
-      res && setCompanyList(res);
+    onSearch: (params: any) => {
+      const { page, pageSize } = params.searchPage;
+      // findCompany(page, pageSize).then((res: any) => {
+      //   if (res) {
+      //     const { data, size } = res.data
+      //     setCurrData({
+      //       number: page - 1,
+      //       numberOfElements: 0,
+      //       size: pageSize,
+      //       totalElements: size,
+      //       totalPages: size / page,
+      //       content: data
+      //     })
+      //   }
+      // });
     },
-    rowId: "uid",
-    data: companyList,
+    normalBtns: [
+      {
+        text: "新增公司",
+        onClick: () => {
+          setCreateFlag(true);
+        },
+      },
+    ],
+    rowId: "id",
+    data: [],
     config: [
       {
-        title: "用户名称",
-        dataIndex: "name",
-        key: "name",
+        title: "公司名称",
+        dataIndex: "companyName",
+        key: "companyName",
       },
       {
-        title: "邮箱",
-        dataIndex: "email",
-        key: "email",
+        title: "职位类型",
+        dataIndex: "description",
+        key: "description",
       },
       {
-        title: "状态",
-        dataIndex: "status",
-        key: "status",
-        render: (status: any) =>
-          status === 1 ? (
-            <div className={`${"status-box"} ${"status-normal"}`}>正常</div>
-          ) : (
-            <div className={`${"status-box"} ${"status-error"}`}>故障</div>
-          ),
-      },
+        title: "招聘员工数量",
+        dataIndex: "staffNum",
+        key: "staffNum",
+      }
     ],
   };
   return (
-    <div>
+    <>
       <Template
         primarySearch={"keyword"}
         searchList={[
@@ -148,7 +150,7 @@ const Content: FC = () => {
       >
         你确定删除此账户？
       </EdgeModal>
-    </div>
+    </>
   );
 };
 

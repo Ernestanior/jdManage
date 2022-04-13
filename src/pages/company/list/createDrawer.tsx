@@ -1,7 +1,8 @@
 import { FC } from "react";
 import { companyApi } from "@/store/api";
 import request from "@/store/request";
-import { Button, Drawer, Form, Input, notification } from "antd";
+import { Button, Drawer, Form, Input, notification, Select, Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 
 interface IProps {
   visible: boolean;
@@ -14,6 +15,9 @@ const formItemLayout = {
   labelCol: { span: 24 },
   wrapperCol: { span: 24 },
 };
+
+
+const { Option } = Select;
 const CreateDrawer: FC<IProps> = ({
   visible,
   onClose,
@@ -35,68 +39,76 @@ const CreateDrawer: FC<IProps> = ({
   };
   return (
     <Drawer
-      title="新增账号"
+      title="新增公司"
       placement="right"
       onClose={onClose}
       visible={visible}
       width={500}
       closable={false}
     >
-      <Form form={form} onFinish={onFinish}>
+      <Form
+        onFinish={onFinish}
+        initialValues={{ protocol: "HTTPS", websocket: false }}
+      >
         <Form.Item
           {...formItemLayout}
-          name="email"
-          label="登录邮箱"
+          name="city"
+          label="城市"
           rules={[
             {
               required: true,
-              message: "邮箱不能为空!",
+              message: "City cannot be empty!",
             },
           ]}
         >
-          <Input placeholder="请输入你的邮箱" />
+          <Input placeholder="Input city" />
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name="name"
-          label="用户名"
+          name="companyId"
+          label="公司id"
           rules={[
             {
               required: true,
-              message: "用户名不能为空!",
+              message: "Company id cannot be empty!",
             },
           ]}
         >
-          <Input placeholder="请输入你的用户名" />
+          <Input placeholder="Input company id" />
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name="password"
-          label="密码"
+          name="logo"
+          label="公司图标"
           rules={[
             {
               required: true,
-              message: "密码不能为空!",
+              message: "Company logo cannot be empty!",
             },
           ]}
         >
-          <Input placeholder="请输入你的密码" />
+          <Upload
+            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            listType="picture"
+            maxCount={1}
+          >
+            <Button icon={<UploadOutlined />}>Upload</Button>
+          </Upload>
         </Form.Item>
-        <section
-          style={{
-            width: "150px",
-            display: "flex",
-            marginTop: "50px",
-            justifyContent: "space-between",
-          }}
-        >
-          <Button type="primary" htmlType="submit" loading={loading}>
-            确定
+        <Form.Item {...formItemLayout} name="stuffNum" label="公司规模">
+          <Select>
+            <Option value="1-50">50-99人</Option>
+            <Option value="50-199">50-199人</Option>
+            <Option value="200-500">200-500人</Option>
+            <Option value="500-1000">500-1000人</Option>
+            <Option value="1000以上">1000人以上</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 20, span: 4 }}>
+          <Button className="default-button" type="primary" htmlType="submit">
+            Submit
           </Button>
-          <Button htmlType="reset" loading={loading} onClick={onClose}>
-            取消
-          </Button>
-        </section>
+        </Form.Item>
       </Form>
     </Drawer>
   );
