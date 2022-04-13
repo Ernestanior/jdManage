@@ -86,10 +86,7 @@ export const Index: FC<UserInfoInterFace> = () => {
   const onFinish = async ({ email, mobile, lang }: any) => {
     setLoading(true);
     if (userInfo?.email !== email || userInfo?.mobile !== mobile) {
-      const res = await request(
-        userApi.UserAccountModify({ email, mobile }),
-        true
-      );
+      const res = await request(userApi.UserAccountModify({ email, mobile }));
       res.response === "success" &&
         notification.success({ message: "Update Success" });
     }

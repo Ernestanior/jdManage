@@ -315,7 +315,7 @@ export interface IPageResult<IAgentListDto> {
 
 export interface ISearchPage {
   desc: number;
-  page: number;
+  pageNum: number;
   pageSize: number | undefined;
   sort: string;
 }

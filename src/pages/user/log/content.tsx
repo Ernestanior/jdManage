@@ -78,7 +78,7 @@ const Index: FC = () => {
   }, [codelist]);
 
   const onDelete = async () => {
-    const res = await request(userApi.UserDeleteWorkLog([deleteId]), true);
+    const res = await request(userApi.UserDeleteWorkLog([deleteId]));
     res.response === "success"
       ? notification.success({ message: "Delete Success" })
       : notification.error({

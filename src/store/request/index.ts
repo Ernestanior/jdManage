@@ -8,26 +8,30 @@ import { loading } from "@/components/loading";
 
 const requestPlx = new RequestPlx();
 
-const dev_url = "http://localhost:10088/tproj";
-// const dev_url = "http://47.242.9.183:10087";
+// const dev_url = "http://localhost:10088/tproj";
+const dev_url = "https://api.reviewonclass.com";
 
 // add dev server url
 requestPlx.middleware_before.use(async (config, next) => {
-  if (process.env.NODE_ENV === "development") {
-    config.url = dev_url + config.url;
-  } else {
-    config.url = "/tproj" + config.url;
-  }
+  // if (process.env.NODE_ENV === "development") {
+  //   config.url = dev_url + config.url;
+  // } else {
+  //   config.url = "/tproj" + config.url;
+  // }
+  config.url = dev_url + config.url;
   await next();
 });
 
 // header add token
 requestPlx.middleware_before.use(async (config, next) => {
-  const token = getToken();
-  if (token) {
-    const strs = token.split("=")[1];
-    config.headers["Authorization"] = "Basic " + Base64.encode(strs);
-  }
+  // const token = getToken();
+  // if (token) {
+  //   const strs = token.split("=")[1];
+  //   config.headers["Authorization"] = "Basic " + Base64.encode(strs);
+  // }
+  console.log("gg");
+
+  config.headers["user-id"] = "123";
   loading.loading$.next(true);
   await next();
 });
@@ -68,14 +72,10 @@ requestPlx.middleware_after.use(async (rep, next) => {
   await next();
 });
 
-async function request(config: AxiosRequestConfig, additionParams?: boolean) {
+async function request(config: AxiosRequestConfig) {
   const rep = await requestPlx.request(config);
-  //rep.data 需要得到respone 等data，
-  // console.log(rep);
-  if (rep.message) {
-    return rep.message;
-  }
-  return additionParams ? rep.data : rep.data.result;
+  console.log(rep);
+  return rep;
 }
 
 export default request;

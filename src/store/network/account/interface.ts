@@ -1,3 +1,5 @@
+import { IUserType } from "@/hooks/useInfo";
+
 export interface IAccountInfo {
   token: string;
   userType: string;
@@ -6,7 +8,7 @@ export interface IAccountInfo {
 export interface IUserInfo {
   uid: string;
   userName: string;
-  userType: string;
+  userType: IUserType;
   lastLoginTime: number;
   supportsSupplier: boolean;
   features: string[];

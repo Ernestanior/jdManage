@@ -19,17 +19,15 @@ class Account {
   }
   login(username: string, password: string) {
     // 登录成功之后将数据设置到info就可以触发登录信息的更新
-    from(request(authApi.Login({ username, password }), true)).subscribe(
-      (data) => {
-        // token存储
-        if (data && data.response === "success") {
-          if (data.result) {
-            saveToken(data.result.token);
-            this.info$.next(data.result);
-          }
+    from(request(authApi.Login({ username, password }))).subscribe((data) => {
+      // token存储
+      if (data && data.response === "success") {
+        if (data.result) {
+          saveToken(data.result.token);
+          this.info$.next(data.result);
         }
       }
-    );
+    });
   }
   logout(data: {}) {
     from(request(authApi.Logout(data))).subscribe((data) => {

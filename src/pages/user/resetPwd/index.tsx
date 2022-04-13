@@ -33,7 +33,7 @@ const Index: FC<userPassword> = () => {
   const onFinish = async (values: any) => {
     if (values.oldPwd && values.newPwd && values.comfirmPwd !== null) {
       if (values.newPwd === values.confirmPwd) {
-        const res = await request(userApi.UserChangePassword(values), true);
+        const res = await request(userApi.UserChangePassword(values));
         res && alert("change password success");
       }
       console.log("Comfirm Password and New Password must be same");

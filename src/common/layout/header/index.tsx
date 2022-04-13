@@ -25,7 +25,7 @@ const Header: FC = () => {
         </div>
       </div>
       <div>
-        <Setting />
+        {/* <Setting /> */}
         <IconFont
           type="icon-a-NotificationIcon"
           style={{ color: "pink", fontSize: "20px", marginRight: "30px" }}

@@ -118,7 +118,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   //searchPage条件汇总
   const [searchPage, setSearchPage] = useState<ISearchPage>({
     desc: 0,
-    page: (props.data && props.data.number) || 1,
+    pageNum: (props.data && props.data.number) || 1,
     pageSize: (props.data && props.data.size) || 20,
     sort: props.sort || "",
   });
@@ -205,7 +205,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
       const nextValue = { ...params$.value };
       if (key !== "searchPage") {
         // 搜索第一页面
-        nextValue.searchPage.page = 1;
+        nextValue.searchPage.pageNum = 1;
       }
       nextValue[key] = value;
       // 高级搜索，清空keyWord字段
@@ -245,7 +245,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   // 表格onchange事件
   const tableOnChange = useCallback(
     (
-      page: TablePaginationConfig,
+      pageNum: TablePaginationConfig,
       _: any,
       sorter: SorterResult<any> | SorterResult<any>[]
     ) => {
@@ -253,7 +253,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
       const searchPageOld = params$.value.searchPage;
       const searchPage = {
         desc: st.order === "ascend" ? 0 : 1,
-        page: searchPageOld.page,
+        pageNum: searchPageOld.pageNum,
         pageSize: searchPageOld.pageSize,
         sort: !!st.order ? st.field || "" : "",
       };
@@ -440,14 +440,14 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
           <FooterDetail
             {...details}
             pageSizeChange={(pageSize: any) =>
-              setSearchPage({ ...searchPage, page: 1, pageSize: pageSize })
+              setSearchPage({ ...searchPage, pageNum: 1, pageSize: pageSize })
             }
           />
           <Col flex={1}>{!!props.footLfEl && props.footLfEl}</Col>
           <Col>
             <Pagination
-              onChange={(page: number, pageSize?: number | undefined) => {
-                setSearchPage({ ...searchPage, page: page });
+              onChange={(pageNum: number, pageSize?: number | undefined) => {
+                setSearchPage({ ...searchPage, pageNum: pageNum });
               }}
               {...pagination}
               showSizeChanger={false}

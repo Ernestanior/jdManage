@@ -35,7 +35,7 @@ const CheckBoxListString: FC<
     const arr: any = list;
     if (onChange) {
       if (loader) {
-        onChange(loader(arr, true));
+        onChange(loader(arr));
       } else if (Array.isArray(value)) {
         onChange(list);
       } else {
