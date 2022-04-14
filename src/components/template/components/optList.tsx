@@ -1,5 +1,5 @@
 import { Dropdown, Menu, Space } from "antd";
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import { IOperation, IColumnsTypeP, IOperationConfig } from "../interface";
 import { EllipsisOutlined } from "@ant-design/icons";
 import { XOR } from "ts-xor";

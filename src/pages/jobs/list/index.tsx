@@ -10,8 +10,6 @@ import request from "@/store/request";
 import { companyApi } from "@/store/api";
 import { EdgeModal } from "@/components/modal";
 import useEvent from "@/hooks/useEvent";
-import { ICustomerList } from "@/store/network/customer/interface";
-import { ITempParams } from "@/store/api/common.interface";
 
 const Content: FC = () => {
   const [createFlag, setCreateFlag] = useState<boolean>(false);
@@ -20,7 +18,6 @@ const Content: FC = () => {
   const [currData, setCurrData] = useState<any>();
   const [selected, setSelected] = useState<string[]>([]);
   const [editData, setEditData] = useState<any>({});
-  const [companyList, setCompanyList] = useState<ICustomerList>();
   const [event$, sendMessage] = useEvent();
   const loading = useLoading();
   const routerState: any = useLocation().state;
@@ -66,20 +63,6 @@ const Content: FC = () => {
         totalPages: size / pageNum,
         content: data,
       });
-
-      // findCompany(page, pageSize).then((res: any) => {
-      //   if (res) {
-      //     const { data, size } = res.data
-      //     setCurrData({
-      //       number: page - 1,
-      //       numberOfElements: 0,
-      //       size: pageSize,
-      //       totalElements: size,
-      //       totalPages: size / page,
-      //       content: data
-      //     })
-      //   }
-      // });
     },
     normalBtns: [
       {

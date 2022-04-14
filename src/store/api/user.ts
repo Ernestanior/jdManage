@@ -1,7 +1,6 @@
 /*jshint -W069 */
 // tslint:disable
 import { AxiosRequestConfig } from "axios";
-import { useNewUserInfo } from "@/store/network/user";
 
 /**
  * @class UserAPI

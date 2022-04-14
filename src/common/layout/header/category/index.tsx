@@ -39,8 +39,8 @@ const HeaderPlx: FC<IProps> = ({ visible, onClose }) => {
       },
       {
         icon: <CheckCircleTwoTone twoToneColor="#22c7d3" />,
-        title: "客户管理",
-        path: "/customer-management",
+        title: "职位管理",
+        path: "/jobs",
       },
       {
         icon: <SmileTwoTone twoToneColor="#822496" />,

@@ -1,9 +1,9 @@
 import RequestPlx from "@/common/tools/request";
-import { getToken } from "@/store/storage";
+// import { getToken } from "@/store/storage";
 import { AxiosRequestConfig } from "axios";
 import { notification } from "antd";
-import { Base64 } from "js-base64";
-import accountService from "../network/account/service";
+// import { Base64 } from "js-base64";
+// import accountService from "../network/account/service";
 import { loading } from "@/components/loading";
 
 const requestPlx = new RequestPlx();
@@ -57,14 +57,11 @@ requestPlx.middleware_after.use(async (rep: any, next) => {
 
 requestPlx.middleware_after.use(async (rep, next) => {
   if (rep.data) {
-    if (rep.data.response !== "success") {
+    if (rep.data.code !== 200) {
       notification.error({
-        message: rep.data.response,
-        description: rep.data.message,
+        message: "有点小问题",
+        // description: rep.data.message,
       });
-      if (rep.data.response === "ERROR0001") {
-        accountService.logout({});
-      }
     }
     //rep.data = rep.data.result;
   }
@@ -74,8 +71,7 @@ requestPlx.middleware_after.use(async (rep, next) => {
 
 async function request(config: AxiosRequestConfig) {
   const rep = await requestPlx.request(config);
-  console.log(rep);
-  return rep;
+  return rep.data;
 }
 
 export default request;

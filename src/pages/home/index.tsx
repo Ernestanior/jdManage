@@ -11,15 +11,6 @@ export interface IData {
   sort: any;
   content: any[];
 }
-const initData = {
-  number: 0,
-  numberOfElements: 0,
-  size: 0,
-  totalElements: 0,
-  totalPages: 0,
-  sort: "",
-  content: [],
-};
 const Home: FC = () => {
   return (
     <div className="edge-home">

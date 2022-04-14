@@ -1,8 +1,6 @@
 import { BehaviorSubject, from } from "rxjs";
 import request from "@/store/request";
 import { userApi } from "@/store/api";
-import { ISearchPage, IUserList, ICreateUserParams } from "./interface";
-
 import { saveToken } from "@/store/storage";
 
 //import { newUserInfoStream } from ".";

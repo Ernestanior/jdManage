@@ -77,9 +77,6 @@ interface ILogin {
   password: string;
 }
 
-/** logout的请求参数*/
-interface ILogoutParams {}
-
 /** resetPwd的请求参数*/
 interface IResetPwdParams {}
 

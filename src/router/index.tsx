@@ -1,17 +1,15 @@
-import React, { FC, useEffect } from "react";
+import { FC } from "react";
 import { HashRouter, Routes, Navigate, Route } from "react-router-dom";
 import { useAccountInfo } from "@/store/network/account";
-import Login from "@/pages/login";
+// import Login from "@/pages/login";
 import Home from "@/pages/home";
 import LayoutPlx from "../common/layout";
-import accountService from "@/store/network/account/service";
 
 // import Domain from "./cdnSite/sitePage/siteConfig/dns/domain";
 import Company from "@/pages/company";
+import Jobs from "@/pages/jobs";
 
-import User from "@/pages/user";
-import { useNewUserLogin } from "@/store/network/user";
-import useLoginInfo from "@/hooks/useInfo";
+// import User from "@/pages/user";
 
 /**
  * 项目路由组件
@@ -32,8 +30,9 @@ const ProjectRouter: FC = () => {
       <LayoutPlx>
         <Routes>
           <Route path="/home" element={<Home />} />
-          <Route path="/user/*" element={<User />}></Route>
+          {/* <Route path="/user/*" element={<User />}></Route> */}
           <Route path="/company/*" element={<Company />}></Route>
+          <Route path="/jobs/*" element={<Jobs />}></Route>
           {/* <Route path="/customer-management/*" element={<CusManage />}></Route> */}
           {/* <Route path="/dns-management/*" element={<DnsMana />}></Route> */}
           {/* <Route path="/cdn-site/*" element={<CdnSite />}>

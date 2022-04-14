@@ -5,7 +5,6 @@ import {
   IDnsRecord,
   ISearchDomain,
   IBatchRecords,
-  IValidateCName,
 } from "@/store/network/dns/interface";
 
 class DnsAPI {

@@ -6,7 +6,15 @@ import { ISearchPage } from "@/store/api/common.interface";
 /**
  * 用户相关功能
  */
-class Company {}
+class Company {
+  readonly companyList$ = new BehaviorSubject<ICompanyList | null>(null);
+
+  findCompany(data: ISearchPage) {
+    from(request(companyApi.FindCompany(data))).subscribe((res) => {
+      this.companyList$.next(res);
+    });
+  }
+}
 
 const companyService = new Company();
 
