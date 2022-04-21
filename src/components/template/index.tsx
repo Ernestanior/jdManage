@@ -105,7 +105,10 @@ interface IPageParams {
   // __disableLoading?: boolean;
 }
 
-export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
+export const Template: FC<ITemplateProps & IExpandableModule> = ({
+  onSearch,
+  ...props
+}) => {
   // 如果有强制大小限定
   const rowKey = props.rowId;
   const [selectIds, setSelectIds] = useState<string[]>([]);
@@ -122,6 +125,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
     pageSize: (props.data && props.data.size) || 20,
     sort: props.sort || "",
   });
+
   //filter切换
   // const [showFilter, setShowFilter] = useState<boolean>(false);
   // 表格数据
@@ -176,7 +180,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
       hide: _total <= 0,
       size: (props.data && props.data.size) || 20,
     };
-  }, [pagination]);
+  }, [pagination, props.data]);
 
   const { current: clearSearch } = useRef(() => {
     let _reset: Function | null = null;
@@ -225,22 +229,16 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
   //     submit("moreFilters", moreFilters);
   //   }
   // }, [initMoreFilters, moreFilters, submit]);
+  const onSearching = useCallback((data) => {
+    onSearch && onSearch(data);
+  }, []);
 
   useLayoutEffect(() => {
     const sub = params$.subscribe((data) => {
-      props.onSearch(data);
+      onSearching(data);
     });
     return () => sub.unsubscribe();
-  }, [
-    // params$$,
-    params$,
-    // queryEvent,
-    // open,
-    // close,
-    // tableData$,
-    // dataCallback,
-    rowKey,
-  ]);
+  }, [params$, onSearching]);
 
   // 表格onchange事件
   const tableOnChange = useCallback(
@@ -322,7 +320,12 @@ export const Template: FC<ITemplateProps & IExpandableModule> = (props) => {
         expandedRowKeys: props.expandedRowKeys,
       };
     }
-  }, [props.expandedRowRender, props.onExpand, props.rowExpandable]);
+  }, [
+    props.expandedRowRender,
+    props.onExpand,
+    props.rowExpandable,
+    props.expandedRowKeys,
+  ]);
 
   // 普通操作和批量操作按钮
   const btns: any[] = [];

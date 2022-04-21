@@ -6,10 +6,8 @@ export interface IAccountInfo {
   lang: string;
 }
 export interface IUserInfo {
-  uid: string;
-  userName: string;
-  userType: IUserType;
-  lastLoginTime: number;
-  supportsSupplier: boolean;
-  features: string[];
+  id: number;
+  level: number;
+  token: string;
+  username: string;
 }

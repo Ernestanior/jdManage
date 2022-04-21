@@ -1,5 +1,5 @@
 import { Template } from "@/components/template";
-import { notification } from "antd";
+import { Button, notification } from "antd";
 import { FC, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import CreateDrawer from "./createDrawer";
@@ -7,7 +7,7 @@ import EditDrawer from "./editDrawer";
 import { useLoading } from "@/components/loading";
 import { from } from "rxjs";
 import request from "@/store/request";
-import { companyApi } from "@/store/api";
+import { companyApi, jdApi } from "@/store/api";
 import { EdgeModal } from "@/components/modal";
 import useEvent from "@/hooks/useEvent";
 
@@ -16,7 +16,7 @@ const Content: FC = () => {
   const [editFlag, setEditFlag] = useState<boolean>(false);
   const [deleteFlag, setDeleteFlag] = useState<boolean>(false);
   const [currData, setCurrData] = useState<any>();
-  const [selected, setSelected] = useState<string[]>([]);
+  const [deleteId, setDeleteId] = useState<number>();
   const [editData, setEditData] = useState<any>({});
   const [event$, sendMessage] = useEvent();
   const loading = useLoading();
@@ -25,14 +25,26 @@ const Content: FC = () => {
     return routerState && routerState.userMana;
   }, [routerState]);
 
-  const deleteCustomer = (data: string[]) => {
-    from(request(companyApi.DeleteCompany(data))).subscribe((data) => {
-      data instanceof Object
-        ? notification.success({ message: "Delete Success" })
-        : notification.error({ message: "Delete failed", description: data });
-      sendMessage("reload");
-      setDeleteFlag(false);
-      setSelected([]);
+  const deleteCustomer = () => {
+    deleteId &&
+      from(request(jdApi.DeleteJd(deleteId))).subscribe((data) => {
+        if (data.code !== 200) {
+          notification.error({ message: "Delete failed" });
+          return null;
+        }
+        notification.success({ message: "Delete Success", description: data });
+        setDeleteFlag(false);
+        sendMessage("reload");
+        setDeleteId(0);
+      });
+  };
+  const detailJd = (id: number) => {
+    from(request(jdApi.DetailJd(id))).subscribe((data) => {
+      if (data.code !== 200) {
+        notification.error({ message: "Detail load failed" });
+        return null;
+      }
+      setEditData(data);
     });
   };
 
@@ -41,19 +53,27 @@ const Content: FC = () => {
       {
         text: "查看", //修改
         event: (data: any) => {
-          console.log(data);
+          detailJd(data.id);
+        },
+      },
+      {
+        text: "更新", //修改
+        event: (data: any) => {
+          detailJd(data.id);
+          setEditFlag(true);
         },
       },
       {
         text: "删除",
         event: (data: any) => {
-          console.log(data);
+          setDeleteFlag(true);
+          setDeleteId(data.id);
         },
       },
     ],
     onSearch: async (params: any) => {
       const { pageNum, pageSize } = params.searchPage;
-      const res = await request(companyApi.FindCompany({ pageNum, pageSize }));
+      const res = await request(jdApi.FindJd(pageNum, pageSize));
       const { data, size } = res;
       setCurrData({
         number: pageNum - 1,
@@ -66,7 +86,7 @@ const Content: FC = () => {
     },
     normalBtns: [
       {
-        text: "新增公司",
+        text: "新增职位",
         onClick: () => {
           setCreateFlag(true);
         },
@@ -76,19 +96,49 @@ const Content: FC = () => {
     data: currData,
     config: [
       {
+        title: "岗位名称",
+        dataIndex: "role",
+        key: "role",
+      },
+      {
+        title: "城市",
+        dataIndex: "location",
+        key: "location",
+      },
+      {
+        title: "工资",
+        dataIndex: "salaryRange",
+        key: "salaryRange",
+      },
+      {
+        title: "岗位行业类型",
+        dataIndex: "ind",
+        key: "ind",
+      },
+      {
+        title: "招聘类型",
+        dataIndex: "type",
+        key: "type",
+      },
+      {
         title: "公司名称",
         dataIndex: "companyName",
         key: "companyName",
       },
       {
-        title: "职位类型",
-        dataIndex: "description",
-        key: "description",
-      },
-      {
-        title: "招聘员工数量",
-        dataIndex: "staffNum",
-        key: "staffNum",
+        title: "状态",
+        dataIndex: "status",
+        key: "status",
+        render: (e: string) =>
+          e ? (
+            <Button type="primary" style={{ backgroundColor: "#4ee876" }}>
+              正常
+            </Button>
+          ) : (
+            <Button type="primary" style={{ backgroundColor: "#ff4d4d" }}>
+              已删除
+            </Button>
+          ),
       },
     ],
   };
@@ -137,7 +187,7 @@ const Content: FC = () => {
       <EdgeModal
         visible={deleteFlag}
         onCancel={() => setDeleteFlag(false)}
-        onOk={() => deleteCustomer(selected)}
+        onOk={() => deleteCustomer()}
         title="删除"
         loading={loading}
       >

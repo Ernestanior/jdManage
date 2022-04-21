@@ -1,7 +1,18 @@
-import { FC, useEffect } from "react";
-import { companyApi } from "@/store/api";
+import { FC, useEffect, useMemo } from "react";
+import { companyApi, jdApi } from "@/store/api";
 import request from "@/store/request";
-import { Button, Drawer, Form, Input } from "antd";
+import {
+  Button,
+  Drawer,
+  Form,
+  Input,
+  notification,
+  Select,
+  Upload,
+} from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { useCompanyList } from "@/store/network/company";
+import companyService from "@/store/network/company/service";
 
 interface IProps {
   visible: boolean;
@@ -14,6 +25,8 @@ const formItemLayout = {
   labelCol: { span: 24 },
   wrapperCol: { span: 24 },
 };
+
+const { Option } = Select;
 const CreateDrawer: FC<IProps> = ({
   visible,
   onClose,
@@ -21,73 +34,161 @@ const CreateDrawer: FC<IProps> = ({
   loading,
   data,
 }) => {
+  const company = useCompanyList();
   const [form] = Form.useForm();
   useEffect(() => form.setFieldsValue(data), [data, form]);
+
+  useEffect(() => {
+    !company && companyService.findCompany(1, 49);
+  }, [company]);
+  const companyList = useMemo(() => {
+    return company && company.data;
+  }, [company]);
+
   const onFinish = async (e: any) => {
-    if (data) {
-      const res = await request(
-        companyApi.ModifyCompany({ ...e, uid: data.uid })
-      );
-      if (res) {
-        form.resetFields();
-        onClose();
-        reload();
-        // notification.success({ message: "success" });
-      }
+    console.log(e);
+    const res = await request(jdApi.CreateJd({ ...e }));
+    if (res) {
+      form.resetFields();
+      onClose();
+      reload();
+      notification.success({ message: "success" });
     }
   };
   return (
     <Drawer
-      title="修改账号"
+      title="新增职位"
       placement="right"
       onClose={onClose}
       visible={visible}
-      width={500}
+      width={700}
       closable={false}
-      getContainer={false}
     >
-      <Form form={form} onFinish={onFinish}>
+      <Form
+        onFinish={onFinish}
+        form={form}
+        initialValues={{ protocol: "HTTPS", websocket: false }}
+      >
         <Form.Item
           {...formItemLayout}
-          name="email"
-          label="登录邮箱"
+          name="location"
+          label="城市"
           rules={[
             {
               required: true,
-              message: "邮箱不能为空!",
+              message: "City cannot be empty!",
             },
           ]}
         >
-          <Input placeholder="请输入你的邮箱" />
+          <Input placeholder="Input city" />
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name="name"
-          label="用户名"
+          name="companyId"
+          label="公司"
           rules={[
             {
               required: true,
-              message: "用户名不能为空!",
+              message: "Company id cannot be empty!",
             },
           ]}
         >
-          <Input placeholder="请输入你的用户名" />
+          <Select>
+            {companyList &&
+              companyList.map((item: ICompanyInfo) => (
+                <Option key={item.id} value={item.id}>
+                  {item.companyName}
+                </Option>
+              ))}
+          </Select>
         </Form.Item>
-        <section
-          style={{
-            width: "150px",
-            display: "flex",
-            marginTop: "50px",
-            justifyContent: "space-between",
-          }}
+        <Form.Item
+          {...formItemLayout}
+          name="role"
+          label="岗位名称"
+          rules={[
+            {
+              required: true,
+              message: "Role name cannot be empty!",
+            },
+          ]}
         >
-          <Button type="primary" htmlType="submit" loading={loading}>
-            确定
+          <Input placeholder="Input role name" />
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          name="type"
+          label="岗位类型"
+          initialValue={1}
+          rules={[
+            {
+              required: true,
+              message: "Type cannot be empty!",
+            },
+          ]}
+        >
+          <Select>
+            <Option value={1}>社招</Option>
+            <Option value={2}>实习</Option>
+            <Option value={3}>校招</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          name="ind"
+          label="岗位所属行业类型"
+          rules={[
+            {
+              required: true,
+              message: "Ind cannot be empty!",
+            },
+          ]}
+        >
+          <Input placeholder="IT/旅游业/大数据/金融..." />
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          name="salaryRange"
+          label="工资"
+          rules={[
+            {
+              required: true,
+              message: "Salary cannot be empty!",
+            },
+          ]}
+        >
+          <Input placeholder="Input Salary" />
+        </Form.Item>
+        <Form.Item {...formItemLayout} name="eduReq" label="学历要求">
+          <Input placeholder="Input Education" />
+        </Form.Item>
+        <Form.Item {...formItemLayout} name="email" label="邮箱">
+          <Input placeholder="Input Email" />
+        </Form.Item>
+        <Form.Item {...formItemLayout} name="tags" label="标签">
+          <Input placeholder="多个标签用英文逗号连接" />
+        </Form.Item>
+        <Form.Item {...formItemLayout} name="wechat" label="hr微信">
+          <Input placeholder="Input Wechat" />
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          name="desc"
+          label="职位详情"
+          rules={[
+            {
+              required: true,
+              message: "Description cannot be empty!",
+            },
+          ]}
+        >
+          <Input.TextArea rows={20} />
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 20, span: 4 }}>
+          <Button className="default-button" type="primary" htmlType="submit">
+            Submit
           </Button>
-          <Button htmlType="reset" loading={loading} onClick={onClose}>
-            取消
-          </Button>
-        </section>
+        </Form.Item>
       </Form>
     </Drawer>
   );

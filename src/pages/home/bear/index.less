@@ -1,0 +1,143 @@
+.one {
+  overflow: hidden;
+  position: absolute;
+  background-color: #000;
+  top: 100px;
+  .con {
+    width: 95vw;
+    .bearBox {
+      height: 700px;
+    }
+    .swipercon {
+      width: 100vw;
+      background-color: #000;
+      position: relative;
+      padding-top: 2vh;
+    }
+  }
+}
+.text {
+  font-family: "SimHei";
+  width: 315px;
+  height: 200px;
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.3s;
+  text {
+    fill: none;
+    stroke: url(#geekColor);
+    font-size: 45px;
+    stroke-width: 1;
+    stroke-dasharray: 10 800;
+    stroke-dashoffset: 10;
+    animation: drawing 5s linear forwards;
+  }
+  text:nth-child(3) {
+    font-size: 30px;
+    transform: translateX(30px);
+  }
+  @keyframes drawing {
+    to {
+      stroke-dasharray: 800;
+      stroke-dashoffset: 0;
+    }
+  }
+}
+.moom {
+  height: 10vh;
+  width: 10vh;
+  position: absolute;
+  top: 13vh;
+  left: 8vw;
+  border-radius: 50%;
+  animation: moom 5s linear alternate infinite, moomMove 1s linear alternate 1;
+  transition: all 1s;
+  &:hover {
+    background-color: #fff;
+  }
+}
+@keyframes moomMove {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: 8vw;
+  }
+}
+@keyframes moom {
+  0% {
+    box-shadow: 0 0 5px 0 #fff, 0 0 10px 0 #fff, 0 0 15px 0 #fff,
+      0 0 20px 0 #fff;
+  }
+  100% {
+    box-shadow: 0 0 25px 0 #fff, 0 0 50px 0 #fff, 0 0 75px 0 #fff,
+      0 0 100px 0 #fff;
+  }
+}
+.bg1 {
+  position: relative;
+  top: 200px;
+  height: 800px;
+  // width: 100vw;
+  background: url("../../../../assets/bg2.png") repeat-x;
+  background-size: cover;
+  animation: m1move 80s linear 2s infinite;
+  .bg2 {
+    position: absolute;
+    top: 200px;
+    height: 350px;
+    width: 100vw;
+    background: url("../../../../assets/bg1.png") repeat-x;
+    background-size: cover;
+    animation: m1move 60s linear 2s infinite;
+    .bear {
+      position: absolute;
+      top: 170px;
+      width: 200px;
+      height: 100px;
+      background: url("../../../../assets/bear.png") no-repeat;
+      /* 我们元素可以添加多个动画， 用逗号分隔 */
+      animation: bear 0.4s steps(8) infinite, move 3s forwards;
+    }
+    @keyframes bear {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: -1600px 0;
+      }
+    }
+
+    @keyframes move {
+      0% {
+        left: 0;
+      }
+      100% {
+        left: 50%;
+        /* margin-left: -100px; */
+        transform: translateX(-50%);
+      }
+    }
+    @keyframes m1move {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: -3840px 0;
+      }
+    }
+  }
+}
+@media screen and (max-width: 635px) {
+  .text {
+    top: 170px;
+    text {
+      &:nth-child(3) {
+        transition: all 0.2s;
+        display: none;
+      }
+    }
+  }
+}

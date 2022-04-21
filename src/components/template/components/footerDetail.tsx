@@ -19,9 +19,6 @@ const FooterDetail: FC<IProps> = ({
   size,
   pageSizeChange,
 }) => {
-  function onChange(pageSize: string) {
-    pageSizeChange && pageSizeChange(parseInt(pageSize));
-  }
   const message = useMemo(
     () => (
       <>
@@ -32,7 +29,9 @@ const FooterDetail: FC<IProps> = ({
             width: 65,
             margin: "0 10px",
           }}
-          onChange={onChange}
+          onChange={(pageSize) =>
+            pageSizeChange && pageSizeChange(parseInt(pageSize))
+          }
           size="small"
         >
           <Option value="5">5</Option>
@@ -45,7 +44,7 @@ const FooterDetail: FC<IProps> = ({
         条
       </>
     ),
-    [end, start, total]
+    [end, start, total, pageSizeChange, size]
   );
   return <div style={{ color: th, paddingLeft: 14 }}>{!hide && message}</div>;
 };

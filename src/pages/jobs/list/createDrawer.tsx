@@ -1,8 +1,18 @@
-import { FC } from "react";
-import { companyApi } from "@/store/api";
+import { FC, useEffect, useMemo } from "react";
+import { companyApi, jdApi } from "@/store/api";
 import request from "@/store/request";
-import { Button, Drawer, Form, Input, notification, Select, Upload } from "antd";
+import {
+  Button,
+  Drawer,
+  Form,
+  Input,
+  notification,
+  Select,
+  Upload,
+} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { useCompanyList } from "@/store/network/company";
+import companyService from "@/store/network/company/service";
 
 interface IProps {
   visible: boolean;
@@ -16,7 +26,6 @@ const formItemLayout = {
   wrapperCol: { span: 24 },
 };
 
-
 const { Option } = Select;
 const CreateDrawer: FC<IProps> = ({
   visible,
@@ -25,11 +34,19 @@ const CreateDrawer: FC<IProps> = ({
   loading,
   type,
 }) => {
+  const company = useCompanyList();
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    !company && companyService.findCompany(1, 49);
+  }, [company]);
+  const companyList = useMemo(() => {
+    return company && company.data;
+  }, [company]);
+
   const onFinish = async (e: any) => {
-    const res = await request(
-      companyApi.CreateCompany({ ...e, type: type || "admin" })
-    );
+    console.log(e);
+    const res = await request(jdApi.CreateJd({ ...e }));
     if (res) {
       form.resetFields();
       onClose();
@@ -39,11 +56,11 @@ const CreateDrawer: FC<IProps> = ({
   };
   return (
     <Drawer
-      title="新增公司"
+      title="新增职位"
       placement="right"
       onClose={onClose}
       visible={visible}
-      width={500}
+      width={700}
       closable={false}
     >
       <Form
@@ -52,7 +69,7 @@ const CreateDrawer: FC<IProps> = ({
       >
         <Form.Item
           {...formItemLayout}
-          name="city"
+          name="location"
           label="城市"
           rules={[
             {
@@ -66,7 +83,7 @@ const CreateDrawer: FC<IProps> = ({
         <Form.Item
           {...formItemLayout}
           name="companyId"
-          label="公司id"
+          label="公司"
           rules={[
             {
               required: true,
@@ -74,35 +91,96 @@ const CreateDrawer: FC<IProps> = ({
             },
           ]}
         >
-          <Input placeholder="Input company id" />
+          <Select>
+            {companyList &&
+              companyList.map((item: ICompanyInfo) => (
+                <Option key={item.id} value={item.id}>
+                  {item.companyName}
+                </Option>
+              ))}
+          </Select>
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name="logo"
-          label="公司图标"
+          name="role"
+          label="岗位名称"
           rules={[
             {
               required: true,
-              message: "Company logo cannot be empty!",
+              message: "Role name cannot be empty!",
             },
           ]}
         >
-          <Upload
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-            listType="picture"
-            maxCount={1}
-          >
-            <Button icon={<UploadOutlined />}>Upload</Button>
-          </Upload>
+          <Input placeholder="Input role name" />
         </Form.Item>
-        <Form.Item {...formItemLayout} name="stuffNum" label="公司规模">
+        <Form.Item
+          {...formItemLayout}
+          name="type"
+          label="岗位类型"
+          initialValue={1}
+          rules={[
+            {
+              required: true,
+              message: "Type cannot be empty!",
+            },
+          ]}
+        >
           <Select>
-            <Option value="1-50">50-99人</Option>
-            <Option value="50-199">50-199人</Option>
-            <Option value="200-500">200-500人</Option>
-            <Option value="500-1000">500-1000人</Option>
-            <Option value="1000以上">1000人以上</Option>
+            <Option value={1}>社招</Option>
+            <Option value={2}>实习</Option>
+            <Option value={3}>校招</Option>
           </Select>
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          name="ind"
+          label="岗位所属行业类型"
+          rules={[
+            {
+              required: true,
+              message: "Ind cannot be empty!",
+            },
+          ]}
+        >
+          <Input placeholder="IT/旅游业/大数据/金融..." />
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          name="salaryRange"
+          label="工资"
+          rules={[
+            {
+              required: true,
+              message: "Salary cannot be empty!",
+            },
+          ]}
+        >
+          <Input placeholder="Input Salary" />
+        </Form.Item>
+        <Form.Item {...formItemLayout} name="eduReq" label="学历要求">
+          <Input placeholder="Input Education" />
+        </Form.Item>
+        <Form.Item {...formItemLayout} name="email" label="邮箱">
+          <Input placeholder="Input Email" />
+        </Form.Item>
+        <Form.Item {...formItemLayout} name="tags" label="标签">
+          <Input placeholder="多个标签用英文逗号连接" />
+        </Form.Item>
+        <Form.Item {...formItemLayout} name="wechat" label="hr微信">
+          <Input placeholder="Input Wechat" />
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          name="desc"
+          label="职位详情"
+          rules={[
+            {
+              required: true,
+              message: "Description cannot be empty!",
+            },
+          ]}
+        >
+          <Input.TextArea rows={20} />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 20, span: 4 }}>
           <Button className="default-button" type="primary" htmlType="submit">

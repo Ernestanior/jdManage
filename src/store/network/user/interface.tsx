@@ -28,29 +28,6 @@ export interface IModifyUserParams {
   type: string;
 }
 
-/** 列表信息 */
-export interface IUserInfo {
-  email: string;
-  id: number;
-  locale: string;
-  loginId: string;
-  loginPwd: string;
-  name: string;
-  status: number;
-  timezone: string;
-  type: string;
-  userPwd: string;
-}
-
-export interface IUserList {
-  content: IUserInfo[];
-  number: number;
-  numberOfElements: number;
-  size: number;
-  totalElements: number;
-  totalPages: number;
-}
-
 /** createUser的请求参数*/
 export interface ICreateUserParams {
   email: string; //user email

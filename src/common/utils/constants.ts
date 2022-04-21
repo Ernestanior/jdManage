@@ -87,3 +87,11 @@ export {
   IS_DEV,
   DEFAULT_SEARCHPAGE,
 };
+
+export enum Flag {
+  CLOSE = "close",
+  CREATE = "create",
+  EDIT = "edit",
+  DELETE = "delete",
+  DETAIL = "detail",
+}

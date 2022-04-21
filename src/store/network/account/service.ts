@@ -1,51 +1,54 @@
 import { BehaviorSubject, from } from "rxjs";
-import { IAccountInfo, IUserInfo } from "./interface";
+import { IUserInfo } from "./interface";
 import request from "@/store/request";
 import { authApi } from "@/store/api";
-import { deleteToken, getToken, saveToken } from "@/store/storage";
+import { deleteUser, getUser, saveUser } from "@/store/storage";
 
 /**
  * 登录账户
  */
 class Account {
-  readonly info$ = new BehaviorSubject<IAccountInfo | null>(null);
+  // readonly info$ = new BehaviorSubject<IAccountInfo | null>(null);
   readonly userInfo$ = new BehaviorSubject<IUserInfo | null>(null);
 
   constructor() {
-    const token = getToken();
-    if (token) {
-      this.info$.next(token);
+    const userInfo: IUserInfo = getUser();
+    if (userInfo && userInfo.token) {
+      this.userInfo$.next(userInfo);
     }
   }
   login(username: string, password: string) {
     // 登录成功之后将数据设置到info就可以触发登录信息的更新
-    from(request(authApi.Login({ username, password }))).subscribe((data) => {
+    from(request(authApi.Login({ username, password }))).subscribe((res) => {
       // token存储
-      if (data && data.response === "success") {
-        if (data.result) {
-          saveToken(data.result.token);
-          this.info$.next(data.result);
-        }
+      if (res && res.code === 200) {
+        saveUser(res.data);
+        // this.info$.next(res.data);
+        this.userInfo$.next(res.data);
       }
     });
   }
-  logout(data: {}) {
-    from(request(authApi.Logout(data))).subscribe((data) => {
-      if (data) {
-        this.info$.next(null);
-        if (getToken()) {
-          deleteToken();
-        }
-      }
-    });
+  logout() {
+    // from(request(authApi.Logout(data))).subscribe((data) => {
+    //   if (data) {
+    //     this.userInfo$.next(null);
+    //     if (getUser()) {
+    //       deleteUser();
+    //     }
+    //   }
+    // });
+    this.userInfo$.next(null);
+    if (getUser()) {
+      deleteUser();
+    }
   }
 
-  UserInfo() {
-    // 登录成功之后将数据设置到info就可以触发登录信息的更新
-    from(request(authApi.User({}, {}))).subscribe((data) => {
-      this.userInfo$.next(data);
-    });
-  }
+  // UserInfo() {
+  //   // 登录成功之后将数据设置到info就可以触发登录信息的更新
+  //   from(request(authApi.User({}, {}))).subscribe((data) => {
+  //     this.userInfo$.next(data);
+  //   });
+  // }
 }
 
 const accountService = new Account();

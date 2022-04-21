@@ -1,10 +1,11 @@
 import RequestPlx from "@/common/tools/request";
-// import { getToken } from "@/store/storage";
+import { getUser } from "@/store/storage";
 import { AxiosRequestConfig } from "axios";
 import { notification } from "antd";
-// import { Base64 } from "js-base64";
+import { Base64 } from "js-base64";
 // import accountService from "../network/account/service";
 import { loading } from "@/components/loading";
+import { IUserInfo } from "../network/account/interface";
 
 const requestPlx = new RequestPlx();
 
@@ -24,14 +25,11 @@ requestPlx.middleware_before.use(async (config, next) => {
 
 // header add token
 requestPlx.middleware_before.use(async (config, next) => {
-  // const token = getToken();
-  // if (token) {
-  //   const strs = token.split("=")[1];
-  //   config.headers["Authorization"] = "Basic " + Base64.encode(strs);
-  // }
-  console.log("gg");
-
-  config.headers["user-id"] = "123";
+  const userInfo: IUserInfo = getUser();
+  if (userInfo && userInfo.token) {
+    config.headers["AUTH"] = userInfo.token;
+  }
+  // config.headers["user-id"] = "123";
   loading.loading$.next(true);
   await next();
 });

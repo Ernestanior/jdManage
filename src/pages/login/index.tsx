@@ -1,15 +1,14 @@
 import { Form, Input, Button, Checkbox } from "antd";
 import accountService from "@/store/network/account/service";
 import { useLoading } from "@/components/loading";
-import { from } from "rxjs";
-import request from "@/store/request";
-import { authApi } from "@/store/api";
-import { saveToken } from "@/store/storage";
+import md5 from "md5";
 
 const Login = () => {
   const loading = useLoading();
   const onFinish = (values: any) => {
-    accountService.login(values.userName, values.pwd);
+    console.log(values);
+
+    accountService.login(values.userName, md5(values.pwd));
   };
 
   const onFinishFailed = (errorInfo: any) => {

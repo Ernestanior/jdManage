@@ -2,9 +2,13 @@ interface ICompanyList {
   data: ICompanyInfo[];
   size: number;
 }
-interface ICompanyInfo {
+interface INewCompany {
   companyName: string;
   description: string;
-  id: number;
-  status: number;
+  staffNum: string;
+}
+interface ICompanyInfo extends INewCompany {
+  id?: number;
+  status?: number;
+  logoName?: any;
 }

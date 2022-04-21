@@ -1,7 +1,15 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { companyApi } from "@/store/api";
 import request from "@/store/request";
-import { Button, Drawer, Form, Input, notification, Select, Upload } from "antd";
+import {
+  Button,
+  Drawer,
+  Form,
+  Input,
+  notification,
+  Select,
+  Upload,
+} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
 interface IProps {
@@ -11,30 +19,32 @@ interface IProps {
   loading: boolean;
   type: string | null;
 }
+
 const formItemLayout = {
   labelCol: { span: 24 },
   wrapperCol: { span: 24 },
 };
 
-
 const { Option } = Select;
-const CreateDrawer: FC<IProps> = ({
-  visible,
-  onClose,
-  reload,
-  loading,
-  type,
-}) => {
+const CreateDrawer: FC<IProps> = ({ visible, onClose, reload }) => {
   const [form] = Form.useForm();
-  const onFinish = async (e: any) => {
-    const res = await request(
-      companyApi.CreateCompany({ ...e, type: type || "admin" })
-    );
-    if (res) {
-      form.resetFields();
-      onClose();
-      reload();
-      notification.success({ message: "success" });
+  const [file, setFile] = useState<any>();
+  const onFinish = async (e: ICompanyInfo) => {
+    const { companyName, description, staffNum } = e;
+    const payload = { companyName, description, staffNum };
+    const res = await request(companyApi.CreateCompany(payload));
+    if (res.data) {
+      const formData = new FormData();
+      formData.append("logo", file);
+      const result = await request(
+        companyApi.UploadCompanyLogo(res.data, formData)
+      );
+      if (result.code === 200) {
+        form.resetFields();
+        onClose();
+        reload();
+        notification.success({ message: "success" });
+      }
     }
   };
   return (
@@ -43,38 +53,35 @@ const CreateDrawer: FC<IProps> = ({
       placement="right"
       onClose={onClose}
       visible={visible}
-      width={500}
+      width={700}
       closable={false}
     >
-      <Form
-        onFinish={onFinish}
-        initialValues={{ protocol: "HTTPS", websocket: false }}
-      >
+      <Form onFinish={onFinish} form={form}>
         <Form.Item
           {...formItemLayout}
-          name="city"
-          label="城市"
+          name="companyName"
+          label="公司名字"
           rules={[
             {
               required: true,
-              message: "City cannot be empty!",
+              message: "Company name cannot be empty!",
             },
           ]}
         >
-          <Input placeholder="Input city" />
+          <Input placeholder="Input company name" />
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name="companyId"
-          label="公司id"
+          name="description"
+          label="公司简介"
           rules={[
             {
               required: true,
-              message: "Company id cannot be empty!",
+              message: "Description cannot be empty!",
             },
           ]}
         >
-          <Input placeholder="Input company id" />
+          <Input.TextArea rows={10} placeholder="Input company description" />
         </Form.Item>
         <Form.Item
           {...formItemLayout}
@@ -88,14 +95,27 @@ const CreateDrawer: FC<IProps> = ({
           ]}
         >
           <Upload
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
             listType="picture"
+            beforeUpload={(file) => {
+              setFile(file);
+              return false;
+            }}
             maxCount={1}
           >
             <Button icon={<UploadOutlined />}>Upload</Button>
           </Upload>
         </Form.Item>
-        <Form.Item {...formItemLayout} name="stuffNum" label="公司规模">
+        <Form.Item
+          {...formItemLayout}
+          name="staffNum"
+          label="公司规模"
+          rules={[
+            {
+              required: true,
+              message: "Company logo cannot be empty!",
+            },
+          ]}
+        >
           <Select>
             <Option value="1-50">50-99人</Option>
             <Option value="50-199">50-199人</Option>

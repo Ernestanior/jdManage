@@ -32,6 +32,14 @@ const HeaderPlx: FC<IProps> = ({ visible, onClose }) => {
         title: "主页",
         path: "/",
       },
+      roleAuth(
+        {
+          icon: <ReconciliationTwoTone twoToneColor="#52c41a" />,
+          title: "员工管理",
+          path: "/admin",
+        },
+        []
+      ),
       {
         icon: <HeartTwoTone twoToneColor="#eb2f96" />,
         title: "公司管理",
@@ -44,28 +52,23 @@ const HeaderPlx: FC<IProps> = ({ visible, onClose }) => {
       },
       {
         icon: <SmileTwoTone twoToneColor="#822496" />,
-        title: "平台",
-        path: "/platform-management",
-      },
-      {
-        icon: <ReconciliationTwoTone twoToneColor="#52c41a" />,
-        title: "CDN站点",
-        path: "/cdn-site",
+        title: "笔记管理",
+        path: "/",
       },
       {
         icon: <SoundTwoTone twoToneColor="#a72626" />,
-        title: "域名解析",
-        path: "/dns-management",
+        title: "待开发2",
+        path: "/",
       },
       {
         icon: <ToolTwoTone twoToneColor="#423626" />,
-        title: "资料查询",
-        path: "/info-inquiry",
+        title: "待开发3",
+        path: "/",
       },
       {
         icon: <CrownTwoTone twoToneColor="#789abc" />,
-        title: "证书管理",
-        path: "/ssl-management",
+        title: "待开发4",
+        path: "/",
       },
     ];
   }, [role]);
