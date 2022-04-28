@@ -2,23 +2,16 @@ import RequestPlx from "@/common/tools/request";
 import { getUser } from "@/store/storage";
 import { AxiosRequestConfig } from "axios";
 import { notification } from "antd";
-import { Base64 } from "js-base64";
-// import accountService from "../network/account/service";
+// import { Base64 } from "js-base64";
 import { loading } from "@/components/loading";
 import { IUserInfo } from "../network/account/interface";
 
 const requestPlx = new RequestPlx();
 
-// const dev_url = "http://localhost:10088/tproj";
 const dev_url = "https://api.reviewonclass.com";
 
 // add dev server url
 requestPlx.middleware_before.use(async (config, next) => {
-  // if (process.env.NODE_ENV === "development") {
-  //   config.url = dev_url + config.url;
-  // } else {
-  //   config.url = "/tproj" + config.url;
-  // }
   config.url = dev_url + config.url;
   await next();
 });
@@ -29,7 +22,6 @@ requestPlx.middleware_before.use(async (config, next) => {
   if (userInfo && userInfo.token) {
     config.headers["AUTH"] = userInfo.token;
   }
-  // config.headers["user-id"] = "123";
   loading.loading$.next(true);
   await next();
 });
@@ -58,10 +50,8 @@ requestPlx.middleware_after.use(async (rep, next) => {
     if (rep.data.code !== 200) {
       notification.error({
         message: "有点小问题",
-        // description: rep.data.message,
       });
     }
-    //rep.data = rep.data.result;
   }
   loading.loading$.next(false);
   await next();

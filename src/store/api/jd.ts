@@ -32,8 +32,8 @@ class JdAPI {
   };
   EditJd = (data: IJdForm) => {
     const config: AxiosRequestConfig = {
-      url: "/admin/jd/publish",
-      method: "post",
+      url: "/admin/jd/update",
+      method: "put",
       data,
     };
     config.headers = {};
@@ -49,13 +49,14 @@ class JdAPI {
   };
 }
 interface IJdForm {
-  city: string;
-  company: number;
-  desc: string;
-  ind: string;
-  pay: string;
-  roleName: string;
-  type: number;
+  id?: number;
+  city?: string;
+  company?: number;
+  desc?: string;
+  ind?: string;
+  pay?: string;
+  roleName?: string;
+  type?: number;
   edu?: string;
   email?: string;
   tags?: string;

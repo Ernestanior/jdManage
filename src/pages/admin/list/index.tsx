@@ -8,12 +8,12 @@ import { adminApi } from "@/store/api";
 import useEvent from "@/hooks/useEvent";
 import { Flag } from "@/common/utils/constants";
 import IconFont from "@/components/icon";
+import EditDrawer from "./editDrawer";
 
 const Content: FC = () => {
   const [flag, setFlag] = useState<Flag>(Flag.CLOSE);
   const [currData, setCurrData] = useState<any>();
-  // const [selected, setSelected] = useState<number>(0);
-  // const [detailData, setDetailData] = useState<any>({});
+  const [selectedData, setSelectedData] = useState<any>({});
   const [event$, sendMessage] = useEvent();
   const loading = useLoading();
   const routerState: any = useLocation().state;
@@ -35,12 +35,14 @@ const Content: FC = () => {
     optList: [
       {
         text: "更新",
-        icon: <IconFont type="icon-peizhi"></IconFont>,
+        icon: (
+          <a onClick={(e) => e.preventDefault()} href=".">
+            <IconFont type="icon-peizhi"></IconFont>
+          </a>
+        ),
         event: (data: any) => {
-          // setDeleteFlag(true);
+          setSelectedData(data);
           setFlag(Flag.EDIT);
-          // setDetailData(data);
-          // deleteCompany(data.id);
         },
       },
     ],
@@ -86,27 +88,6 @@ const Content: FC = () => {
       <Template
         closeFilter
         primarySearch={"keyword"}
-        searchList={[
-          {
-            text: "公司名称",
-            name: "name",
-            type: "input",
-          },
-          {
-            text: "规模",
-            name: "email",
-            type: "input",
-          },
-          {
-            text: "状态",
-            name: "status",
-            data: [
-              { uid: 0, name: "未启用" },
-              { uid: 1, name: "正常" },
-            ],
-            type: "select",
-          },
-        ]}
         {...TempConfig}
         event$={event$}
       ></Template>
@@ -117,29 +98,13 @@ const Content: FC = () => {
         loading={loading}
         type={type}
       ></CreateDrawer>
-      {/* <EditDrawer
+      <EditDrawer
         onClose={() => setFlag(Flag.CLOSE)}
         reload={() => sendMessage("reload")}
-        data={detailData}
+        data={selectedData}
         visible={flag === Flag.EDIT}
         loading={loading}
-      ></EditDrawer> */}
-      {/* <DetailDrawer
-        onClose={() => setFlag(Flag.CLOSE)}
-        reload={() => sendMessage("reload")}
-        title="公司详情"
-        data={detailData}
-        visible={flag === Flag.DETAIL}
-      ></DetailDrawer>
-      <EdgeModal
-        visible={flag === Flag.DELETE}
-        onCancel={() => setFlag(Flag.CLOSE)}
-        onOk={() => deleteCompany(selected)}
-        title="删除"
-        loading={loading}
-      >
-        你确定删除此公司？
-      </EdgeModal> */}
+      ></EditDrawer>
     </>
   );
 };

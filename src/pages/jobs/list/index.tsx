@@ -7,17 +7,17 @@ import EditDrawer from "./editDrawer";
 import { useLoading } from "@/components/loading";
 import { from } from "rxjs";
 import request from "@/store/request";
-import { companyApi, jdApi } from "@/store/api";
+import { jdApi } from "@/store/api";
 import { EdgeModal } from "@/components/modal";
 import useEvent from "@/hooks/useEvent";
+import DetailDrawer from "./detailDrawer";
+import { Flag } from "@/common/utils/constants";
 
 const Content: FC = () => {
-  const [createFlag, setCreateFlag] = useState<boolean>(false);
-  const [editFlag, setEditFlag] = useState<boolean>(false);
-  const [deleteFlag, setDeleteFlag] = useState<boolean>(false);
+  const [flag, setFlag] = useState<Flag>(Flag.CLOSE);
   const [currData, setCurrData] = useState<any>();
-  const [deleteId, setDeleteId] = useState<number>();
-  const [editData, setEditData] = useState<any>({});
+  const [selectId, setSelected] = useState<number>();
+  const [detailData, setDetailData] = useState<any>();
   const [event$, sendMessage] = useEvent();
   const loading = useLoading();
   const routerState: any = useLocation().state;
@@ -25,17 +25,17 @@ const Content: FC = () => {
     return routerState && routerState.userMana;
   }, [routerState]);
 
-  const deleteCustomer = () => {
-    deleteId &&
-      from(request(jdApi.DeleteJd(deleteId))).subscribe((data) => {
+  const deleteJd = () => {
+    selectId &&
+      from(request(jdApi.DeleteJd(selectId))).subscribe((data) => {
         if (data.code !== 200) {
           notification.error({ message: "Delete failed" });
           return null;
         }
         notification.success({ message: "Delete Success", description: data });
-        setDeleteFlag(false);
+        setFlag(Flag.CLOSE);
         sendMessage("reload");
-        setDeleteId(0);
+        setSelected(0);
       });
   };
   const detailJd = (id: number) => {
@@ -44,7 +44,7 @@ const Content: FC = () => {
         notification.error({ message: "Detail load failed" });
         return null;
       }
-      setEditData(data);
+      setDetailData(data.data);
     });
   };
 
@@ -53,21 +53,23 @@ const Content: FC = () => {
       {
         text: "查看", //修改
         event: (data: any) => {
+          setFlag(Flag.DETAIL);
           detailJd(data.id);
         },
       },
       {
         text: "更新", //修改
         event: (data: any) => {
+          setFlag(Flag.EDIT);
           detailJd(data.id);
-          setEditFlag(true);
+          setSelected(data.id);
         },
       },
       {
         text: "删除",
         event: (data: any) => {
-          setDeleteFlag(true);
-          setDeleteId(data.id);
+          setFlag(Flag.DELETE);
+          setSelected(data.id);
         },
       },
     ],
@@ -88,7 +90,7 @@ const Content: FC = () => {
       {
         text: "新增职位",
         onClick: () => {
-          setCreateFlag(true);
+          setFlag(Flag.CREATE);
         },
       },
     ],
@@ -146,52 +148,40 @@ const Content: FC = () => {
     <>
       <Template
         primarySearch={"keyword"}
-        searchList={[
-          {
-            text: "使用者名称",
-            name: "name",
-            type: "input",
-          },
-          {
-            text: "邮箱",
-            name: "email",
-            type: "input",
-          },
-          {
-            text: "状态",
-            name: "status",
-            data: [
-              { uid: 0, name: "未启用" },
-              { uid: 1, name: "正常" },
-            ],
-            type: "select",
-          },
-        ]}
+        closeFilter
         {...TempConfig}
         event$={event$}
       ></Template>
       <CreateDrawer
-        onClose={() => setCreateFlag(false)}
+        onClose={() => setFlag(Flag.CLOSE)}
         reload={() => sendMessage("reload")}
-        visible={createFlag}
+        visible={flag === Flag.CREATE}
         loading={loading}
         type={type}
       ></CreateDrawer>
       <EditDrawer
-        onClose={() => setEditFlag(false)}
+        onClose={() => setFlag(Flag.CLOSE)}
         reload={() => sendMessage("reload")}
-        data={editData}
-        visible={editFlag}
+        data={{ id: selectId, ...detailData }}
+        visible={flag === Flag.EDIT}
         loading={loading}
       ></EditDrawer>
+      <DetailDrawer
+        onClose={() => setFlag(Flag.CLOSE)}
+        reload={() => sendMessage("reload")}
+        title="职位详情"
+        data={detailData}
+        loading={loading}
+        visible={flag === Flag.DETAIL}
+      ></DetailDrawer>
       <EdgeModal
-        visible={deleteFlag}
-        onCancel={() => setDeleteFlag(false)}
-        onOk={() => deleteCustomer()}
+        visible={flag === Flag.DELETE}
+        onCancel={() => setFlag(Flag.CLOSE)}
+        onOk={() => deleteJd()}
         title="删除"
         loading={loading}
       >
-        你确定删除此账户？
+        你确定删除此公司？
       </EdgeModal>
     </>
   );

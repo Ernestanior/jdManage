@@ -131,6 +131,7 @@ const Content: FC = () => {
             <img
               style={{ width: 30, height: 30 }}
               src={`https://api.reviewonclass.com/static/image/${e}`}
+              alt=""
             ></img>
           ) : (
             "no-logo"
@@ -157,27 +158,7 @@ const Content: FC = () => {
     <>
       <Template
         primarySearch={"keyword"}
-        searchList={[
-          {
-            text: "公司名称",
-            name: "name",
-            type: "input",
-          },
-          {
-            text: "规模",
-            name: "email",
-            type: "input",
-          },
-          {
-            text: "状态",
-            name: "status",
-            data: [
-              { uid: 0, name: "未启用" },
-              { uid: 1, name: "正常" },
-            ],
-            type: "select",
-          },
-        ]}
+        closeFilter
         {...TempConfig}
         event$={event$}
       ></Template>

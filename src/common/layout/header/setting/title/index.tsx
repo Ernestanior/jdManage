@@ -1,6 +1,5 @@
 import { FC } from "react";
 import accountService from "@/store/network/account/service";
-import moment from "moment";
 import { Btn } from "@/components/button";
 import "./index.less";
 import { useNavigate } from "react-router-dom";

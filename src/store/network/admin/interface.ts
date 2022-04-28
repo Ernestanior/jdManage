@@ -11,3 +11,6 @@ export interface IAdminInfo {
   username: string;
   password: string;
 }
+export interface IAdminUpdate extends IAdminInfo {
+  id: number;
+}

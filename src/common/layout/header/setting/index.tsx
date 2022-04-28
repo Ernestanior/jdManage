@@ -1,10 +1,9 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Popover } from "antd";
 import Content from "./content";
 import { DownOutlined } from "@ant-design/icons";
 import { useUserInfo } from "@/store/network/account";
 import Title from "./title";
-import accountService from "@/store/network/account/service";
 const HeaderPlx: FC = () => {
   const userInfo = useUserInfo();
   // const userLogin = useNewUserLogin();

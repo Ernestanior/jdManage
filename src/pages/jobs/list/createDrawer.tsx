@@ -1,16 +1,7 @@
 import { FC, useEffect, useMemo } from "react";
-import { companyApi, jdApi } from "@/store/api";
+import { jdApi } from "@/store/api";
 import request from "@/store/request";
-import {
-  Button,
-  Drawer,
-  Form,
-  Input,
-  notification,
-  Select,
-  Upload,
-} from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { Button, Drawer, Form, Input, notification, Select } from "antd";
 import { useCompanyList } from "@/store/network/company";
 import companyService from "@/store/network/company/service";
 
@@ -117,7 +108,7 @@ const CreateDrawer: FC<IProps> = ({
           {...formItemLayout}
           name="type"
           label="岗位类型"
-          initialValue={1}
+          initialValue={"社招"}
           rules={[
             {
               required: true,
@@ -126,9 +117,9 @@ const CreateDrawer: FC<IProps> = ({
           ]}
         >
           <Select>
-            <Option value={1}>社招</Option>
-            <Option value={2}>实习</Option>
-            <Option value={3}>校招</Option>
+            <Option value={"社招"}>社招</Option>
+            <Option value={"实习"}>实习</Option>
+            <Option value={"校招"}>校招</Option>
           </Select>
         </Form.Item>
         <Form.Item

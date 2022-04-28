@@ -3,9 +3,9 @@ interface ICompanyList {
   size: number;
 }
 interface INewCompany {
-  companyName: string;
-  description: string;
-  staffNum: string;
+  companyName?: string;
+  description?: string;
+  staffNum?: string;
 }
 interface ICompanyInfo extends INewCompany {
   id?: number;

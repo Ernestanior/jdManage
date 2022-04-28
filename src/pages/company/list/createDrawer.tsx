@@ -43,6 +43,7 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload }) => {
         form.resetFields();
         onClose();
         reload();
+        setFile(null);
         notification.success({ message: "success" });
       }
     }
@@ -117,11 +118,11 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload }) => {
           ]}
         >
           <Select>
-            <Option value="1-50">50-99人</Option>
-            <Option value="50-199">50-199人</Option>
-            <Option value="200-500">200-500人</Option>
-            <Option value="500-1000">500-1000人</Option>
-            <Option value="1000以上">1000人以上</Option>
+            <Option value="1-50人">1-50人</Option>
+            <Option value="50-199人">50-199人</Option>
+            <Option value="200-500人">200-500人</Option>
+            <Option value="500-1000人">500-1000人</Option>
+            <Option value="1000人以上">1000人以上</Option>
           </Select>
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 20, span: 4 }}>

@@ -1,23 +1,22 @@
 import { Template } from "@/components/template";
-import { Button, notification } from "antd";
+import { notification } from "antd";
 import { FC, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import CreateDrawer from "./createDrawer";
-import DetailDrawer from "./detailDrawer";
 import { useLoading } from "@/components/loading";
 import { from } from "rxjs";
 import request from "@/store/request";
-import { companyApi } from "@/store/api";
+import { noteApi } from "@/store/api";
 import { EdgeModal } from "@/components/modal";
 import useEvent from "@/hooks/useEvent";
+import DetailDrawer from "./detailDrawer";
 import { Flag } from "@/common/utils/constants";
 
 const Content: FC = () => {
   const [flag, setFlag] = useState<Flag>(Flag.CLOSE);
   const [currData, setCurrData] = useState<any>();
-  const [selected, setSelected] = useState<number>(0);
-  const [detailData, setDetailData] = useState<any>({});
-
+  const [selectId, setSelected] = useState<number>();
+  const [detailData, setDetailData] = useState<any>();
   const [event$, sendMessage] = useEvent();
   const loading = useLoading();
   const routerState: any = useLocation().state;
@@ -25,13 +24,26 @@ const Content: FC = () => {
     return routerState && routerState.userMana;
   }, [routerState]);
 
-  const deleteCompany = (id: number) => {
-    from(request(companyApi.DeleteCompany(id))).subscribe((data) => {
-      notification.success({ message: "Delete Success" });
-      sendMessage("reload");
-      // setDeleteFlag(false);
-      setFlag(Flag.CLOSE);
-      setSelected(0);
+  const deleteNote = () => {
+    selectId &&
+      from(request(noteApi.DeleteNote(selectId))).subscribe((data) => {
+        if (data.code !== 200) {
+          notification.error({ message: "Delete failed" });
+          return null;
+        }
+        notification.success({ message: "Delete Success", description: data });
+        setFlag(Flag.CLOSE);
+        sendMessage("reload");
+        setSelected(0);
+      });
+  };
+  const detailNote = (id: number) => {
+    from(request(noteApi.DetailNote(id))).subscribe((data) => {
+      if (data.code !== 200) {
+        notification.error({ message: "Detail load failed" });
+        return null;
+      }
+      setDetailData(data.data);
     });
   };
 
@@ -39,27 +51,22 @@ const Content: FC = () => {
     optList: [
       {
         text: "查看", //修改
-        event: async (data: any) => {
-          const res = await request(companyApi.DetailCompany(data.id));
-          if (res.code === 200) {
-            setDetailData(res.data);
-            setFlag(Flag.DETAIL);
-          }
+        event: (data: any) => {
+          setFlag(Flag.DETAIL);
+          detailNote(data.id);
         },
       },
       {
         text: "删除",
         event: (data: any) => {
-          // setDeleteFlag(true);
           setFlag(Flag.DELETE);
           setSelected(data.id);
-          // deleteCompany(data.id);
         },
       },
     ],
     onSearch: async (params: any) => {
       const { pageNum, pageSize } = params.searchPage;
-      const res = await request(companyApi.FindCompany(pageNum, pageSize));
+      const res = await request(noteApi.FindNote(pageNum, pageSize));
       const { data, size } = res;
       setCurrData({
         number: pageNum - 1,
@@ -69,26 +76,11 @@ const Content: FC = () => {
         totalPages: size / pageNum,
         content: data,
       });
-
-      // findCompany(page, pageSize).then((res: any) => {
-      //   if (res) {
-      //     const { data, size } = res.data
-      //     setCurrData({
-      //       number: page - 1,
-      //       numberOfElements: 0,
-      //       size: pageSize,
-      //       totalElements: size,
-      //       totalPages: size / page,
-      //       content: data
-      //     })
-      //   }
-      // });
     },
     normalBtns: [
       {
-        text: "新增公司",
+        text: "新增笔记",
         onClick: () => {
-          // setCreateFlag(true);
           setFlag(Flag.CREATE);
         },
       },
@@ -97,48 +89,44 @@ const Content: FC = () => {
     data: currData,
     config: [
       {
-        title: "公司名称",
-        dataIndex: "companyName",
-        key: "companyName",
+        title: "笔记id",
+        dataIndex: "id",
+        key: "id",
       },
       {
-        title: "职位类型",
-        dataIndex: "description",
-        key: "description",
+        title: "标题",
+        dataIndex: "title",
+        key: "title",
       },
       {
-        title: "招聘员工数量",
-        dataIndex: "staffNum",
-        key: "staffNum",
+        title: "作者昵称",
+        dataIndex: "authorName",
+        key: "authorName",
       },
       {
-        title: "公司图标",
-        dataIndex: "logoName",
-        key: "logoName",
-        render: (e: string) =>
-          e ? (
-            <img
-              style={{ width: 30, height: 30 }}
-              src={`https://api.reviewonclass.com/static/image/${e}`}
-            ></img>
-          ) : (
-            "no-logo"
-          ),
+        title: "课程编号",
+        dataIndex: "courseCode",
+        key: "courseCode",
       },
       {
-        title: "状态",
-        dataIndex: "status",
-        key: "status",
-        render: (e: string) =>
-          e ? (
-            <Button type="primary" style={{ backgroundColor: "#4ee876" }}>
-              正常
-            </Button>
-          ) : (
-            <Button type="primary" style={{ backgroundColor: "#ff4d4d" }}>
-              已删除
-            </Button>
-          ),
+        title: "收藏数",
+        dataIndex: "fav",
+        key: "fav",
+      },
+      {
+        title: "点赞数",
+        dataIndex: "like",
+        key: "like",
+      },
+      {
+        title: "类型",
+        dataIndex: "type",
+        key: "type",
+      },
+      {
+        title: "学校名称缩写",
+        dataIndex: "uniAcronym",
+        key: "type",
       },
     ],
   };
@@ -146,27 +134,7 @@ const Content: FC = () => {
     <>
       <Template
         primarySearch={"keyword"}
-        searchList={[
-          {
-            text: "使用者名称",
-            name: "name",
-            type: "input",
-          },
-          {
-            text: "邮箱",
-            name: "email",
-            type: "input",
-          },
-          {
-            text: "状态",
-            name: "status",
-            data: [
-              { uid: 0, name: "未启用" },
-              { uid: 1, name: "正常" },
-            ],
-            type: "select",
-          },
-        ]}
+        closeFilter
         {...TempConfig}
         event$={event$}
       ></Template>
@@ -177,24 +145,18 @@ const Content: FC = () => {
         loading={loading}
         type={type}
       ></CreateDrawer>
-      {/* <EditDrawer
-        onClose={() => setFlag(Flag.CLOSE)}
-        reload={() => sendMessage("reload")}
-        data={editData}
-        visible={flag === Flag.EDIT}
-        loading={loading}
-      ></EditDrawer> */}
       <DetailDrawer
         onClose={() => setFlag(Flag.CLOSE)}
         reload={() => sendMessage("reload")}
-        title="公司详情"
+        title="笔记详情"
         data={detailData}
+        loading={loading}
         visible={flag === Flag.DETAIL}
       ></DetailDrawer>
       <EdgeModal
         visible={flag === Flag.DELETE}
         onCancel={() => setFlag(Flag.CLOSE)}
-        onOk={() => deleteCompany(selected)}
+        onOk={() => deleteNote()}
         title="删除"
         loading={loading}
       >

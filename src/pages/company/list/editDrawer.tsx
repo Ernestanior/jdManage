@@ -1,7 +1,16 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { companyApi } from "@/store/api";
 import request from "@/store/request";
-import { Button, Drawer, Form, Input, Select } from "antd";
+import {
+  Button,
+  Drawer,
+  Form,
+  Input,
+  notification,
+  Select,
+  Upload,
+} from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 
 interface IProps {
   visible: boolean;
@@ -17,18 +26,37 @@ const formItemLayout = {
 const { Option } = Select;
 const EditDrawer: FC<IProps> = ({ visible, onClose, reload, data }) => {
   const [form] = Form.useForm();
-  useEffect(() => form.setFieldsValue(data), [data]);
+  const [file, setFile] = useState<any>();
+  const [diffData, setDiffData] = useState<Object>({});
+
+  useEffect(() => {
+    form.setFieldsValue(data);
+    return () => setDiffData({});
+  }, [data, form]);
   const onFinish = async (e: any) => {
-    if (data) {
-      const res = await request(
-        companyApi.UpdateCompany({ ...e, uid: data.uid })
-      );
-      if (res) {
-        form.resetFields();
-        onClose();
-        reload();
-        // notification.success({ message: "success" });
+    const res = await request(
+      companyApi.UpdateCompany({ ...diffData, id: e.id })
+    );
+    if (res.code === 200) {
+      if (file) {
+        const formData = new FormData();
+        formData.append("logo", file);
+        const result = await request(
+          companyApi.UploadCompanyLogo(e.id, formData)
+        );
+        if (result.code === 200) {
+          form.resetFields();
+          onClose();
+          reload();
+          setFile(null);
+          notification.success({ message: "success" });
+        }
+        return;
       }
+      form.resetFields();
+      onClose();
+      reload();
+      notification.success({ message: "success" });
     }
   };
   return (
@@ -41,7 +69,14 @@ const EditDrawer: FC<IProps> = ({ visible, onClose, reload, data }) => {
       closable={false}
       getContainer={false}
     >
-      <Form onFinish={onFinish} form={form}>
+      <Form
+        onFinish={onFinish}
+        form={form}
+        onValuesChange={(e) => setDiffData({ ...diffData, ...e })}
+      >
+        <Form.Item hidden name="id">
+          <Input />
+        </Form.Item>
         <Form.Item
           {...formItemLayout}
           name="companyName"
@@ -68,27 +103,35 @@ const EditDrawer: FC<IProps> = ({ visible, onClose, reload, data }) => {
         >
           <Input.TextArea rows={10} placeholder="Input company description" />
         </Form.Item>
-        <Form.Item
-          {...formItemLayout}
-          name="logo"
-          label="公司图标"
-          rules={[
-            {
-              required: true,
-              message: "Company logo cannot be empty!",
-            },
-          ]}
-        >
-          {/* <Upload
-            listType="picture"
-            beforeUpload={(file) => {
-              setFile(file);
-              return false;
+        <Form.Item {...formItemLayout} label="公司图标">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+              alignItems: "center",
             }}
-            maxCount={1}
           >
-            <Button icon={<UploadOutlined />}>Upload</Button>
-          </Upload> */}
+            {data.logoName && (
+              <div>
+                <span style={{ marginRight: 20 }}>原Logo:</span>
+                <img
+                  style={{ width: 100 }}
+                  src={`https://api.reviewonclass.com/static/image/${data.logoName}`}
+                  alt=""
+                ></img>
+              </div>
+            )}
+            <Upload
+              listType="picture"
+              beforeUpload={(file) => {
+                setFile(file);
+                return false;
+              }}
+              maxCount={1}
+            >
+              <Button icon={<UploadOutlined />}>Upload</Button>
+            </Upload>
+          </div>
         </Form.Item>
         <Form.Item
           {...formItemLayout}
@@ -102,11 +145,11 @@ const EditDrawer: FC<IProps> = ({ visible, onClose, reload, data }) => {
           ]}
         >
           <Select>
-            <Option value="1-50">50-99人</Option>
-            <Option value="50-199">50-199人</Option>
-            <Option value="200-500">200-500人</Option>
-            <Option value="500-1000">500-1000人</Option>
-            <Option value="1000以上">1000人以上</Option>
+            <Option value="1-50人">1-50人</Option>
+            <Option value="50-199人">50-199人</Option>
+            <Option value="200-500人">200-500人</Option>
+            <Option value="500-1000人">500-1000人</Option>
+            <Option value="1000人以上">1000人以上</Option>
           </Select>
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 20, span: 4 }}>

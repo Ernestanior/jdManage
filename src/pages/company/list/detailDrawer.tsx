@@ -36,6 +36,17 @@ const DetailDrawer: FC<IProps> = ({ visible, onClose, data, title }) => {
             </Row>
           );
         }
+        if (item === "description") {
+          return (
+            <Row key={item}>
+              <Col span={8}>{item}</Col>
+              <Col span={15} offset={1}>
+                <pre style={{ whiteSpace: "pre-wrap" }}>{data[item]}</pre>
+              </Col>
+              <Divider />
+            </Row>
+          );
+        }
         return (
           <Row key={item}>
             <Col span={8}>{item}</Col>

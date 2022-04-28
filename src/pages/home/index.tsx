@@ -1,5 +1,4 @@
 import { FC } from "react";
-import IconFont from "@/components/icon";
 import Bear from "./bear";
 import "./index.less";
 

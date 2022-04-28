@@ -1,16 +1,8 @@
-import { FC, useState } from "react";
-import { companyApi } from "@/store/api";
+import { FC } from "react";
+import { noteApi } from "@/store/api";
 import request from "@/store/request";
-import {
-  Button,
-  Drawer,
-  Form,
-  Input,
-  notification,
-  Select,
-  Upload,
-} from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { Button, Drawer, Form, Input, notification, Select } from "antd";
+import moment from "moment";
 
 interface IProps {
   visible: boolean;
@@ -19,7 +11,6 @@ interface IProps {
   loading: boolean;
   type: string | null;
 }
-
 const formItemLayout = {
   labelCol: { span: 24 },
   wrapperCol: { span: 24 },
@@ -28,101 +19,87 @@ const formItemLayout = {
 const { Option } = Select;
 const CreateDrawer: FC<IProps> = ({ visible, onClose, reload }) => {
   const [form] = Form.useForm();
-  const [file, setFile] = useState<any>();
-  const onFinish = async (e: ICompanyInfo) => {
-    const { companyName, description, staffNum } = e;
-    const payload = { companyName, description, staffNum };
-    const res = await request(companyApi.CreateCompany(payload));
-    if (res.data) {
-      const formData = new FormData();
-      formData.append("logo", file);
-      const result = await request(
-        companyApi.UploadCompanyLogo(res.data, formData)
-      );
-      if (result.code === 200) {
-        form.resetFields();
-        onClose();
-        reload();
-        notification.success({ message: "success" });
-      }
+
+  const onFinish = async (e: any) => {
+    console.log(e);
+    const res = await request(
+      noteApi.CreateNote({
+        ...e,
+        courseCode: e.courseCode.toUpperCase(),
+        publishTime: moment().format("YYYYMMDDHHmmss"),
+      })
+    );
+    if (res) {
+      form.resetFields();
+      onClose();
+      reload();
+      notification.success({ message: "success" });
     }
   };
   return (
     <Drawer
-      title="新增公司"
+      title="新增笔记"
       placement="right"
       onClose={onClose}
       visible={visible}
       width={700}
       closable={false}
     >
-      <Form onFinish={onFinish} form={form}>
+      <Form onFinish={onFinish}>
         <Form.Item
           {...formItemLayout}
-          name="companyName"
-          label="公司名字"
+          name="title"
+          label="笔记标题"
           rules={[
             {
               required: true,
-              message: "Company name cannot be empty!",
+              message: "Title cannot be empty!",
             },
           ]}
         >
-          <Input placeholder="Input company name" />
+          <Input />
         </Form.Item>
         <Form.Item
           {...formItemLayout}
-          name="description"
-          label="公司简介"
+          name="uniId"
+          label="学校"
+          initialValue={1}
           rules={[
             {
               required: true,
-              message: "Description cannot be empty!",
-            },
-          ]}
-        >
-          <Input placeholder="Input company description" />
-        </Form.Item>
-        <Form.Item
-          {...formItemLayout}
-          name="logo"
-          label="公司图标"
-          rules={[
-            {
-              required: true,
-              message: "Company logo cannot be empty!",
-            },
-          ]}
-        >
-          <Upload
-            listType="picture"
-            beforeUpload={(file) => {
-              setFile(file);
-              return false;
-            }}
-            maxCount={1}
-          >
-            <Button icon={<UploadOutlined />}>Upload</Button>
-          </Upload>
-        </Form.Item>
-        <Form.Item
-          {...formItemLayout}
-          name="staffNum"
-          label="公司规模"
-          rules={[
-            {
-              required: true,
-              message: "Company logo cannot be empty!",
+              message: "Type cannot be empty!",
             },
           ]}
         >
           <Select>
-            <Option value="1-50">50-99人</Option>
-            <Option value="50-199">50-199人</Option>
-            <Option value="200-500">200-500人</Option>
-            <Option value="500-1000">500-1000人</Option>
-            <Option value="1000以上">1000人以上</Option>
+            <Option value={1}>UQ</Option>
           </Select>
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          name="courseCode"
+          label="课程编号"
+          rules={[
+            {
+              required: true,
+              message: "CourseCode cannot be empty!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          name="content"
+          label="笔记内容"
+          rules={[
+            {
+              required: true,
+              message: "Content cannot be empty!",
+            },
+          ]}
+        >
+          <Input.TextArea rows={14} />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 20, span: 4 }}>
           <Button className="default-button" type="primary" htmlType="submit">

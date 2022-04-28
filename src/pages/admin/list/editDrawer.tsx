@@ -1,7 +1,8 @@
 import { FC, useEffect } from "react";
-import { companyApi } from "@/store/api";
 import request from "@/store/request";
-import { Button, Drawer, Form, Input, Select } from "antd";
+import { Button, Drawer, Form, Input, notification } from "antd";
+import { adminApi } from "@/store/api";
+import md5 from "md5";
 
 interface IProps {
   visible: boolean;
@@ -14,26 +15,23 @@ const formItemLayout = {
   labelCol: { span: 24 },
   wrapperCol: { span: 24 },
 };
-const { Option } = Select;
 const EditDrawer: FC<IProps> = ({ visible, onClose, reload, data }) => {
   const [form] = Form.useForm();
-  useEffect(() => form.setFieldsValue(data), [data]);
+  useEffect(() => form.setFieldsValue(data), [data, form]);
   const onFinish = async (e: any) => {
-    if (data) {
-      const res = await request(
-        companyApi.UpdateCompany({ ...e, uid: data.uid })
-      );
-      if (res) {
-        form.resetFields();
-        onClose();
-        reload();
-        // notification.success({ message: "success" });
-      }
+    const res = await request(
+      adminApi.UpdateAdmin({ ...e, password: md5(e.password) })
+    );
+    if (res) {
+      form.resetFields();
+      onClose();
+      reload();
+      notification.success({ message: "success" });
     }
   };
   return (
     <Drawer
-      title="更新公司"
+      title="更新管理员密码"
       placement="right"
       onClose={onClose}
       visible={visible}
@@ -42,72 +40,14 @@ const EditDrawer: FC<IProps> = ({ visible, onClose, reload, data }) => {
       getContainer={false}
     >
       <Form onFinish={onFinish} form={form}>
-        <Form.Item
-          {...formItemLayout}
-          name="companyName"
-          label="公司名字"
-          rules={[
-            {
-              required: true,
-              message: "Company name cannot be empty!",
-            },
-          ]}
-        >
-          <Input placeholder="Input company name" />
+        <Form.Item hidden name="id">
+          <Input />
         </Form.Item>
-        <Form.Item
-          {...formItemLayout}
-          name="description"
-          label="公司简介"
-          rules={[
-            {
-              required: true,
-              message: "Description cannot be empty!",
-            },
-          ]}
-        >
-          <Input.TextArea rows={10} placeholder="Input company description" />
+        <Form.Item hidden name="username">
+          <Input />
         </Form.Item>
-        <Form.Item
-          {...formItemLayout}
-          name="logo"
-          label="公司图标"
-          rules={[
-            {
-              required: true,
-              message: "Company logo cannot be empty!",
-            },
-          ]}
-        >
-          {/* <Upload
-            listType="picture"
-            beforeUpload={(file) => {
-              setFile(file);
-              return false;
-            }}
-            maxCount={1}
-          >
-            <Button icon={<UploadOutlined />}>Upload</Button>
-          </Upload> */}
-        </Form.Item>
-        <Form.Item
-          {...formItemLayout}
-          name="staffNum"
-          label="公司规模"
-          rules={[
-            {
-              required: true,
-              message: "Company logo cannot be empty!",
-            },
-          ]}
-        >
-          <Select>
-            <Option value="1-50">50-99人</Option>
-            <Option value="50-199">50-199人</Option>
-            <Option value="200-500">200-500人</Option>
-            <Option value="500-1000">500-1000人</Option>
-            <Option value="1000以上">1000人以上</Option>
-          </Select>
+        <Form.Item {...formItemLayout} name="password" label="密码">
+          <Input />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 20, span: 4 }}>
           <Button className="default-button" type="primary" htmlType="submit">

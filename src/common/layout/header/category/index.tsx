@@ -13,8 +13,7 @@ import { Drawer } from "antd";
 import "./index.less";
 import { NavLink } from "react-router-dom";
 import useRole from "@/hooks/useRole";
-import { IUserType } from "@/hooks/useInfo";
-import { useUserInfo } from "@/store/network/account";
+// import { useUserInfo } from "@/store/network/account";
 interface IProps {
   visible: boolean;
   onClose: () => void;
@@ -23,7 +22,7 @@ interface IProps {
 const HeaderPlx: FC<IProps> = ({ visible, onClose }) => {
   // 权限
   const roleAuth = useRole();
-  const role = useUserInfo();
+  // const role = useUserInfo();
 
   const navList = useMemo(() => {
     return [
@@ -53,7 +52,7 @@ const HeaderPlx: FC<IProps> = ({ visible, onClose }) => {
       {
         icon: <SmileTwoTone twoToneColor="#822496" />,
         title: "笔记管理",
-        path: "/",
+        path: "/note",
       },
       {
         icon: <SoundTwoTone twoToneColor="#a72626" />,
@@ -71,7 +70,7 @@ const HeaderPlx: FC<IProps> = ({ visible, onClose }) => {
         path: "/",
       },
     ];
-  }, [role]);
+  }, [roleAuth]);
 
   return (
     <Drawer

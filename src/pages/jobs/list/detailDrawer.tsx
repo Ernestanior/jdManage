@@ -31,7 +31,7 @@ const DetailDrawer: FC<IProps> = ({
       <Loading display={loading}></Loading>
       {data &&
         Object.keys(data).map((item: string) => {
-          if (item === "authorAvatar") {
+          if (item === "compLogo") {
             return (
               <Row key={item}>
                 <Col span={8}>{item}</Col>

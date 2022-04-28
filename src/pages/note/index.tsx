@@ -7,16 +7,14 @@ const Index: FC = (): ReactElement => {
   const { TabPane } = Tabs;
   const navigator = useNavigate();
   const path: any = useLocation().state;
-  const index = useMemo(() => (path && path.company) || "list", [path]);
+  const index = useMemo(() => (path && path.note) || "list", [path]);
   return (
     <Tabs
       activeKey={index}
       type="card"
-      onChange={(activeKey) =>
-        navigator(".", { state: { company: activeKey } })
-      }
+      onChange={(activeKey) => navigator(".", { state: { note: activeKey } })}
     >
-      <TabPane tab="公司列表" key="list">
+      <TabPane tab="笔记列表" key="list">
         <List />
       </TabPane>
     </Tabs>

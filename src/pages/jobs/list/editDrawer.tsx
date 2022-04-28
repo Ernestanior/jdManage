@@ -1,16 +1,8 @@
-import { FC, useEffect, useMemo } from "react";
-import { companyApi, jdApi } from "@/store/api";
+import { FC, useEffect, useMemo, useState } from "react";
+import { jdApi } from "@/store/api";
 import request from "@/store/request";
-import {
-  Button,
-  Drawer,
-  Form,
-  Input,
-  notification,
-  Select,
-  Upload,
-} from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { Button, Drawer, Form, Input, notification, Select } from "antd";
+import Loading from "@/components/loading/context";
 import { useCompanyList } from "@/store/network/company";
 import companyService from "@/store/network/company/service";
 
@@ -36,7 +28,11 @@ const CreateDrawer: FC<IProps> = ({
 }) => {
   const company = useCompanyList();
   const [form] = Form.useForm();
-  useEffect(() => form.setFieldsValue(data), [data, form]);
+  const [diffData, setDiffData] = useState<Object>({});
+  useEffect(() => {
+    form.setFieldsValue(data);
+    return () => setDiffData({});
+  }, [data, form]);
 
   useEffect(() => {
     !company && companyService.findCompany(1, 49);
@@ -46,8 +42,7 @@ const CreateDrawer: FC<IProps> = ({
   }, [company]);
 
   const onFinish = async (e: any) => {
-    console.log(e);
-    const res = await request(jdApi.CreateJd({ ...e }));
+    const res = await request(jdApi.EditJd({ ...diffData, id: e.id }));
     if (res) {
       form.resetFields();
       onClose();
@@ -55,20 +50,25 @@ const CreateDrawer: FC<IProps> = ({
       notification.success({ message: "success" });
     }
   };
+
   return (
     <Drawer
-      title="新增职位"
+      title="修改职位"
       placement="right"
       onClose={onClose}
       visible={visible}
       width={700}
       closable={false}
     >
+      <Loading display={loading}></Loading>
       <Form
         onFinish={onFinish}
         form={form}
-        initialValues={{ protocol: "HTTPS", websocket: false }}
+        onValuesChange={(e) => setDiffData({ ...diffData, ...e })}
       >
+        <Form.Item name="id" hidden>
+          <Input />
+        </Form.Item>
         <Form.Item
           {...formItemLayout}
           name="location"
@@ -119,7 +119,7 @@ const CreateDrawer: FC<IProps> = ({
           {...formItemLayout}
           name="type"
           label="岗位类型"
-          initialValue={1}
+          initialValue={"社招"}
           rules={[
             {
               required: true,
@@ -128,9 +128,9 @@ const CreateDrawer: FC<IProps> = ({
           ]}
         >
           <Select>
-            <Option value={1}>社招</Option>
-            <Option value={2}>实习</Option>
-            <Option value={3}>校招</Option>
+            <Option value={"社招"}>社招</Option>
+            <Option value={"实习"}>实习</Option>
+            <Option value={"校招"}>校招</Option>
           </Select>
         </Form.Item>
         <Form.Item

@@ -2,6 +2,9 @@ import { History } from "history";
 // import JSZip from "jszip";
 import moment from "moment";
 
+interface IObject {
+  [propName: string]: any;
+}
 const fastCreateArray = (n: number) => {
   return Array.from({ length: n }).map((v, k) => k);
 };
@@ -25,6 +28,37 @@ const setMerge =
       ...data,
     });
   };
+
+//浅层比较两个对象并返回差异
+const simpleObjCompare = (obj1: IObject, obj2: IObject) => {
+  console.log(obj1);
+  console.log(obj2);
+
+  if (obj1 === obj2) {
+    return obj1;
+  }
+  let newObj: IObject = {};
+  const key1 = Object.keys(obj1);
+  const key2 = Object.keys(obj2);
+  const longKey = key1.length >= key2.length ? key1 : key2;
+  longKey.forEach((key: any) => {
+    if (!obj1[key]) {
+      newObj[key] = obj2[key];
+      return;
+    }
+    if (!obj2[key]) {
+      newObj[key] = obj1[key];
+      return;
+    }
+    if (obj1[key] !== obj2[key]) {
+      newObj[key] = obj1[key];
+      return;
+    }
+  });
+  console.log(newObj);
+
+  return newObj;
+};
 
 const getHistoryObj = () => {
   const w = window as any;
@@ -168,6 +202,7 @@ export {
   fixTo,
   greyHistoryPath,
   setMerge,
+  simpleObjCompare,
   getHistoryObj,
   findNestedObj,
   transformFlow,

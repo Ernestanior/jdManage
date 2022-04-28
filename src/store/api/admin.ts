@@ -1,4 +1,4 @@
-import { IAdminInfo } from "./../network/admin/interface";
+import { IAdminInfo, IAdminUpdate } from "./../network/admin/interface";
 import { AxiosRequestConfig } from "axios";
 
 class AdminAPI {
@@ -20,17 +20,9 @@ class AdminAPI {
     config.headers = {};
     return config;
   };
-  DeleteAdmin = (companyId: number) => {
+  UpdateAdmin = (data: IAdminUpdate) => {
     const config: AxiosRequestConfig = {
-      url: `/admin/company/deleteById/${companyId}`,
-      method: "DELETE",
-    };
-    config.headers = {};
-    return config;
-  };
-  UpdateAdmin = (data: ICompanyInfo) => {
-    const config: AxiosRequestConfig = {
-      url: "/admin/company/updateCompany",
+      url: "/admin/super/modifyPwd",
       method: "PUT",
       data,
     };
