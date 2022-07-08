@@ -7,6 +7,7 @@ import LayoutPlx from "../common/layout";
 
 // import Domain from "./cdnSite/sitePage/siteConfig/dns/domain";
 import Company from "@/pages/company";
+import City from "@/pages/city";
 import Jobs from "@/pages/jobs";
 import Note from "@/pages/note";
 import Admin from "@/pages/admin";
@@ -33,6 +34,7 @@ const ProjectRouter: FC = () => {
         <Routes>
           <Route path="/home" element={<Home />} />
           {/* <Route path="/user/*" element={<User />}></Route> */}
+          <Route path="/city/*" element={<City />}></Route>
           <Route path="/company/*" element={<Company />}></Route>
           <Route path="/jobs/*" element={<Jobs />}></Route>
           <Route path="/note/*" element={<Note />}></Route>

@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Col, Divider, Drawer, Row } from "antd";
 import Loading from "@/components/loading/context";
+import { img_url } from "@/store/request";
 
 interface IProps {
   visible: boolean;
@@ -38,7 +39,7 @@ const DetailDrawer: FC<IProps> = ({
                 <Col span={15} offset={1}>
                   <img
                     alt=""
-                    src={`https://api.reviewonclass.com/static/image/${data[item]}`}
+                    src={`${img_url}/${data[item]}`}
                     style={{ width: 100 }}
                   />
                 </Col>

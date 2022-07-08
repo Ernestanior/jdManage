@@ -1,5 +1,5 @@
 import { Template } from "@/components/template";
-import { Button, notification } from "antd";
+import { notification } from "antd";
 import { FC, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import CreateDrawer from "./createDrawer";
@@ -126,21 +126,6 @@ const Content: FC = () => {
         title: "公司名称",
         dataIndex: "companyName",
         key: "companyName",
-      },
-      {
-        title: "状态",
-        dataIndex: "status",
-        key: "status",
-        render: (e: string) =>
-          e ? (
-            <Button type="primary" style={{ backgroundColor: "#4ee876" }}>
-              正常
-            </Button>
-          ) : (
-            <Button type="primary" style={{ backgroundColor: "#ff4d4d" }}>
-              已删除
-            </Button>
-          ),
       },
     ],
   };

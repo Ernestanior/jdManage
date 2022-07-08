@@ -40,6 +40,11 @@ const HeaderPlx: FC<IProps> = ({ visible, onClose }) => {
         []
       ),
       {
+        icon: <SoundTwoTone twoToneColor="#a72626" />,
+        title: "城市管理",
+        path: "/city",
+      },
+      {
         icon: <HeartTwoTone twoToneColor="#eb2f96" />,
         title: "公司管理",
         path: "/company",
@@ -53,11 +58,6 @@ const HeaderPlx: FC<IProps> = ({ visible, onClose }) => {
         icon: <SmileTwoTone twoToneColor="#822496" />,
         title: "笔记管理",
         path: "/note",
-      },
-      {
-        icon: <SoundTwoTone twoToneColor="#a72626" />,
-        title: "待开发2",
-        path: "/",
       },
       {
         icon: <ToolTwoTone twoToneColor="#423626" />,

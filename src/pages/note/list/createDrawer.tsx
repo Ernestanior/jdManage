@@ -1,8 +1,17 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { noteApi } from "@/store/api";
 import request from "@/store/request";
-import { Button, Drawer, Form, Input, notification, Select } from "antd";
+import {
+  Button,
+  Drawer,
+  Form,
+  Input,
+  notification,
+  Select,
+  Upload,
+} from "antd";
 import moment from "moment";
+import { UploadOutlined } from "@ant-design/icons";
 
 interface IProps {
   visible: boolean;
@@ -19,9 +28,9 @@ const formItemLayout = {
 const { Option } = Select;
 const CreateDrawer: FC<IProps> = ({ visible, onClose, reload }) => {
   const [form] = Form.useForm();
+  const [files, setFiles] = useState<any[]>([]);
 
   const onFinish = async (e: any) => {
-    console.log(e);
     const res = await request(
       noteApi.CreateNote({
         ...e,
@@ -29,11 +38,19 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload }) => {
         publishTime: moment().format("YYYYMMDDHHmmss"),
       })
     );
-    if (res) {
-      form.resetFields();
-      onClose();
-      reload();
-      notification.success({ message: "success" });
+    if (res.code === 200) {
+      const formData = new FormData();
+      console.log(files);
+
+      files.forEach((file) => formData.append("pics", file));
+      const result = await request(noteApi.UploadPic(res.data, formData));
+      if (result.code) {
+        console.log(result);
+        form.resetFields();
+        onClose();
+        reload();
+        notification.success({ message: "success" });
+      }
     }
   };
   return (
@@ -100,6 +117,28 @@ const CreateDrawer: FC<IProps> = ({ visible, onClose, reload }) => {
           ]}
         >
           <Input.TextArea rows={14} />
+        </Form.Item>
+        <Form.Item
+          {...formItemLayout}
+          name="logo"
+          label="笔记图片"
+          rules={[
+            {
+              required: true,
+              message: "Note picture cannot be empty!",
+            },
+          ]}
+        >
+          <Upload
+            listType="picture"
+            beforeUpload={(file) => {
+              setFiles([...files, file]);
+              return false;
+            }}
+            maxCount={6}
+          >
+            <Button icon={<UploadOutlined />}>Upload</Button>
+          </Upload>
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 20, span: 4 }}>
           <Button className="default-button" type="primary" htmlType="submit">

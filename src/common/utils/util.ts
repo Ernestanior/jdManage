@@ -196,7 +196,12 @@ const validateEmail = (email: any) => {
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
 };
-
+const convertTime = (time: string) => {
+  return `${time.slice(0, 4)}-${time.slice(4, 6)}-${time.slice(
+    6,
+    8
+  )} ${time.slice(8, 10)}:${time.slice(10, 12)}`;
+};
 export {
   fastCreateArray,
   fixTo,
@@ -211,4 +216,5 @@ export {
   debounce,
   // downloadCertFile,
   validateEmail,
+  convertTime,
 };

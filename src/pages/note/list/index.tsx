@@ -1,5 +1,5 @@
 import { Template } from "@/components/template";
-import { notification } from "antd";
+import { Button, notification } from "antd";
 import { FC, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import CreateDrawer from "./createDrawer";
@@ -11,6 +11,7 @@ import { EdgeModal } from "@/components/modal";
 import useEvent from "@/hooks/useEvent";
 import DetailDrawer from "./detailDrawer";
 import { Flag } from "@/common/utils/constants";
+import EditDrawer from "./editDrawer";
 
 const Content: FC = () => {
   const [flag, setFlag] = useState<Flag>(Flag.CLOSE);
@@ -44,6 +45,7 @@ const Content: FC = () => {
         return null;
       }
       setDetailData(data.data);
+      setFlag(Flag.DETAIL);
     });
   };
 
@@ -52,8 +54,22 @@ const Content: FC = () => {
       {
         text: "查看", //修改
         event: (data: any) => {
-          setFlag(Flag.DETAIL);
+          if (!data.status) {
+            notification.error({ message: "该笔记已被删除" });
+            return;
+          }
           detailNote(data.id);
+        },
+      },
+      {
+        text: "图片补发", //修改
+        event: (data: any) => {
+          if (!data.status) {
+            notification.error({ message: "该笔记已被删除" });
+            return;
+          }
+          setFlag(Flag.EDIT);
+          setSelected(data.id);
         },
       },
       {
@@ -128,6 +144,21 @@ const Content: FC = () => {
         dataIndex: "uniAcronym",
         key: "type",
       },
+      {
+        title: "状态",
+        dataIndex: "status",
+        key: "status",
+        render: (e: string) =>
+          e ? (
+            <Button type="primary" style={{ backgroundColor: "#4ee876" }}>
+              正常
+            </Button>
+          ) : (
+            <Button type="primary" style={{ backgroundColor: "#ff4d4d" }}>
+              已删除
+            </Button>
+          ),
+      },
     ],
   };
   return (
@@ -153,6 +184,14 @@ const Content: FC = () => {
         loading={loading}
         visible={flag === Flag.DETAIL}
       ></DetailDrawer>
+      <EditDrawer
+        onClose={() => setFlag(Flag.CLOSE)}
+        reload={() => sendMessage("reload")}
+        title="笔记图片补发"
+        loading={loading}
+        noteId={selectId || 0}
+        visible={flag === Flag.EDIT}
+      />
       <EdgeModal
         visible={flag === Flag.DELETE}
         onCancel={() => setFlag(Flag.CLOSE)}

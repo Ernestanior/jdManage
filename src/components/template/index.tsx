@@ -1,4 +1,4 @@
-import { Col, Pagination, Row, Table } from "antd";
+import { Button, Row, Table } from "antd";
 import React, {
   FC,
   useCallback,
@@ -24,7 +24,7 @@ import { IExpandableModule } from "./interface";
 import "./index.less";
 import "./common.less";
 import { ellopsisOnCell, ellopsisRender } from "./utilsx";
-import FooterDetail from "./components/footerDetail";
+// import FooterDetail from "./components/footerDetail";
 import { Btn } from "./button";
 import { IEvent } from "./hooks/useEvent";
 import { useLoading } from "@/components/loading";
@@ -165,22 +165,22 @@ export const Template: FC<ITemplateProps & IExpandableModule> = ({
     [searchPage, searchCondition]
   );
 
-  const details = useMemo(() => {
-    const { current, pageSize, total } = pagination;
-    const { _current, _pageSize, _total } = {
-      _current: current || 1,
-      _pageSize: pageSize || 1,
-      _total: total || 0,
-    };
-    const mul = _current * _pageSize;
-    return {
-      start: `${mul - _pageSize + 1}`,
-      end: mul > _total ? `${total}` : `${mul}`,
-      total: `${total}`,
-      hide: _total <= 0,
-      size: (props.data && props.data.size) || 20,
-    };
-  }, [pagination, props.data]);
+  // const details = useMemo(() => {
+  //   const { current, pageSize, total } = pagination;
+  //   const { _current, _pageSize, _total } = {
+  //     _current: current || 1,
+  //     _pageSize: pageSize || 1,
+  //     _total: total || 0,
+  //   };
+  //   const mul = _current * _pageSize;
+  //   return {
+  //     start: `${mul - _pageSize + 1}`,
+  //     end: mul > _total ? `${total}` : `${mul}`,
+  //     total: `${total}`,
+  //     hide: _total <= 0,
+  //     size: (props.data && props.data.size) || 20,
+  //   };
+  // }, [pagination, props.data]);
 
   const { current: clearSearch } = useRef(() => {
     let _reset: Function | null = null;
@@ -440,7 +440,7 @@ export const Template: FC<ITemplateProps & IExpandableModule> = ({
           scroll={props.scroll}
         />
         <Row className="cdn-template-footer" align="middle">
-          <FooterDetail
+          {/* <FooterDetail
             {...details}
             pageSizeChange={(pageSize: any) =>
               setSearchPage({ ...searchPage, pageNum: 1, pageSize: pageSize })
@@ -455,7 +455,40 @@ export const Template: FC<ITemplateProps & IExpandableModule> = ({
               {...pagination}
               showSizeChanger={false}
             />
-          </Col>
+          </Col> */}
+          <Button
+            onClick={() =>
+              setSearchPage({
+                ...searchPage,
+                pageNum: 1,
+              })
+            }
+            style={{ marginRight: 20 }}
+          >
+            首页
+          </Button>
+          <Button
+            onClick={() =>
+              setSearchPage({
+                ...searchPage,
+                pageNum:
+                  searchPage.pageNum === 1
+                    ? searchPage.pageNum
+                    : searchPage.pageNum - 1,
+              })
+            }
+            style={{ marginRight: 20 }}
+          >
+            上一页
+          </Button>
+          <Button
+            onClick={() =>
+              setSearchPage({ ...searchPage, pageNum: searchPage.pageNum + 1 })
+            }
+            disabled={props.data && props.data.content.length < 20}
+          >
+            下一页
+          </Button>
         </Row>
       </section>
     </div>

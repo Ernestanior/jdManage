@@ -1,6 +1,8 @@
 import { FC } from "react";
 import { Col, Divider, Drawer, Row } from "antd";
 import Loading from "@/components/loading/context";
+import { convertTime } from "@/common/utils/util";
+import { img_url } from "@/store/request";
 
 interface IProps {
   visible: boolean;
@@ -24,34 +26,65 @@ const DetailDrawer: FC<IProps> = ({
       placement="right"
       onClose={onClose}
       visible={visible}
-      width={700}
+      width={1000}
       closable={false}
       getContainer={false}
     >
       <Loading display={loading}></Loading>
       {data &&
         Object.keys(data).map((item: string) => {
-          if (item === "authorAvatar") {
+          if (item === "pics") {
             return (
               <Row key={item}>
-                <Col span={8}>{item}</Col>
-                <Col span={15} offset={1}>
-                  <img
-                    alt=""
-                    src={`https://api.reviewonclass.com/static/image/${data[item]}`}
-                    style={{ width: 100 }}
-                  />
+                <Col span={4}>{item}</Col>
+                <Col span={19} offset={1}>
+                  {data[item].length
+                    ? data[item].map((i: string) => (
+                        <img
+                          key={i}
+                          alt=""
+                          src={`${img_url}/${i}`}
+                          style={{
+                            width: 100,
+                            display: "block",
+                            marginTop: 10,
+                          }}
+                        />
+                      ))
+                    : "该笔记没图片"}
                 </Col>
                 <Divider />
               </Row>
             );
           }
-          if (item === "desc") {
+          if (item === "content") {
             return (
               <Row key={item}>
-                <Col span={8}>{item}</Col>
-                <Col span={15} offset={1}>
+                <Col span={4}>{item}</Col>
+                <Col span={19} offset={1}>
                   <pre>{data[item]}</pre>
+                </Col>
+                <Divider />
+              </Row>
+            );
+          }
+          if (item === "likedByCurUser" || item === "favedByCurUser") {
+            return (
+              <Row key={item}>
+                <Col span={4}>{item}</Col>
+                <Col span={19} offset={1}>
+                  {data[item] ? "true" : "false"}
+                </Col>
+                <Divider />
+              </Row>
+            );
+          }
+          if (item === "publishTime") {
+            return (
+              <Row key={item}>
+                <Col span={4}>{item}</Col>
+                <Col span={19} offset={1}>
+                  {convertTime(data[item])}
                 </Col>
                 <Divider />
               </Row>
@@ -59,8 +92,8 @@ const DetailDrawer: FC<IProps> = ({
           }
           return (
             <Row key={item}>
-              <Col span={8}>{item}</Col>
-              <Col span={15} offset={1}>
+              <Col span={4}>{item}</Col>
+              <Col span={19} offset={1}>
                 {data[item]}
               </Col>
               <Divider />

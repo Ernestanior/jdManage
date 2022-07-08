@@ -8,8 +8,8 @@ import { IUserInfo } from "../network/account/interface";
 
 const requestPlx = new RequestPlx();
 
-const dev_url = "https://api.reviewonclass.com";
-
+export const dev_url = "https://api.reviewonclass.com";
+export const img_url = "https://pic.reviewonclass.com/static/image";
 // add dev server url
 requestPlx.middleware_before.use(async (config, next) => {
   config.url = dev_url + config.url;

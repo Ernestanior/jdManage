@@ -1,5 +1,5 @@
 import { Template } from "@/components/template";
-import { Button, notification } from "antd";
+import { Button } from "antd";
 import { FC, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import CreateDrawer from "./createDrawer";
@@ -7,7 +7,7 @@ import DetailDrawer from "./detailDrawer";
 import EditDrawer from "./editDrawer";
 import { useLoading } from "@/components/loading";
 import { from } from "rxjs";
-import request from "@/store/request";
+import request, { img_url } from "@/store/request";
 import { companyApi } from "@/store/api";
 import { EdgeModal } from "@/components/modal";
 import useEvent from "@/hooks/useEvent";
@@ -27,11 +27,13 @@ const Content: FC = () => {
 
   const deleteCompany = (id: number) => {
     from(request(companyApi.DeleteCompany(id))).subscribe((data) => {
-      notification.success({ message: "Delete Success" });
-      sendMessage("reload");
-      // setDeleteFlag(false);
-      setFlag(Flag.CLOSE);
-      setSelected(0);
+      if (data.code === 200) {
+        // notification.success({ message: "Delete Success" });
+        sendMessage("reload");
+        // setDeleteFlag(false);
+        setFlag(Flag.CLOSE);
+        setSelected(0);
+      }
     });
   };
 
@@ -39,7 +41,7 @@ const Content: FC = () => {
     optList: [
       {
         text: "查看", //修改
-        event: async (data: any) => {
+        event: (data: any) => {
           // const res = await request(companyApi.DetailCompany(data.id));
           // if (res.code === 200) {
           //   setDetailData(res.data);
@@ -128,11 +130,13 @@ const Content: FC = () => {
         key: "logoName",
         render: (e: string) =>
           e ? (
-            <img
-              style={{ width: 30, height: 30 }}
-              src={`https://api.reviewonclass.com/static/image/${e}`}
-              alt=""
-            ></img>
+            <>
+              <img
+                alt=""
+                style={{ width: 30, height: 30 }}
+                src={`${img_url}/${e}`}
+              ></img>
+            </>
           ) : (
             "no-logo"
           ),
@@ -161,6 +165,7 @@ const Content: FC = () => {
         closeFilter
         {...TempConfig}
         event$={event$}
+        scroll={{ x: 1200 }}
       ></Template>
       <CreateDrawer
         onClose={() => setFlag(Flag.CLOSE)}

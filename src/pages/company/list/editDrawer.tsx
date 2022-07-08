@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { companyApi } from "@/store/api";
-import request from "@/store/request";
+import request, { img_url } from "@/store/request";
 import {
   Button,
   Drawer,
@@ -116,7 +116,7 @@ const EditDrawer: FC<IProps> = ({ visible, onClose, reload, data }) => {
                 <span style={{ marginRight: 20 }}>原Logo:</span>
                 <img
                   style={{ width: 100 }}
-                  src={`https://api.reviewonclass.com/static/image/${data.logoName}`}
+                  src={`${img_url}/${data.logoName}`}
                   alt=""
                 ></img>
               </div>

@@ -18,6 +18,15 @@ class NoteAPI {
     config.headers = {};
     return config;
   };
+  UploadPic = (nid: number, data: FormData) => {
+    const config: AxiosRequestConfig = {
+      url: `/note/savePics/${nid}`,
+      method: "POST",
+      data,
+    };
+    config.headers = {};
+    return config;
+  };
   DeleteNote = (nid: number) => {
     const config: AxiosRequestConfig = {
       url: `/admin/super/note/del/${nid}`,
